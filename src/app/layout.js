@@ -1,6 +1,7 @@
 // import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-
+import { PrimeReactProvider } from 'primereact/api';
+import 'primereact/resources/themes/lara-dark-purple/theme.css';
 // const geistSans = Geist({
 //   variable: '--font-geist-sans',
 //   subsets: ['latin'],
@@ -18,8 +19,10 @@ import './globals.css';
 
 export default function RootLayout({ children }) {
   return (
-    <html lang='en'>
-      <body style={{ margin: 0, padding: 0 }}>{children}</body>
-    </html>
+    <PrimeReactProvider>
+      <html lang='en'>
+        <body style={{ margin: 0, padding: 0 }}>{children}</body>
+      </html>
+    </PrimeReactProvider>
   );
 }
