@@ -22,7 +22,14 @@ export default function RootLayout({ children }) {
   return (
     <PrimeReactProvider>
       <html lang='en'>
-        <body style={{ margin: 0 }}>{children}</body>
+        <body
+          style={{
+            margin: 0,
+            display: 'flex',
+            justifyContent: 'center',
+          }}>
+          {children}
+        </body>
       </html>
     </PrimeReactProvider>
   );

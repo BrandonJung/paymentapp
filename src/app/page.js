@@ -29,7 +29,7 @@ const Home = () => {
   );
 
   return (
-    <div>
+    <div style={{ maxWidth: '1440px', width: '100%' }}>
       <Menubar model={items} end={loginButton} />
       <Dialog
         header=''
