@@ -1,30 +1,28 @@
 'use client';
 
-import { Menubar } from 'primereact/menubar';
 import { items } from '../../dummyData';
-import { Button } from 'primereact/button';
 import { useState } from 'react';
 import LoginModal from './components/loginModal';
+import Header from './components/header';
+import EndButton from './components/endButton';
 
 const Home = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const loginButton = (
-    <div>
-      <Button
-        label='Log In'
-        onClick={() => {
-          setModalVisible(true);
-        }}
-      />
-    </div>
-  );
+  const loginOnClick = () => {
+    setModalVisible(true);
+  };
 
   return (
-    <div style={{ maxWidth: 1550, width: '100%' }}>
-      <Menubar model={items} end={loginButton} />
+    <div>
+      <Header
+        items={items}
+        end={
+          <EndButton title={'Log In'} handleOnClick={() => loginOnClick()} />
+        }
+      />
       <LoginModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
@@ -33,6 +31,7 @@ const Home = () => {
         password={password}
         setPassword={setPassword}
       />
+      <div>hey</div>
     </div>
   );
 };

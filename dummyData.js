@@ -16,3 +16,14 @@ export const items = [
     icon: 'pi pi-envelope',
   },
 ];
+
+export const dashboardItems = [
+  {
+    label: 'Home',
+    icon: 'pi pi-home',
+  },
+  {
+    label: 'Contact',
+    icon: 'pi pi-envelope',
+  },
+];

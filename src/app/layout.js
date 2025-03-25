@@ -28,7 +28,13 @@ export default function RootLayout({ children }) {
             display: 'flex',
             justifyContent: 'center',
           }}>
-          {children}
+          <div
+            style={{
+              maxWidth: 1550,
+              width: '100%',
+            }}>
+            {children}
+          </div>
         </body>
       </html>
     </PrimeReactProvider>
