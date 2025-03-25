@@ -3,6 +3,7 @@ import { Dialog } from 'primereact/dialog';
 import { FloatLabel } from 'primereact/floatlabel';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
+import { useRouter } from 'next/navigation';
 
 const fieldWidth = '25vw';
 const fieldMargin = 8;
@@ -15,6 +16,8 @@ const LoginModal = ({
   password,
   setPassword,
 }) => {
+  const router = useRouter();
+
   return (
     <Dialog
       header=''
@@ -73,6 +76,7 @@ const LoginModal = ({
             marginTop: 14,
             marginBottom: 66,
           }}
+          onClick={() => router.push('/dashboard')}
         />
       </div>
     </Dialog>
