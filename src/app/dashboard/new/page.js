@@ -2,7 +2,7 @@
 
 import InputTextField from '@/app/components/form/inputTextField';
 import { Card } from 'primereact/card';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   dummyAddresses,
   dummyServicesList,
@@ -18,6 +18,7 @@ import { Button } from 'primereact/button';
 import InputMultiSelect from '@/app/components/form/inputMultiSelect';
 import InputDateSelect from '@/app/components/form/inputDateSelect';
 import InputSwitchSelect from '@/app/components/form/inputSwitchSelect';
+import { formatPriceDisplay } from '@/app/lib/helper';
 
 const NewPage = () => {
   const [firstName, setFirstName] = useState('');
@@ -42,6 +43,47 @@ const NewPage = () => {
   const [showJobSection, setShowJobSection] = useState(false);
   const [showServicesSection, setShowServicesSection] = useState(false);
   const [showPaymentSection, setShowPaymentSection] = useState(false);
+
+  const [servicesTotal, setServicesTotal] = useState(0);
+  const [taxesTotal, setTaxesTotal] = useState(0);
+  const [estimatedTotal, setEstimatedTotal] = useState(0);
+
+  const calculateServicesTotal = (services) => {
+    let total = 0;
+
+    for (let i = 0; i < services.length; i++) {
+      total += services[i].price;
+    }
+    setServicesTotal(total);
+  };
+
+  const calculateTaxesTotal = (taxes) => {
+    let taxesTotal = 1;
+
+    for (let i = 0; i < taxes.length; i++) {
+      taxesTotal += taxes[i].amount;
+    }
+    setTaxesTotal(taxesTotal);
+  };
+
+  const calculateEstimatedTotal = (sTotal, tTotal) => {
+    let total = sTotal * tTotal;
+    setEstimatedTotal(total);
+  };
+
+  useEffect(() => {
+    if (servicesTotal > 0) {
+      calculateEstimatedTotal(servicesTotal, taxesTotal);
+    }
+  }, [servicesTotal, taxesTotal]);
+
+  useEffect(() => {
+    calculateTaxesTotal(selectedTaxes);
+  }, [selectedTaxes]);
+
+  useEffect(() => {
+    calculateServicesTotal(selectedServices);
+  }, [selectedServices]);
 
   const selectExistingUser = (user) => {
     if (!user) return;
@@ -94,6 +136,7 @@ const NewPage = () => {
             options={dummyUsers}
             optionLabel='name'
             placeholder='Select a user'
+            filter
           />
         </div>
       </div>
@@ -176,6 +219,7 @@ const NewPage = () => {
               options={dummyServicesList}
               optionLabel='displayName'
               placeholder={'Select Services'}
+              filter
             />
           </div>
           <div className={styles.fieldContainer}>
@@ -271,8 +315,15 @@ const NewPage = () => {
           title={'Payment Information'}
           section={PaymentSection}
         />
-        <div style={{ marginTop: 40 }}>
-          <Button>Create Job</Button>
+        <div
+          style={{
+            marginTop: 40,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <Button style={{ marginRight: 10 }}>Create Job</Button>
+          <div>Estimated Total: {formatPriceDisplay(estimatedTotal)}</div>
         </div>
       </Card>
     </div>

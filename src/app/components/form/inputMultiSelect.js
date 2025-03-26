@@ -9,6 +9,7 @@ const InputMultiSelect = ({
   placeholder = '',
   disabled = false,
   customFlex = 1,
+  filter = false,
 }) => {
   return (
     <div
@@ -29,6 +30,7 @@ const InputMultiSelect = ({
         optionLabel={optionLabel}
         placeholder={placeholder}
         disabled={disabled}
+        filter={filter}
       />
     </div>
   );
