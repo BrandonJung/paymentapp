@@ -11,14 +11,14 @@ export default function Layout({ children }) {
       label: 'Jobs',
       items: [
         {
-          label: 'Create New',
+          label: 'Create New Job',
           icon: 'pi pi-plus',
           command: () => {
             router.push('/dashboard/new');
           },
         },
         {
-          label: 'All',
+          label: 'Manage Services',
           icon: 'pi pi-search',
         },
         {

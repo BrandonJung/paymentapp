@@ -61,3 +61,88 @@ export const dummyUsers = [
     phoneNumber: '4444444444',
   },
 ];
+
+export const dummyAddresses = [
+  {
+    address: {
+      street: '1111 Random Street',
+      unitNumber: 4,
+      city: 'Burnaby',
+      province: 'BC',
+      postalCode: 'A1A 2B2',
+      country: 'Canada',
+    },
+    search: '1111 Random Street, Burnaby, BC, Canada',
+  },
+  {
+    address: {
+      street: '2222 Random Street',
+      unitNumber: '',
+      city: 'Burnaby',
+      province: 'BC',
+      postalCode: 'A2A 2B2',
+      country: 'Canada',
+    },
+    search: '2222 Random Street, Burnaby, BC, Canada',
+  },
+  {
+    address: {
+      street: '3333 Random Street',
+      unitNumber: 4,
+      city: 'Burnaby',
+      province: 'BC',
+      postalCode: 'A3A 2B2',
+      country: 'Canada',
+    },
+    search: '3333 Random Street, Burnaby, BC, Canada',
+  },
+];
+
+export const dummyServicesList = [
+  {
+    name: 'Local Moving',
+    description: 'Flat Rate',
+    taxes: [
+      {
+        name: 'GST',
+        code: 'gst',
+        amount: 0.05,
+      },
+    ],
+    quantity: 1,
+    price: 34000,
+    // Add Date object
+  },
+  {
+    name: 'Packing',
+    description: 'Hourly Rate - 6 hours',
+    taxes: [
+      {
+        name: 'GST',
+        code: 'gst',
+        amount: 0.05,
+      },
+    ],
+    quantity: 1,
+    price: 24000,
+    // Add Date object
+  },
+];
+
+export const dummyTaxes = [
+  {
+    name: 'GST',
+    code: 'gst',
+    amount: 0.05,
+  },
+  {
+    name: 'PST',
+    code: 'pst',
+    amount: 0.07,
+  },
+  {
+    name: 'Alcohol',
+    code: 'alc',
+    amount: 0.1,
+  },
+];
