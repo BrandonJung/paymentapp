@@ -101,7 +101,8 @@ export const dummyAddresses = [
 export const dummyServicesList = [
   {
     name: 'Local Moving',
-    description: 'Flat Rate',
+    displayName: 'Local Moving - $340',
+    description: 'Moving from your old place to your new place!',
     taxes: [
       {
         name: 'GST',
@@ -115,7 +116,8 @@ export const dummyServicesList = [
   },
   {
     name: 'Packing',
-    description: 'Hourly Rate - 6 hours',
+    displayName: 'Packing - $240',
+    description: 'With a big enough box, anything can be packed',
     taxes: [
       {
         name: 'GST',

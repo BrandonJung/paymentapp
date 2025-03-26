@@ -174,7 +174,7 @@ const NewPage = () => {
               value={selectedServices}
               setValue={setSelectedServices}
               options={dummyServicesList}
-              optionLabel='name'
+              optionLabel='displayName'
               placeholder={'Select Services'}
             />
           </div>
