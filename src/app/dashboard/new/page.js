@@ -19,6 +19,7 @@ import InputMultiSelect from '@/app/components/form/inputMultiSelect';
 import InputDateSelect from '@/app/components/form/inputDateSelect';
 import InputSwitchSelect from '@/app/components/form/inputSwitchSelect';
 import { formatPriceDisplay } from '@/app/lib/helper';
+import ServiceRow from '@/app/components/form/serviceRow';
 
 const NewPage = () => {
   const [firstName, setFirstName] = useState('');
@@ -203,82 +204,35 @@ const NewPage = () => {
     );
   };
 
-  const ServicesSection = () => {
-    return (
-      <div
-        className={styles.contentContainer}
-        style={{
-          alignItems: 'center',
-        }}>
-        <div className={styles.inputContainer}>
-          <div className={styles.fieldContainer}>
-            <InputMultiSelect
-              title={'Services'}
-              value={selectedServices}
-              setValue={setSelectedServices}
-              options={dummyServicesList}
-              optionLabel='displayName'
-              placeholder={'Select Services'}
-              filter
-            />
-          </div>
-          <div className={styles.fieldContainer}>
-            <InputDateSelect
-              title={'Date'}
-              value={selectedDate}
-              setValue={setSelectedDate}
-              placeholder='Select a date'
-            />
-          </div>
-        </div>
-        <Divider layout='vertical' />
-        <div
-          className={styles.selectContainer}
-          style={{
-            gap: 4,
-            marginLeft: 20,
-            cursor: 'pointer',
-            flexDirection: 'row',
-          }}></div>
-      </div>
-    );
+  const handleClick = () => {
+    let tempArray = [...selectedServices];
+    tempArray.push({
+      name: '',
+      description: '',
+      taxes: [],
+      quantity: 1,
+    });
+    setSelectedServices(tempArray);
   };
 
-  const PaymentSection = () => {
+  const ServicesSection = () => {
     return (
-      <div
-        className={styles.contentContainer}
-        style={{
-          alignItems: 'center',
-        }}>
-        <div className={styles.inputContainer}>
-          <div className={styles.fieldContainer}>
-            <InputSwitchSelect
-              title={'Hourly?'}
-              checked={isHourlyRate}
-              setValue={setIsHourlyRate}
-            />
-          </div>
-          <div className={styles.fieldContainer}>
-            <InputMultiSelect
-              title={'Applicable Taxes'}
-              value={selectedTaxes}
-              setValue={setSelectedTaxes}
-              options={dummyTaxes}
-              optionLabel='name'
-              placeholder={'Select Applicable Taxes'}
-            />
-          </div>
-        </div>
-        <Divider layout='vertical' />
-        <div
-          className={styles.selectContainer}
-          style={{
-            gap: 4,
-            marginLeft: 20,
-            cursor: 'pointer',
-            flexDirection: 'row',
-          }}></div>
+      <div>
+        {selectedServices.map((service, index) => {
+          return (
+            <div key={index}>
+              <ServiceRow
+                index={index}
+                selectedServices={selectedServices}
+                setSelectedServices={setSelectedServices}
+              />
+            </div>
+          );
+        })}
+        <div className={styles.fieldContainer}></div>
+        <Button style={{ width: 150 }} onClick={() => handleClick()}>
+          Add Service
+        </Button>
       </div>
     );
   };
@@ -308,12 +262,6 @@ const NewPage = () => {
           onClickParam={showServicesSection}
           title={'Service Details'}
           section={ServicesSection}
-        />
-        <InputSection
-          handleOnClick={setShowPaymentSection}
-          onClickParam={showPaymentSection}
-          title={'Payment Information'}
-          section={PaymentSection}
         />
         <div
           style={{
