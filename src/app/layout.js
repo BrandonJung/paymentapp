@@ -27,6 +27,7 @@ export default function RootLayout({ children }) {
             margin: 0,
             display: 'flex',
             justifyContent: 'center',
+            overflow: 'hidden',
           }}>
           <div
             style={{

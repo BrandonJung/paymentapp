@@ -13,12 +13,16 @@ import { Button } from 'primereact/button';
 import { formatPriceDisplay } from '@/app/utils/helpers/formatters';
 import ServiceRow from '@/app/components/form/serviceRow';
 import {
+  validateDate,
   validateLocationFields,
   validateServices,
   validateUserFields,
 } from '@/app/utils/helpers/form';
 import { useRouter } from 'next/navigation';
 import { Checkbox } from 'primereact/checkbox';
+import InputDateSelect from '@/app/components/form/inputDateSelect';
+import InputSelectButton from '@/app/components/form/inputSelectButton';
+import { dateRangeOptions } from '@/app/utils/constants';
 
 const NewJobPage = () => {
   const router = useRouter();
@@ -39,9 +43,14 @@ const NewJobPage = () => {
   const [country, setCountry] = useState('Canada');
   const [selectedLocation, setSelectedLocation] = useState('');
 
+  const [selectedDateRange, setSelectedDateRange] = useState('');
+  const [selectedStartDate, setSelectedStartDate] = useState('');
+  const [selectedEndDate, setSelectedEndDate] = useState('');
+
   const [showUserSection, setShowUserSection] = useState(true);
   const [showLocationSection, setShowLocationSection] = useState(false);
   const [showServicesSection, setShowServicesSection] = useState(false);
+  const [showDateSection, setShowDateSection] = useState(false);
 
   const [estimatedTotal, setEstimatedTotal] = useState(0);
   const [sendToUser, setSendToUser] = useState(false);
@@ -235,6 +244,44 @@ const NewJobPage = () => {
     );
   };
 
+  const DateSection = () => {
+    return (
+      <div className={styles.contentContainer}>
+        <div className={styles.inputContainer}>
+          <div className={styles.fieldContainer}>
+            <InputSelectButton
+              title={'Service Dates'}
+              value={selectedDateRange}
+              setValue={setSelectedDateRange}
+              options={dateRangeOptions}
+              optionLabel={'label'}
+            />
+            <InputDateSelect
+              title={
+                selectedDateRange === 'multi'
+                  ? 'Start Date'
+                  : 'Choose service date'
+              }
+              value={selectedStartDate}
+              setValue={setSelectedStartDate}
+              placeholder={
+                selectedDateRange === 'multi' ? 'Start date' : 'Service Date'
+              }
+            />
+            {selectedDateRange === 'multi' ? (
+              <InputDateSelect
+                title={'End Date'}
+                value={selectedEndDate}
+                setValue={setSelectedEndDate}
+                placeholder='End Date'
+              />
+            ) : null}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const handleCreateJob = () => {
     const userObj = {
       firstName,
@@ -254,8 +301,13 @@ const NewJobPage = () => {
     const userIsValid = validateUserFields(userObj);
     const locationIsValid = validateLocationFields(locationObj);
     const servicesIsValid = validateServices(servicesList);
+    const dateIsValid = validateDate(
+      selectedDateRange,
+      selectedStartDate,
+      selectedEndDate,
+    );
 
-    if (userIsValid && locationIsValid && servicesIsValid) {
+    if (userIsValid && locationIsValid && servicesIsValid && dateIsValid) {
       // TODO: Hook up to API
       // call api
       if (true) {
@@ -265,11 +317,10 @@ const NewJobPage = () => {
   };
 
   return (
-    <div
-      style={{
-        width: '100%',
-      }}>
-      <Card title={'Create New Job'} style={{ padding: 10 }}>
+    <div style={{ height: '95vh', overflowY: 'scroll', width: '100%' }}>
+      <Card
+        title={'Create New Job'}
+        style={{ padding: 10, overflowY: 'scroll' }}>
         <InputSection
           handleOnClick={setShowUserSection}
           onClickParam={showUserSection}
@@ -288,7 +339,12 @@ const NewJobPage = () => {
           title={'Service Details'}
           section={ServicesSection}
         />
-
+        <InputSection
+          handleOnClick={setShowDateSection}
+          onClickParam={showDateSection}
+          title={'Date Details'}
+          section={DateSection}
+        />
         <div style={{ display: 'flex', alignItems: 'center', marginTop: 20 }}>
           <Checkbox
             onChange={(e) => setSendToUser(e.checked)}

@@ -59,16 +59,15 @@ export default function Layout({ children }) {
     },
   ];
   return (
-    <>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          margin: 20,
-        }}>
-        <Menu model={dashboardMenuItems} style={{ marginRight: 20 }} />
-        {children}
-      </div>
-    </>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        margin: 20,
+        marginBottom: 40,
+      }}>
+      <Menu model={dashboardMenuItems} style={{ marginRight: 20 }} />
+      {children}
+    </div>
   );
 }

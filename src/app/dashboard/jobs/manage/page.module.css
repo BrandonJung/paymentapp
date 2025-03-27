@@ -1,0 +1,74 @@
+.columnContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: 'center';
+  align-items: center;
+}
+
+.container {
+  overflow-y: scroll;
+  /* hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  height: 80vh;
+  width: 100%;
+}
+
+/* hide scrollbar for chrome, safari and opera */
+.container::-webkit-scrollbar {
+  display: none;
+}
+
+.columnsContainer {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.manageCardContainer {
+  height: 95vh;
+  overflow-y: hidden;
+  width: 100%;
+}
+
+.jobCardContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  border: solid;
+  border-width: 1px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
+.jobRowContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+.jobCardRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.jobCardKey {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.jobCardValue {
+  font-size: 14px;
+  font-weight: 500;
+}

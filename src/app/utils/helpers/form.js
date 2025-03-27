@@ -87,4 +87,10 @@ export const validateLocationFields = (location) => {
   return ret;
 };
 
-export const validateServices = (servicesList) => {};
+export const validateServices = (servicesList) => {
+  return true;
+};
+
+export const validateDate = (mode, start, end) => {
+  return true;
+};
