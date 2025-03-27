@@ -1,13 +1,13 @@
 const { Divider } = require('primereact/divider');
 import { useState } from 'react';
-import styles from '../../dashboard/new/page.module.css';
+import styles from '../../dashboard/jobs/new/page.module.css';
 import InputTextField from './inputTextField';
 import InputMultiSelect from './inputMultiSelect';
 import { dummyTaxes } from '../../../../dummyData';
 import InputSelectButton from './inputSelectButton';
 import InputNumberField from './inputNumberField';
-import { validateServiceFields } from '@/app/lib/helper';
 import { Dialog } from 'primereact/dialog';
+import { validateServiceFields } from '@/app/utils/helpers/form';
 
 const rateOptions = [
   { label: 'Flat Rate', value: 'flat' },

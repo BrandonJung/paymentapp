@@ -11,23 +11,18 @@ export default function Layout({ children }) {
       label: 'Jobs',
       items: [
         {
-          label: 'Create New Job',
+          label: 'Create',
           icon: 'pi pi-plus',
           command: () => {
-            router.push('/dashboard/new');
+            router.push('/dashboard/jobs/new');
           },
         },
         {
-          label: 'Manage Services',
+          label: 'Manage',
           icon: 'pi pi-search',
-        },
-        {
-          label: 'In Progress',
-          icon: 'pi pi-search',
-        },
-        {
-          label: 'Done',
-          icon: 'pi pi-search',
+          command: () => {
+            router.push('/dashboard/jobs/manage');
+          },
         },
       ],
     },
@@ -65,8 +60,13 @@ export default function Layout({ children }) {
   ];
   return (
     <>
-      <div style={{ display: 'flex', flexDirection: 'row', margin: 20 }}>
-        <Menu model={dashboardMenuItems} />
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          margin: 20,
+        }}>
+        <Menu model={dashboardMenuItems} style={{ marginRight: 20 }} />
         {children}
       </div>
     </>

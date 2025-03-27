@@ -3,17 +3,26 @@
 import InputTextField from '@/app/components/form/inputTextField';
 import { Card } from 'primereact/card';
 import { useEffect, useState } from 'react';
-import { dummyAddresses, dummyUsers } from '../../../../dummyData';
+import { dummyAddresses, dummyUsers } from '../../../../../dummyData';
 import { Dropdown } from 'primereact/dropdown';
 import InputSection from '@/app/components/form/inputSection';
 import { Divider } from 'primereact/divider';
 
 import styles from './page.module.css';
 import { Button } from 'primereact/button';
-import { formatPriceDisplay } from '@/app/lib/helper';
+import { formatPriceDisplay } from '@/app/utils/helpers/formatters';
 import ServiceRow from '@/app/components/form/serviceRow';
+import {
+  validateLocationFields,
+  validateServices,
+  validateUserFields,
+} from '@/app/utils/helpers/form';
+import { useRouter } from 'next/navigation';
+import { Checkbox } from 'primereact/checkbox';
 
-const NewPage = () => {
+const NewJobPage = () => {
+  const router = useRouter();
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -28,12 +37,14 @@ const NewPage = () => {
   const [province, setProvince] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [country, setCountry] = useState('Canada');
+  const [selectedLocation, setSelectedLocation] = useState('');
 
   const [showUserSection, setShowUserSection] = useState(true);
   const [showLocationSection, setShowLocationSection] = useState(false);
   const [showServicesSection, setShowServicesSection] = useState(false);
 
   const [estimatedTotal, setEstimatedTotal] = useState(0);
+  const [sendToUser, setSendToUser] = useState(false);
 
   const calculateEstimatedTotal = (services) => {
     let retTotal = 0;
@@ -85,6 +96,7 @@ const NewPage = () => {
     setProvince(lProvince);
     setPostalCode(lPostalCode);
     setCountry(lCountry);
+    setSelectedLocation(location);
   };
 
   const UserSection = () => {
@@ -179,7 +191,7 @@ const NewPage = () => {
           <label>{'Past Addresses'}</label>
           <Dropdown
             filter
-            value={selectedUsername}
+            value={selectedLocation}
             onChange={(e) => {
               selectExistingLocation(e.value);
             }}
@@ -192,7 +204,7 @@ const NewPage = () => {
     );
   };
 
-  const handleClick = () => {
+  const handleAddService = () => {
     let tempArray = [...selectedServices];
     tempArray.push({
       name: '',
@@ -218,17 +230,44 @@ const NewPage = () => {
           );
         })}
         <div className={styles.fieldContainer}></div>
-        <Button onClick={() => handleClick()}>Add Service</Button>
+        <Button onClick={() => handleAddService()}>Add Service</Button>
       </div>
     );
+  };
+
+  const handleCreateJob = () => {
+    const userObj = {
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+    };
+    const locationObj = {
+      street,
+      unitNumber,
+      city,
+      province,
+      postalCode,
+      country,
+    };
+    const servicesList = selectedServices;
+    const userIsValid = validateUserFields(userObj);
+    const locationIsValid = validateLocationFields(locationObj);
+    const servicesIsValid = validateServices(servicesList);
+
+    if (userIsValid && locationIsValid && servicesIsValid) {
+      // TODO: Hook up to API
+      // call api
+      if (true) {
+        router.push('/dashboard/jobs/manage');
+      }
+    }
   };
 
   return (
     <div
       style={{
         width: '100%',
-        marginLeft: 20,
-        marginRight: 20,
       }}>
       <Card title={'Create New Job'} style={{ padding: 10 }}>
         <InputSection
@@ -249,14 +288,29 @@ const NewPage = () => {
           title={'Service Details'}
           section={ServicesSection}
         />
+
+        <div style={{ display: 'flex', alignItems: 'center', marginTop: 20 }}>
+          <Checkbox
+            onChange={(e) => setSendToUser(e.checked)}
+            checked={sendToUser}
+          />
+          <label
+            htmlFor='ingredient1'
+            className='ml-2'
+            style={{ marginLeft: 6 }}>
+            Send confirmation email to user
+          </label>
+        </div>
         <div
           style={{
-            marginTop: 40,
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
+            marginTop: 20,
           }}>
-          <Button style={{ marginRight: 10 }}>Create Job</Button>
+          <Button style={{ marginRight: 10 }} onClick={() => handleCreateJob()}>
+            Create Job
+          </Button>
           <div>Estimated Total: {formatPriceDisplay(estimatedTotal)}</div>
         </div>
       </Card>
@@ -264,4 +318,4 @@ const NewPage = () => {
   );
 };
 
-export default NewPage;
+export default NewJobPage;
