@@ -218,9 +218,7 @@ const NewPage = () => {
           );
         })}
         <div className={styles.fieldContainer}></div>
-        <Button style={{ width: 150 }} onClick={() => handleClick()}>
-          Add Service
-        </Button>
+        <Button onClick={() => handleClick()}>Add Service</Button>
       </div>
     );
   };
