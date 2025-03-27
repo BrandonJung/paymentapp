@@ -6,7 +6,6 @@ const InputSelectButton = ({
   setValue,
   options,
   optionLabel,
-  customFlex = 1,
   disabled,
 }) => {
   return (

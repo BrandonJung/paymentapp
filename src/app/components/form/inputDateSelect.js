@@ -22,7 +22,6 @@ const InputDateSelect = ({
       <label>{title}</label>
       <Calendar
         value={value}
-        // onChange={(e) => setValue(e.value)}
         onChange={(e) => {
           setValue(e.value);
         }}

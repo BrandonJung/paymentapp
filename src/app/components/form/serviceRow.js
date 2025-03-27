@@ -27,14 +27,17 @@ const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
   const [showErrorDialog, setShowErrorDialog] = useState(false);
 
   const handleSave = () => {
-    if (!isEditing) setIsEditing(true);
+    if (!isEditing) {
+      setIsEditing(true);
+      return;
+    }
     const tempSelectedServices = [...selectedServices];
     let tempService = {
       name: sName,
       description: sDescription,
       taxes: sTaxes,
       quantity: sQuantity,
-      price: sPrice,
+      price: sPrice * 100,
       rate: sRate,
     };
 

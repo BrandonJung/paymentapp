@@ -3,21 +3,13 @@
 import InputTextField from '@/app/components/form/inputTextField';
 import { Card } from 'primereact/card';
 import { useEffect, useState } from 'react';
-import {
-  dummyAddresses,
-  dummyServicesList,
-  dummyTaxes,
-  dummyUsers,
-} from '../../../../dummyData';
+import { dummyAddresses, dummyUsers } from '../../../../dummyData';
 import { Dropdown } from 'primereact/dropdown';
 import InputSection from '@/app/components/form/inputSection';
 import { Divider } from 'primereact/divider';
 
 import styles from './page.module.css';
 import { Button } from 'primereact/button';
-import InputMultiSelect from '@/app/components/form/inputMultiSelect';
-import InputDateSelect from '@/app/components/form/inputDateSelect';
-import InputSwitchSelect from '@/app/components/form/inputSwitchSelect';
 import { formatPriceDisplay } from '@/app/lib/helper';
 import ServiceRow from '@/app/components/form/serviceRow';
 
@@ -26,14 +18,11 @@ const NewPage = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [selectedUsername, setSelectedUsername] = useState(null);
+  const [selectedUsername, setSelectedUsername] = useState('');
 
   const [selectedServices, setSelectedServices] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTaxes, setSelectedTaxes] = useState([]);
-  const [isHourlyRate, setIsHourlyRate] = useState(false);
 
-  const [address, setAddress] = useState('');
+  const [street, setStreet] = useState('');
   const [unitNumber, setUnitNumber] = useState('');
   const [city, setCity] = useState('');
   const [province, setProvince] = useState('');
@@ -41,49 +30,30 @@ const NewPage = () => {
   const [country, setCountry] = useState('Canada');
 
   const [showUserSection, setShowUserSection] = useState(true);
-  const [showJobSection, setShowJobSection] = useState(false);
+  const [showLocationSection, setShowLocationSection] = useState(false);
   const [showServicesSection, setShowServicesSection] = useState(false);
-  const [showPaymentSection, setShowPaymentSection] = useState(false);
 
-  const [servicesTotal, setServicesTotal] = useState(0);
-  const [taxesTotal, setTaxesTotal] = useState(0);
   const [estimatedTotal, setEstimatedTotal] = useState(0);
 
-  const calculateServicesTotal = (services) => {
-    let total = 0;
-
-    for (let i = 0; i < services.length; i++) {
-      total += services[i].price;
+  const calculateEstimatedTotal = (services) => {
+    let retTotal = 0;
+    for (let service of services) {
+      if (isNaN(service.price)) continue;
+      let sPrice = service.price;
+      let taxTotalMultiplier = 1;
+      for (let tax of service.taxes) {
+        taxTotalMultiplier += tax.amount;
+      }
+      let sTotalAmount = sPrice * taxTotalMultiplier;
+      retTotal += sTotalAmount;
     }
-    setServicesTotal(total);
-  };
-
-  const calculateTaxesTotal = (taxes) => {
-    let taxesTotal = 1;
-
-    for (let i = 0; i < taxes.length; i++) {
-      taxesTotal += taxes[i].amount;
-    }
-    setTaxesTotal(taxesTotal);
-  };
-
-  const calculateEstimatedTotal = (sTotal, tTotal) => {
-    let total = sTotal * tTotal;
-    setEstimatedTotal(total);
+    setEstimatedTotal(retTotal);
   };
 
   useEffect(() => {
-    if (servicesTotal > 0) {
-      calculateEstimatedTotal(servicesTotal, taxesTotal);
+    if (selectedServices.length > 0) {
+      calculateEstimatedTotal(selectedServices);
     }
-  }, [servicesTotal, taxesTotal]);
-
-  useEffect(() => {
-    calculateTaxesTotal(selectedTaxes);
-  }, [selectedTaxes]);
-
-  useEffect(() => {
-    calculateServicesTotal(selectedServices);
   }, [selectedServices]);
 
   const selectExistingUser = (user) => {
@@ -97,6 +67,24 @@ const NewPage = () => {
     setEmail(uEmail);
     setPhoneNumber(uPhoneNumber);
     setSelectedUsername(user);
+  };
+
+  const selectExistingLocation = (location) => {
+    const address = location.address;
+    if (!address) return;
+    const lStreet = address.street;
+    const lUnitNumber = address.unitNumber;
+    const lCity = address.city;
+    const lProvince = address.province;
+    const lPostalCode = address.postalCode;
+    const lCountry = address.country;
+
+    setStreet(lStreet);
+    setUnitNumber(lUnitNumber);
+    setCity(lCity);
+    setProvince(lProvince);
+    setPostalCode(lPostalCode);
+    setCountry(lCountry);
   };
 
   const UserSection = () => {
@@ -144,7 +132,7 @@ const NewPage = () => {
     );
   };
 
-  const JobSection = () => {
+  const LocationSection = () => {
     return (
       <div className={styles.contentContainer}>
         <div className={styles.inputContainer}>
@@ -152,8 +140,8 @@ const NewPage = () => {
             <InputTextField
               customFlex={3}
               title={'Address *'}
-              value={address}
-              setValue={setAddress}
+              value={street}
+              setValue={setStreet}
             />
             <InputTextField
               customFlex={1}
@@ -193,7 +181,7 @@ const NewPage = () => {
             filter
             value={selectedUsername}
             onChange={(e) => {
-              selectExistingUser(e.value);
+              selectExistingLocation(e.value);
             }}
             options={dummyAddresses}
             optionLabel='search'
@@ -252,10 +240,10 @@ const NewPage = () => {
           section={UserSection}
         />
         <InputSection
-          handleOnClick={setShowJobSection}
-          onClickParam={showJobSection}
+          handleOnClick={setShowLocationSection}
+          onClickParam={showLocationSection}
           title={'Location Details'}
-          section={JobSection}
+          section={LocationSection}
         />
         <InputSection
           handleOnClick={setShowServicesSection}
