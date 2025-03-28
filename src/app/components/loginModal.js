@@ -6,7 +6,7 @@ import { Password } from 'primereact/password';
 import { useRouter } from 'next/navigation';
 
 const fieldWidth = '25vw';
-const fieldMargin = 8;
+const fieldMargin = 6;
 
 const LoginModal = ({
   modalVisible,
