@@ -8,7 +8,7 @@ import EndButton from './components/endButton';
 
 const Home = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const loginOnClick = () => {
@@ -26,8 +26,8 @@ const Home = () => {
       <LoginModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
-        username={username}
-        setUsername={setUsername}
+        username={email}
+        setUsername={setEmail}
         password={password}
         setPassword={setPassword}
       />

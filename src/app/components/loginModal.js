@@ -11,8 +11,8 @@ const fieldMargin = 6;
 const LoginModal = ({
   modalVisible,
   setModalVisible,
-  username,
-  setUsername,
+  email,
+  setEmail,
   password,
   setPassword,
 }) => {
@@ -25,10 +25,10 @@ const LoginModal = ({
       visible={modalVisible}
       draggable={false}
       dismissableMask={true}
-      style={{
-        width: '35vw',
-        height: '30vw',
-      }}
+      // style={{
+      //   width: '40%',
+      //   height: '30%',
+      // }}
       contentStyle={{
         display: 'flex',
         justifyContent: 'center',
@@ -39,18 +39,26 @@ const LoginModal = ({
         setModalVisible(false);
       }}>
       <div>
-        <label style={{ margin: fieldMargin }}>Welcome Back!</label>
+        <label
+          style={{
+            margin: fieldMargin,
+            marginBottom: 50,
+            textWrap: 'wrap',
+          }}>
+          Welcome Back!
+        </label>
         <FloatLabel
-          style={{ margin: fieldMargin, marginBottom: 22, marginTop: 14 }}>
+          style={{ margin: fieldMargin, marginBottom: 22, marginTop: 24 }}>
           <InputText
             style={{ width: fieldWidth }}
-            id='username'
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            id='email'
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
-          <label htmlFor='username'>Username</label>
+          <label htmlFor='email'>Email</label>
         </FloatLabel>
-        <FloatLabel style={{ margin: fieldMargin, marginBottom: 14 }}>
+        <FloatLabel
+          style={{ margin: fieldMargin, marginBottom: 14, marginTop: 24 }}>
           <Password
             inputStyle={{ width: fieldWidth }}
             inputId='password'
