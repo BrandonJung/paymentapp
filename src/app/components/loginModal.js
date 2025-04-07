@@ -1,22 +1,86 @@
+'use client';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { FloatLabel } from 'primereact/floatlabel';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { _apiCall } from '../utils/helpers/functions';
+import { API_SERVICES } from '../utils/constants';
 
 const fieldWidth = '25vw';
 const fieldMargin = 6;
+const fieldMarginTop = 28;
 
-const LoginModal = ({
-  modalVisible,
-  setModalVisible,
-  email,
-  setEmail,
-  password,
-  setPassword,
-}) => {
+const LoginModal = ({ modalVisible, setModalVisible }) => {
   const router = useRouter();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSignUp = async () => {
+    try {
+      setLoading(true);
+      if (true) {
+        const res = await _apiCall(API_SERVICES.user, 'create', 'post', {
+          email: email || 'example@gmail.com',
+          password: password || 'examplePassword',
+        });
+        const resObj = await res.json();
+        if (res.status === 200) {
+          router.push('/dashboard');
+        } else {
+          setErrorMessage(resObj.message);
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogIn = async () => {
+    try {
+      setLoading(true);
+      if (true) {
+        const res = await _apiCall(API_SERVICES.user, 'login', 'post', {
+          email: email || 'example@gmail.com',
+          password: password || 'examplePassword',
+        });
+        if (res.status === 200) {
+          setErrorMessage('');
+          const resObj = await res.json();
+          router.push('/dashboard');
+        } else {
+          setErrorMessage('Invalid login credentials');
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOnClickSubmit = () => {
+    if (isSignUp) {
+      handleSignUp();
+    } else {
+      handleLogIn();
+    }
+  };
+
+  const handleLoginSignUpSwitch = () => {
+    setErrorMessage('');
+    setIsSignUp(!isSignUp);
+  };
 
   return (
     <Dialog
@@ -25,10 +89,6 @@ const LoginModal = ({
       visible={modalVisible}
       draggable={false}
       dismissableMask={true}
-      // style={{
-      //   width: '40%',
-      //   height: '30%',
-      // }}
       contentStyle={{
         display: 'flex',
         justifyContent: 'center',
@@ -45,10 +105,13 @@ const LoginModal = ({
             marginBottom: 50,
             textWrap: 'wrap',
           }}>
-          Welcome Back!
+          Welcome!
         </label>
         <FloatLabel
-          style={{ margin: fieldMargin, marginBottom: 22, marginTop: 24 }}>
+          style={{
+            margin: fieldMargin,
+            marginTop: fieldMarginTop,
+          }}>
           <InputText
             style={{ width: fieldWidth }}
             id='email'
@@ -58,7 +121,10 @@ const LoginModal = ({
           <label htmlFor='email'>Email</label>
         </FloatLabel>
         <FloatLabel
-          style={{ margin: fieldMargin, marginBottom: 14, marginTop: 24 }}>
+          style={{
+            margin: fieldMargin,
+            marginTop: fieldMarginTop,
+          }}>
           <Password
             inputStyle={{ width: fieldWidth }}
             inputId='password'
@@ -68,23 +134,55 @@ const LoginModal = ({
           />
           <label htmlFor='password'>Password</label>
         </FloatLabel>
+        {isSignUp ? (
+          <FloatLabel
+            style={{
+              margin: fieldMargin,
+              marginTop: fieldMarginTop,
+            }}>
+            <Password
+              inputStyle={{ width: fieldWidth }}
+              inputId='confirmPassword'
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              feedback={false}
+            />
+            <label htmlFor='password'>Confirm Password</label>
+          </FloatLabel>
+        ) : null}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <label style={{ margin: fieldMargin, fontSize: 14 }}>
-            Forgot Password?
-          </label>
-          <label style={{ margin: fieldMargin, fontSize: 14 }}>
-            New? Sign Up!
-          </label>
+          <div style={{ margin: fieldMargin }}>
+            <label style={{ fontSize: 14, color: 'red' }}>
+              {`${errorMessage}`}
+            </label>
+          </div>
+          <div style={{ margin: fieldMargin }}>
+            <label style={{ fontSize: 14, cursor: 'pointer' }}>
+              Forgot Password?
+            </label>
+          </div>
+          <div style={{ margin: fieldMargin }}>
+            <label
+              style={{
+                fontSize: 14,
+                cursor: 'pointer',
+              }}
+              onClick={() => {
+                handleLoginSignUpSwitch();
+              }}>
+              {isSignUp ? 'Already have an account? Log in' : 'New? Sign Up'}
+            </label>
+          </div>
         </div>
         <Button
-          label='Log In'
+          label={isSignUp ? 'Sign Up' : 'Log In'}
           style={{
             margin: fieldMargin,
             width: fieldWidth,
             marginTop: 14,
             marginBottom: 66,
           }}
-          onClick={() => router.push('/dashboard')}
+          onClick={() => handleOnClickSubmit()}
         />
       </div>
     </Dialog>

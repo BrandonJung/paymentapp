@@ -21,7 +21,6 @@ const ManageJobCard = ({ job }) => {
   const { street } = address;
   const { startDate, endDate } = date;
   const statusColumn = statusCode.toString().charAt(0);
-  console.log('asdf', statusColumn);
 
   let buttonText = '';
 

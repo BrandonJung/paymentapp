@@ -14,3 +14,7 @@ export const dateRangeOptions = [
     value: 'multi',
   },
 ];
+
+export const API_SERVICES = {
+  user: 'http://localhost:3001/api/user/',
+};
