@@ -22,6 +22,25 @@ export default function Layout({ children }) {
     }
   };
 
+  const handleDeleteUsers = async () => {
+    if (process.env.NEXT_PUBLIC_STAGE !== 'dev') {
+      return;
+    }
+    try {
+      const res = await _apiCall(
+        API_SERVICES.user,
+        'deleteAllUsers',
+        'delete',
+        {},
+      );
+      if (res.status === 200) {
+        alert('All users deleted');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const dashboardMenuItems = [
     {
       label: 'Jobs',
@@ -75,6 +94,13 @@ export default function Layout({ children }) {
           },
         },
       ],
+    },
+    {
+      label: 'Delete users',
+      icon: 'pi pi-sign-out',
+      command: () => {
+        handleDeleteUsers();
+      },
     },
   ];
   return (
