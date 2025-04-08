@@ -6,6 +6,8 @@ export const _apiCall = async (service, path, method, data) => {
     try {
       const jsonData = JSON.stringify(data);
 
+      const accessToken = localStorage.getItem('accessToken');
+
       const m = method.toUpperCase();
 
       let config = {
@@ -16,6 +18,10 @@ export const _apiCall = async (service, path, method, data) => {
         credentials: 'include',
       };
 
+      if (accessToken) {
+        config.headers['Authorization'] = `Bearer ${accessToken}`;
+      }
+
       if (m === 'GET') {
         config.params = jsonData;
       } else {
@@ -23,11 +29,35 @@ export const _apiCall = async (service, path, method, data) => {
       }
 
       const res = await fetch(`${service}${path}`, config);
-      return res;
+      const resObj = await res.json();
+      if (res.status === 401) {
+        const userId = localStorage.getItem('userId');
+        const refreshRes = await fetch(`${service}newAccessToken`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            userId: userId,
+          }),
+        });
+
+        const refreshResObj = await refreshRes.json();
+
+        localStorage.setItem('accessToken', refreshResObj);
+      }
+      return { ...resObj, status: 200 };
     } catch (e) {
-      // Request for a new access token
       console.log(e);
     }
     retry -= 1;
+  }
+};
+
+const requestNewAccessToken = async () => {
+  try {
+  } catch (err) {
+    console.log(err);
   }
 };

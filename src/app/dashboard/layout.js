@@ -2,9 +2,25 @@
 
 import { Menu } from 'primereact/menu';
 import { useRouter } from 'next/navigation';
+import { _apiCall } from '../utils/helpers/functions';
+import { API_SERVICES } from '../utils/constants';
 
 export default function Layout({ children }) {
   const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      const userId = localStorage.getItem('userId');
+      const res = await _apiCall(API_SERVICES.user, 'logout', 'post', {
+        userId,
+      });
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('userId');
+      router.push('/');
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const dashboardMenuItems = [
     {
@@ -54,6 +70,9 @@ export default function Layout({ children }) {
         {
           label: 'Logout',
           icon: 'pi pi-sign-out',
+          command: () => {
+            handleLogout();
+          },
         },
       ],
     },

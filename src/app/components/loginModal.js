@@ -32,11 +32,15 @@ const LoginModal = ({ modalVisible, setModalVisible }) => {
           email: email || 'example@gmail.com',
           password: password || 'examplePassword',
         });
-        const resObj = await res.json();
+        console.log('Signed up', res);
         if (res.status === 200) {
+          console.log(res.accessToken, typeof res.accessToken);
+          setErrorMessage('');
+          localStorage.setItem('userId', res.user._id);
+          localStorage.setItem('accessToken', res.accessToken);
           router.push('/dashboard');
         } else {
-          setErrorMessage(resObj.message);
+          setErrorMessage(res.message);
         }
       }
     } catch (e) {
@@ -54,9 +58,11 @@ const LoginModal = ({ modalVisible, setModalVisible }) => {
           email: email || 'example@gmail.com',
           password: password || 'examplePassword',
         });
+        console.log('Logged in', res);
         if (res.status === 200) {
           setErrorMessage('');
-          const resObj = await res.json();
+          localStorage.setItem('userId', res._id);
+          localStorage.setItem('accessToken', res.accessToken);
           router.push('/dashboard');
         } else {
           setErrorMessage('Invalid login credentials');
