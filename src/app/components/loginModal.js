@@ -34,9 +34,8 @@ const LoginModal = ({ modalVisible, setModalVisible }) => {
         });
         console.log('Signed up', res);
         if (res.status === 200) {
-          console.log(res.accessToken, typeof res.accessToken);
           setErrorMessage('');
-          localStorage.setItem('userId', res.user._id);
+          localStorage.setItem('userId', res.userId);
           localStorage.setItem('accessToken', res.accessToken);
           router.push('/dashboard');
         } else {
@@ -61,7 +60,7 @@ const LoginModal = ({ modalVisible, setModalVisible }) => {
         console.log('Logged in', res);
         if (res.status === 200) {
           setErrorMessage('');
-          localStorage.setItem('userId', res._id);
+          localStorage.setItem('userId', res.userId);
           localStorage.setItem('accessToken', res.accessToken);
           router.push('/dashboard');
         } else {
