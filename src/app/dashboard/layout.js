@@ -80,10 +80,14 @@ export default function Layout({ children }) {
       ],
     },
     {
-      label: 'Profile',
+      label: 'Settings',
       items: [
         {
-          label: 'Settings',
+          label: 'Account',
+          icon: 'pi pi-cog',
+        },
+        {
+          label: 'Preferences',
           icon: 'pi pi-cog',
         },
         {
