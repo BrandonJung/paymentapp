@@ -8,9 +8,18 @@ import { API_SERVICES } from '../utils/constants';
 const DashboardPage = () => {
   const router = useRouter();
 
-  const getUserData = () => {
+  const getUserData = async () => {
     try {
-      const res = _apiCall(API_SERVICES.user, 'retrieveUserData', 'get', {});
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        alert('Please log in again');
+        router.push('/');
+      }
+      const res = await _apiCall(API_SERVICES.user, 'retrieveUserData', 'get', {
+        userId,
+        fields: ['_id', 'email', 'role', 'emailVerified'],
+      });
+      console.log(res);
     } catch (err) {
       console.log(err);
     }

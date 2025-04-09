@@ -4,7 +4,7 @@ export const _apiCall = async (service, path, method, data) => {
   let retry = RETRY_COUNT;
   while (retry > 0) {
     try {
-      const jsonData = JSON.stringify(data);
+      let urlParams = '';
 
       const accessToken = localStorage.getItem('accessToken');
 
@@ -22,15 +22,21 @@ export const _apiCall = async (service, path, method, data) => {
         config.headers['Authorization'] = `Bearer ${accessToken}`;
       }
 
-      if (m === 'GET') {
-        config.params = jsonData;
-      } else {
+      if (m !== 'GET') {
+        const jsonData = JSON.stringify(data);
         config.body = jsonData;
+      } else {
+        urlParams = new URLSearchParams(data);
       }
 
-      const res = await fetch(`${service}${path}`, config);
+      const res = await fetch(
+        `${service}${path}${m === 'GET' ? '?' + urlParams.toString() : ''}`,
+        config,
+      );
       const resObj = await res.json();
+      console.log('Res: ', { ...resObj, status: res.status });
       if (res.status === 401) {
+        console.log('Retrying token');
         const userId = localStorage.getItem('userId');
         const refreshRes = await fetch(`${service}newAccessToken`, {
           method: 'POST',
@@ -45,14 +51,16 @@ export const _apiCall = async (service, path, method, data) => {
 
         const refreshResObj = await refreshRes.json();
 
-        localStorage.setItem('accessToken', refreshResObj);
+        localStorage.setItem('accessToken', refreshResObj.accessToken);
+      } else {
+        return { ...resObj, status: res.status, success: true };
       }
-      return { ...resObj, status: 200 };
     } catch (e) {
       console.log(e);
     }
     retry -= 1;
   }
+  return { success: false };
 };
 
 const requestNewAccessToken = async () => {
