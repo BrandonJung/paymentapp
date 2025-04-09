@@ -76,6 +76,10 @@ const LoginModal = ({ modalVisible, setModalVisible }) => {
 
   const handleOnClickSubmit = () => {
     if (isSignUp) {
+      if (password !== confirmPassword) {
+        setErrorMessage("Passwords don't match");
+        return;
+      }
       handleSignUp();
     } else {
       handleLogIn();
