@@ -27,12 +27,7 @@ export default function Layout({ children }) {
       return;
     }
     try {
-      const res = await _apiCall(
-        API_SERVICES.user,
-        'deleteAllUsers',
-        'delete',
-        {},
-      );
+      const res = await _apiCall(API_SERVICES.user, 'allUsers', 'delete', {});
       if (res.status === 200) {
         alert('All users deleted');
       }

@@ -1,3 +1,5 @@
+import { API_SERVICES } from '../constants';
+
 const RETRY_COUNT = 2;
 
 export const _apiCall = async (service, path, method, data) => {
@@ -37,7 +39,7 @@ export const _apiCall = async (service, path, method, data) => {
       if (res.status === 401) {
         console.log('Retrying token');
         const userId = localStorage.getItem('userId');
-        const refreshRes = await fetch(`${service}newAccessToken`, {
+        const refreshRes = await fetch(`${API_SERVICES.user}${`accessToken`}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

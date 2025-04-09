@@ -15,7 +15,7 @@ const DashboardPage = () => {
         alert('Please log in again');
         router.push('/');
       }
-      const res = await _apiCall(API_SERVICES.user, 'retrieveUserData', 'get', {
+      const res = await _apiCall(API_SERVICES.user, 'user', 'get', {
         userId,
         fields: ['_id', 'email', 'role', 'emailVerified'],
       });
