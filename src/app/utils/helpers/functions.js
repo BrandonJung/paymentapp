@@ -5,9 +5,7 @@ export const _apiCall = async (service, path, method, data) => {
   while (retry > 0) {
     try {
       let urlParams = '';
-
       const accessToken = localStorage.getItem('accessToken');
-
       const m = method.toUpperCase();
 
       let config = {
@@ -35,6 +33,7 @@ export const _apiCall = async (service, path, method, data) => {
       );
       const resObj = await res.json();
       console.log('Res: ', { ...resObj, status: res.status });
+
       if (res.status === 401) {
         console.log('Retrying token');
         const userId = localStorage.getItem('userId');
@@ -61,11 +60,4 @@ export const _apiCall = async (service, path, method, data) => {
     retry -= 1;
   }
   return { success: false };
-};
-
-const requestNewAccessToken = async () => {
-  try {
-  } catch (err) {
-    console.log(err);
-  }
 };
