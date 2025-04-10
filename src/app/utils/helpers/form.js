@@ -1,3 +1,5 @@
+import { dateRangeOptions } from '../constants';
+
 export const validateServiceFields = (
   name,
   description,
@@ -6,91 +8,109 @@ export const validateServiceFields = (
   price,
   rate,
 ) => {
-  let ret = { valid: true };
   if (!name) {
-    ret.valid = false;
-    ret.message = 'Invalid service name';
+    return newValidityObject(false, 'Invalid service name');
   } else if (quantity < 1) {
-    ret.valid = false;
-    ret.message = `Invalid hours ${quantity}`;
+    return newValidityObject(false, `Invalid hours ${quantity}`);
   } else if (price < 0) {
-    ret.valid = false;
-    ret.message = 'Invalid price';
+    return newValidityObject(false, 'Invalid price');
   } else if (rate !== 'flat' && rate !== 'hourly') {
-    ret.valid = false;
-    ret.message = 'Invalid service rate';
+    return newValidityObject(false, 'Invalid service rate');
   }
-  return ret;
+  return newValidityObject(true);
 };
 
 const validateEmail = (email) => {
-  // TODO: Add in validator
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  if (!emailRegex.test(email)) {
+    return false;
+  }
   return true;
 };
 
 const validatePhone = (phone) => {
-  // TODO: Add in validator;
+  // Example regex for US phone numbers
+  const phoneRegex = /^(?:\+1\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+
+  if (!phoneRegex.test(phone)) {
+    return false;
+  }
   return true;
 };
 
 export const validateUserFields = (user) => {
-  let ret = { valid: true };
-
   if (!user.firstName) {
-    ret.valid = false;
-    ret.message = 'Invalid first name';
-    return ret;
+    return newValidityObject(false, 'Invalid first name');
   } else if (!user.lastName) {
-    ret.valid = false;
-    ret.message = 'Invalid last name';
-    return ret;
+    return newValidityObject(false, 'Invalid last name');
   }
 
   const emailValid = validateEmail(user.email);
   if (!emailValid) {
-    ret.valid = false;
-    ret.message = 'Invalid email';
-    return ret;
+    return newValidityObject(false, 'Invalid email');
   }
   const phoneValid = validatePhone(user.phoneNumber);
   if (!phoneValid) {
-    ret.valid = false;
-    ret.message = 'Invalid phone number';
-    return ret;
+    return newValidityObject(false, 'Invalid phone number');
   }
-  return ret;
+  return newValidityObject(true);
 };
 
 export const validateLocationFields = (location) => {
-  let ret = { valid: true };
   if (!location.street) {
-    ret.valid = false;
-    ret.message = 'Invalid street';
-    return ret;
+    return newValidityObject(false, 'Invalid street');
   } else if (!location.city) {
-    ret.valid = false;
-    ret.message = 'Invalid city';
-    return ret;
+    return newValidityObject(false, 'Invalid city');
   } else if (!location.province) {
-    ret.valid = false;
-    ret.message = 'Invalid province';
-    return ret;
+    return newValidityObject(false, 'Invalid province');
   } else if (!location.postalCode) {
-    ret.valid = false;
-    ret.message = 'Invalid postal code';
-    return ret;
+    return newValidityObject(false, 'postal code');
   } else if (!location.country) {
-    ret.valid = false;
-    ret.message = 'Invalid country';
-    return ret;
+    return newValidityObject(false, 'Invalid country');
   }
-  return ret;
+  return newValidityObject(true);
 };
 
 export const validateServices = (servicesList) => {
+  const tempServicesList = servicesList;
+  if (tempServicesList.length < 1) {
+    return false;
+  }
   return true;
 };
 
 export const validateDate = (mode, start, end) => {
-  return true;
+  if (mode === dateRangeOptions.value[0]) {
+    // single
+    if (!DateIsValid(start)) {
+      return newValidityObject(false, 'Invalid start date');
+    }
+    return newValidityObject(true);
+  } else if (mode === dateRangeOptions.value[1]) {
+    // multi
+    if (!DateIsValid(start)) {
+      return newValidityObject(false, 'Invalid start date');
+    } else if (!DateIsValid(end)) {
+      return newValidityObject(false, 'Invalid end date');
+    }
+    return newValidityObject(true);
+  } else {
+    return newValidityObject(false, 'Invalid date type');
+  }
+};
+
+const DateIsValid = (date) => {
+  if (!date) {
+    return false;
+  } else if (isNaN(Date.parse(date))) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+const newValidityObject = (valid = true, message = '') => {
+  const ret = { valid, message };
+  return ret;
 };
