@@ -18,4 +18,7 @@ export const dateRangeOptions = [
 export const API_SERVICES = {
   user: 'http://localhost:3001/api/user/',
   customer: 'http://localhost:3001/api/customer/',
+  service: 'http://localhost:3001/api/service/',
+  job: 'http://localhost:3001/api/job/',
+  report: 'http://localhost:3001/api/report/',
 };

@@ -1,14 +1,8 @@
 import { dateRangeOptions } from '../constants';
 
-export const validateServiceFields = (
-  name,
-  description,
-  taxes,
-  quantity,
-  price,
-  rate,
-) => {
-  if (!name) {
+export const validateServiceFields = (service) => {
+  const { name, description, taxes, quantity, price, rate } = service;
+  if (!name || name === '') {
     return newValidityObject(false, 'Invalid service name');
   } else if (quantity < 1) {
     return newValidityObject(false, `Invalid hours ${quantity}`);
@@ -65,7 +59,7 @@ export const validateLocationFields = (location) => {
   } else if (!location.province) {
     return newValidityObject(false, 'Invalid province');
   } else if (!location.postalCode) {
-    return newValidityObject(false, 'postal code');
+    return newValidityObject(false, 'Invalid postal code');
   } else if (!location.country) {
     return newValidityObject(false, 'Invalid country');
   }
@@ -75,28 +69,38 @@ export const validateLocationFields = (location) => {
 export const validateServices = (servicesList) => {
   const tempServicesList = servicesList;
   if (tempServicesList.length < 1) {
-    return false;
+    return newValidityObject(false, 'No services added');
   }
-  return true;
+  for (let index in tempServicesList) {
+    const service = tempServicesList[index];
+    const validService = validateServiceFields(service);
+    if (!validService.valid) {
+      return newValidityObject(
+        false,
+        `Invalid service #${parseInt(index) + 1}`,
+      );
+    }
+  }
+  return newValidityObject(true);
 };
 
-export const validateDate = (mode, start, end) => {
-  if (mode === dateRangeOptions.value[0]) {
+export const validateDate = (date) => {
+  if (date.mode === dateRangeOptions[0].value) {
     // single
-    if (!DateIsValid(start)) {
+    if (!DateIsValid(date.startDate)) {
       return newValidityObject(false, 'Invalid start date');
     }
     return newValidityObject(true);
-  } else if (mode === dateRangeOptions.value[1]) {
+  } else if (date.mode === dateRangeOptions[1].value) {
     // multi
-    if (!DateIsValid(start)) {
+    if (!DateIsValid(date.startDate)) {
       return newValidityObject(false, 'Invalid start date');
-    } else if (!DateIsValid(end)) {
+    } else if (!DateIsValid(date.endDate)) {
       return newValidityObject(false, 'Invalid end date');
     }
     return newValidityObject(true);
   } else {
-    return newValidityObject(false, 'Invalid date type');
+    return newValidityObject(false, 'Invalid date range');
   }
 };
 

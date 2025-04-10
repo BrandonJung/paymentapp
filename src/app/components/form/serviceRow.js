@@ -8,6 +8,8 @@ import InputSelectButton from './inputSelectButton';
 import InputNumberField from './inputNumberField';
 import { Dialog } from 'primereact/dialog';
 import { validateServiceFields } from '@/app/utils/helpers/form';
+import { Dropdown } from 'primereact/dropdown';
+import { Button } from 'primereact/button';
 
 const rateOptions = [
   { label: 'Flat Rate', value: 'flat' },
@@ -22,9 +24,27 @@ const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
   const [sPrice, setSPrice] = useState(null);
   const [sRate, setSRate] = useState('flat');
   const [isEditing, setIsEditing] = useState(true);
+  const [selectedService, setSelectedService] = useState('');
 
   const [errorMessage, setErrorMessage] = useState('');
   const [showErrorDialog, setShowErrorDialog] = useState(false);
+
+  const selectExistingService = (service) => {
+    const { name, description, taxes, quantity, price, rate } = service;
+    const allServiceFieldsValid = validateServiceFields(service);
+    if (allServiceFieldsValid.valid) {
+      setSName(name);
+      setSDescription(description);
+      setSTaxes(taxes);
+      setSQuantity(quantity);
+      setSPrice(price);
+      setSRate(rate);
+      setSelectedService(service);
+    } else {
+      setErrorMessage(allServiceFieldsValid.message);
+      setShowErrorDialog(true);
+    }
+  };
 
   const handleSave = () => {
     if (!isEditing) {
@@ -41,14 +61,7 @@ const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
       rate: sRate,
     };
 
-    const allServiceFieldsValid = validateServiceFields(
-      sName,
-      sDescription,
-      sTaxes,
-      sQuantity,
-      sPrice,
-      sRate,
-    );
+    const allServiceFieldsValid = validateServiceFields(tempService);
     if (allServiceFieldsValid.valid) {
       tempSelectedServices[index] = tempService;
       setSelectedServices(tempSelectedServices);
@@ -57,6 +70,12 @@ const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
       setErrorMessage(allServiceFieldsValid.message);
       setShowErrorDialog(true);
     }
+  };
+
+  const handleDelete = () => {
+    const tempSelectedServices = [...selectedServices];
+    tempSelectedServices.splice(index, 1);
+    setSelectedServices(tempSelectedServices);
   };
 
   return (
@@ -114,31 +133,72 @@ const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
             disabled={!isEditing}
           />
         </div>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: isEditing ? 'space-between' : 'flex-end',
+              flex: 1,
+            }}>
+            {isEditing ? (
+              <Button
+                onClick={() => {
+                  handleDelete();
+                }}
+                style={{
+                  backgroundColor: 'grey',
+                  borderColor: '#000000',
+                  color: '#000000',
+                }}>
+                {isEditing ? 'Delete' : 'Edit'}
+                <i
+                  style={{
+                    color: '#000000',
+                    marginLeft: 10,
+                    cursor: 'pointer',
+                  }}
+                  className={isEditing ? 'pi pi-trash' : 'pi pi-pencil'}></i>
+              </Button>
+            ) : null}
+            <Button
+              onClick={() => {
+                handleSave();
+              }}>
+              {isEditing ? 'Save' : 'Edit'}
+              <i
+                style={{
+                  marginLeft: 10,
+                  cursor: 'pointer',
+                }}
+                className={isEditing ? 'pi pi-check' : 'pi pi-pencil'}></i>
+            </Button>
+          </div>
+        </div>
       </div>
       <Divider layout='vertical' />
+
       <div
         className={styles.selectContainer}
-        style={{
-          gap: 4,
-          marginLeft: 20,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}>
-        <p
-          onClick={() => {
-            handleSave();
+        style={{ gap: 4, marginLeft: 20 }}>
+        <label>{'Past Services'}</label>
+        <Dropdown
+          filter
+          value={selectedService}
+          onChange={(e) => {
+            selectExistingService(e.value);
           }}
-          style={{ paddingRight: 6, cursor: 'pointer' }}>
-          {isEditing ? 'Save' : 'Edit'}
-        </p>
-        <i
-          style={{
-            cursor: 'pointer',
-          }}
-          onClick={() => {
-            handleSave();
-          }}
-          className={isEditing ? 'pi pi-check' : 'pi pi-pencil'}></i>
+          options={[]}
+          optionLabel='search'
+          placeholder='Search services'
+          disabled={!isEditing}
+        />
       </div>
       <Divider />
       <Dialog

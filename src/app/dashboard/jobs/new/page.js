@@ -22,7 +22,8 @@ import { useRouter } from 'next/navigation';
 import { Checkbox } from 'primereact/checkbox';
 import InputDateSelect from '@/app/components/form/inputDateSelect';
 import InputSelectButton from '@/app/components/form/inputSelectButton';
-import { dateRangeOptions } from '@/app/utils/constants';
+import { API_SERVICES, dateRangeOptions } from '@/app/utils/constants';
+import { _apiCall } from '@/app/utils/helpers/functions';
 
 const NewJobPage = () => {
   const router = useRouter();
@@ -54,6 +55,8 @@ const NewJobPage = () => {
 
   const [estimatedTotal, setEstimatedTotal] = useState(0);
   const [sendToUser, setSendToUser] = useState(false);
+
+  const [loading, setLoading] = useState(false);
 
   const calculateEstimatedTotal = (services) => {
     let retTotal = 0;
@@ -282,7 +285,7 @@ const NewJobPage = () => {
     );
   };
 
-  const handleCreateJob = () => {
+  const handleCreateJob = async () => {
     const userObj = {
       firstName,
       lastName,
@@ -297,21 +300,52 @@ const NewJobPage = () => {
       postalCode,
       country,
     };
+    const dateObj = {
+      mode: selectedDateRange,
+      startDate: selectedStartDate,
+      endDate: selectedEndDate,
+    };
     const servicesList = selectedServices;
     const userIsValid = validateUserFields(userObj);
+    if (!userIsValid.valid) {
+      alert(userIsValid.message);
+      return;
+    }
     const locationIsValid = validateLocationFields(locationObj);
+    if (!locationIsValid.valid) {
+      alert(locationIsValid.message);
+      return;
+    }
     const servicesIsValid = validateServices(servicesList);
-    const dateIsValid = validateDate(
-      selectedDateRange,
-      selectedStartDate,
-      selectedEndDate,
-    );
+    if (!servicesIsValid.valid) {
+      alert(servicesIsValid.message);
+      return;
+    }
+    const dateIsValid = validateDate(dateObj);
+    if (!dateIsValid.valid) {
+      alert(dateIsValid.message);
+      return;
+    }
 
     if (userIsValid && locationIsValid && servicesIsValid && dateIsValid) {
-      // TODO: Hook up to API
-      // call api
-      if (true) {
-        router.push('/dashboard/jobs/manage');
+      try {
+        setLoading(true);
+        const res = await _apiCall(API_SERVICES.job, 'create', 'post', {
+          user: userObj,
+          location: locationObj,
+          services: servicesList,
+          date: dateObj,
+          sendToUser,
+        });
+        console.log('Create job res', res);
+        if (res.status === 200) {
+          alert('Job created');
+          // router.push('/dashboard/jobs/manage');
+        }
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
       }
     }
   };
