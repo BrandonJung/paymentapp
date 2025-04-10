@@ -21,4 +21,6 @@ export const API_SERVICES = {
   service: 'http://localhost:3001/api/service/',
   job: 'http://localhost:3001/api/job/',
   report: 'http://localhost:3001/api/report/',
+  location: 'http://localhost:3001/api/location/',
+  organization: 'http://localhost:3001/api/organization/',
 };

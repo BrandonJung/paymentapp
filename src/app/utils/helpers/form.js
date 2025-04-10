@@ -33,18 +33,18 @@ const validatePhone = (phone) => {
   return true;
 };
 
-export const validateUserFields = (user) => {
-  if (!user.firstName) {
+export const validateCustomerFields = (customer) => {
+  if (!customer.firstName) {
     return newValidityObject(false, 'Invalid first name');
-  } else if (!user.lastName) {
+  } else if (!customer.lastName) {
     return newValidityObject(false, 'Invalid last name');
   }
 
-  const emailValid = validateEmail(user.email);
+  const emailValid = validateEmail(customer.email);
   if (!emailValid) {
     return newValidityObject(false, 'Invalid email');
   }
-  const phoneValid = validatePhone(user.phoneNumber);
+  const phoneValid = validatePhone(customer.phoneNumber);
   if (!phoneValid) {
     return newValidityObject(false, 'Invalid phone number');
   }

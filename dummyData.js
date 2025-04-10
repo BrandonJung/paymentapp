@@ -30,7 +30,7 @@ export const dashboardItems = [
 
 export const dummyUsers = [
   {
-    name: 'Test Name',
+    username: 'Test Name',
     firstName: 'Test',
     lastName: 'Name',
     email: 'test@example.com',

@@ -63,6 +63,9 @@ const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
 
     const allServiceFieldsValid = validateServiceFields(tempService);
     if (allServiceFieldsValid.valid) {
+      if (selectedService._id) {
+        tempService._id = selectedService._id;
+      }
       tempSelectedServices[index] = tempService;
       setSelectedServices(tempSelectedServices);
       setIsEditing(false);

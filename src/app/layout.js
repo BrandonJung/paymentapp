@@ -24,7 +24,6 @@ export default function RootLayout({ children }) {
       <html lang='en'>
         <body
           style={{
-            margin: 0,
             display: 'flex',
             justifyContent: 'center',
             overflow: 'hidden',

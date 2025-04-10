@@ -22,14 +22,15 @@ export default function Layout({ children }) {
     }
   };
 
-  const handleDeleteUsers = async () => {
+  const handleDeleteAll = async (service, collection) => {
     if (process.env.NEXT_PUBLIC_STAGE !== 'dev') {
       return;
     }
     try {
-      const res = await _apiCall(API_SERVICES.user, 'allUsers', 'delete', {});
+      const path = `deleteAll${collection}`;
+      const res = await _apiCall(service, path, 'delete', {});
       if (res.status === 200) {
-        alert('All users deleted');
+        alert(`All ${collection} deleted`);
       }
     } catch (err) {
       console.log(err);
@@ -37,6 +38,18 @@ export default function Layout({ children }) {
   };
 
   const dashboardMenuItems = [
+    {
+      label: 'Dashboard',
+      items: [
+        {
+          label: 'Home',
+          icon: 'pi pi-plus',
+          command: () => {
+            router.push('/dashboard');
+          },
+        },
+      ],
+    },
     {
       label: 'Jobs',
       items: [
@@ -95,10 +108,45 @@ export default function Layout({ children }) {
       ],
     },
     {
-      label: 'Delete users',
+      label: 'Delete Users',
       icon: 'pi pi-sign-out',
       command: () => {
-        handleDeleteUsers();
+        handleDeleteAll(API_SERVICES.user, 'Users');
+      },
+    },
+    {
+      label: 'Delete Locations',
+      icon: 'pi pi-sign-out',
+      command: () => {
+        handleDeleteAll(API_SERVICES.location, 'Locations');
+      },
+    },
+    {
+      label: 'Delete Customers',
+      icon: 'pi pi-sign-out',
+      command: () => {
+        handleDeleteAll(API_SERVICES.customer, 'Customers');
+      },
+    },
+    {
+      label: 'Delete Jobs',
+      icon: 'pi pi-sign-out',
+      command: () => {
+        handleDeleteAll(API_SERVICES.job, 'Jobs');
+      },
+    },
+    {
+      label: 'Delete Orgs',
+      icon: 'pi pi-sign-out',
+      command: () => {
+        handleDeleteAll(API_SERVICES.organization, 'Orgs');
+      },
+    },
+    {
+      label: 'Delete Services',
+      icon: 'pi pi-sign-out',
+      command: () => {
+        handleDeleteAll(API_SERVICES.service, 'Services');
       },
     },
   ];
@@ -107,8 +155,7 @@ export default function Layout({ children }) {
       style={{
         display: 'flex',
         flexDirection: 'row',
-        margin: 20,
-        marginBottom: 40,
+        padding: 10,
       }}>
       <Menu model={dashboardMenuItems} style={{ marginRight: 20 }} />
       {children}

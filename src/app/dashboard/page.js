@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { _apiCall } from '../utils/helpers/functions';
 import { API_SERVICES } from '../utils/constants';
+import CardContainer from '../components/cardContainer';
 
 const DashboardPage = () => {
   const router = useRouter();
@@ -17,7 +18,7 @@ const DashboardPage = () => {
       }
       const res = await _apiCall(API_SERVICES.user, 'user', 'get', {
         userId,
-        fields: ['_id', 'email', 'role', 'emailVerified'],
+        fields: ['_id', 'email', 'roles', 'emailVerified', 'organization'],
       });
       console.log(res);
     } catch (err) {
@@ -29,7 +30,7 @@ const DashboardPage = () => {
     getUserData();
   }, []);
 
-  return <div></div>;
+  return <CardContainer></CardContainer>;
 };
 
 export default DashboardPage;

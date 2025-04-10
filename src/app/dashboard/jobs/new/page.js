@@ -13,10 +13,10 @@ import { Button } from 'primereact/button';
 import { formatPriceDisplay } from '@/app/utils/helpers/formatters';
 import ServiceRow from '@/app/components/form/serviceRow';
 import {
+  validateCustomerFields,
   validateDate,
   validateLocationFields,
   validateServices,
-  validateUserFields,
 } from '@/app/utils/helpers/form';
 import { useRouter } from 'next/navigation';
 import { Checkbox } from 'primereact/checkbox';
@@ -48,15 +48,24 @@ const NewJobPage = () => {
   const [selectedStartDate, setSelectedStartDate] = useState('');
   const [selectedEndDate, setSelectedEndDate] = useState('');
 
-  const [showUserSection, setShowUserSection] = useState(true);
+  const [showCustomerSection, setShowCustomerSection] = useState(true);
   const [showLocationSection, setShowLocationSection] = useState(false);
   const [showServicesSection, setShowServicesSection] = useState(false);
   const [showDateSection, setShowDateSection] = useState(false);
 
   const [estimatedTotal, setEstimatedTotal] = useState(0);
-  const [sendToUser, setSendToUser] = useState(false);
+  const [sendToCustomer, setSendToCustomer] = useState(false);
+
+  const [userId, setUserId] = useState(null);
 
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const userIdRes = localStorage.getItem('userId');
+    if (userIdRes) {
+      setUserId(userIdRes);
+    }
+  }, []);
 
   const calculateEstimatedTotal = (services) => {
     let retTotal = 0;
@@ -79,17 +88,17 @@ const NewJobPage = () => {
     }
   }, [selectedServices]);
 
-  const selectExistingUser = (user) => {
-    if (!user) return;
-    const uFirstName = user.firstName;
-    const uLastName = user.lastName;
-    const uEmail = user.email;
-    const uPhoneNumber = user.phoneNumber;
+  const selectExistingCustomer = (customer) => {
+    if (!customer) return;
+    const uFirstName = customer.firstName;
+    const uLastName = customer.lastName;
+    const uEmail = customer.email;
+    const uPhoneNumber = customer.phoneNumber;
     setFirstName(uFirstName);
     setLastName(uLastName);
     setEmail(uEmail);
     setPhoneNumber(uPhoneNumber);
-    setSelectedUsername(user);
+    setSelectedUsername(customer);
   };
 
   const selectExistingLocation = (location) => {
@@ -111,7 +120,7 @@ const NewJobPage = () => {
     setSelectedLocation(location);
   };
 
-  const UserSection = () => {
+  const CustomerSection = () => {
     return (
       <div className={styles.contentContainer}>
         <div className={styles.inputContainer}>
@@ -140,15 +149,15 @@ const NewJobPage = () => {
         <div
           className={styles.selectContainer}
           style={{ gap: 4, marginLeft: 20 }}>
-          <label>{'Existing Users'}</label>
+          <label>{'Existing Customers'}</label>
           <Dropdown
             value={selectedUsername}
             onChange={(e) => {
-              selectExistingUser(e.value);
+              selectExistingCustomer(e.value);
             }}
             options={dummyUsers}
-            optionLabel='name'
-            placeholder='Select a user'
+            optionLabel='username'
+            placeholder='Select a customers'
             filter
           />
         </div>
@@ -286,7 +295,7 @@ const NewJobPage = () => {
   };
 
   const handleCreateJob = async () => {
-    const userObj = {
+    const customerObj = {
       firstName,
       lastName,
       email,
@@ -306,9 +315,9 @@ const NewJobPage = () => {
       endDate: selectedEndDate,
     };
     const servicesList = selectedServices;
-    const userIsValid = validateUserFields(userObj);
-    if (!userIsValid.valid) {
-      alert(userIsValid.message);
+    const customerIsValid = validateCustomerFields(customerObj);
+    if (!customerIsValid.valid) {
+      alert(customerIsValid.message);
       return;
     }
     const locationIsValid = validateLocationFields(locationObj);
@@ -327,15 +336,23 @@ const NewJobPage = () => {
       return;
     }
 
-    if (userIsValid && locationIsValid && servicesIsValid && dateIsValid) {
+    if (selectedUsername._id) {
+      customerObj._id = selectedUsername._id;
+    }
+    if (selectedLocation._id) {
+      locationObj._id = selectedLocation._id;
+    }
+
+    if (customerIsValid && locationIsValid && servicesIsValid && dateIsValid) {
       try {
         setLoading(true);
         const res = await _apiCall(API_SERVICES.job, 'create', 'post', {
-          user: userObj,
+          customer: customerObj,
           location: locationObj,
           services: servicesList,
           date: dateObj,
-          sendToUser,
+          userId,
+          sendToCustomer,
         });
         console.log('Create job res', res);
         if (res.status === 200) {
@@ -352,14 +369,12 @@ const NewJobPage = () => {
 
   return (
     <div style={{ height: '95vh', overflowY: 'scroll', width: '100%' }}>
-      <Card
-        title={'Create New Job'}
-        style={{ padding: 10, overflowY: 'scroll' }}>
+      <Card title={'Create New Job'} style={{ overflowY: 'scroll' }}>
         <InputSection
-          handleOnClick={setShowUserSection}
-          onClickParam={showUserSection}
+          handleOnClick={setShowCustomerSection}
+          onClickParam={showCustomerSection}
           title={'Customer Information'}
-          section={UserSection}
+          section={CustomerSection}
         />
         <InputSection
           handleOnClick={setShowLocationSection}
@@ -381,14 +396,14 @@ const NewJobPage = () => {
         />
         <div style={{ display: 'flex', alignItems: 'center', marginTop: 20 }}>
           <Checkbox
-            onChange={(e) => setSendToUser(e.checked)}
-            checked={sendToUser}
+            onChange={(e) => setSendToCustomer(e.checked)}
+            checked={sendToCustomer}
           />
           <label
             htmlFor='ingredient1'
             className='ml-2'
             style={{ marginLeft: 6 }}>
-            Send confirmation email to user
+            Send confirmation email to customer
           </label>
         </div>
         <div
