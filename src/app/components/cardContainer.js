@@ -1,10 +1,19 @@
+import { containerMaxHeight } from '../utils/constants';
+
 const { Card } = require('primereact/card');
 
-const CardContainer = ({ title, overflow = 'hidden' }) => {
+const CardContainer = ({ title, overflow = 'hidden', children }) => {
   return (
-    <Card
-      style={{ height: '100vh', overflowY: 'hidden', width: '100%' }}
-      title={title}></Card>
+    <div style={{ width: '100%' }}>
+      <Card
+        style={{
+          overflowY: overflow,
+          height: containerMaxHeight,
+        }}
+        title={title}>
+        {children}
+      </Card>
+    </div>
   );
 };
 

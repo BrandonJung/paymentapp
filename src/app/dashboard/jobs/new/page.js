@@ -22,8 +22,13 @@ import { useRouter } from 'next/navigation';
 import { Checkbox } from 'primereact/checkbox';
 import InputDateSelect from '@/app/components/form/inputDateSelect';
 import InputSelectButton from '@/app/components/form/inputSelectButton';
-import { API_SERVICES, dateRangeOptions } from '@/app/utils/constants';
+import {
+  API_SERVICES,
+  containerMaxHeight,
+  dateRangeOptions,
+} from '@/app/utils/constants';
 import { _apiCall } from '@/app/utils/helpers/functions';
+import CardContainer from '@/app/components/cardContainer';
 
 const NewJobPage = () => {
   const router = useRouter();
@@ -368,58 +373,53 @@ const NewJobPage = () => {
   };
 
   return (
-    <div style={{ height: '95vh', overflowY: 'scroll', width: '100%' }}>
-      <Card title={'Create New Job'} style={{ overflowY: 'scroll' }}>
-        <InputSection
-          handleOnClick={setShowCustomerSection}
-          onClickParam={showCustomerSection}
-          title={'Customer Information'}
-          section={CustomerSection}
+    <CardContainer title={'Create New Job'} overflow='scroll'>
+      <InputSection
+        handleOnClick={setShowCustomerSection}
+        onClickParam={showCustomerSection}
+        title={'Customer Information'}
+        section={CustomerSection}
+      />
+      <InputSection
+        handleOnClick={setShowLocationSection}
+        onClickParam={showLocationSection}
+        title={'Location Details'}
+        section={LocationSection}
+      />
+      <InputSection
+        handleOnClick={setShowServicesSection}
+        onClickParam={showServicesSection}
+        title={'Service Details'}
+        section={ServicesSection}
+      />
+      <InputSection
+        handleOnClick={setShowDateSection}
+        onClickParam={showDateSection}
+        title={'Date Details'}
+        section={DateSection}
+      />
+      <div style={{ display: 'flex', alignItems: 'center', marginTop: 20 }}>
+        <Checkbox
+          onChange={(e) => setSendToCustomer(e.checked)}
+          checked={sendToCustomer}
         />
-        <InputSection
-          handleOnClick={setShowLocationSection}
-          onClickParam={showLocationSection}
-          title={'Location Details'}
-          section={LocationSection}
-        />
-        <InputSection
-          handleOnClick={setShowServicesSection}
-          onClickParam={showServicesSection}
-          title={'Service Details'}
-          section={ServicesSection}
-        />
-        <InputSection
-          handleOnClick={setShowDateSection}
-          onClickParam={showDateSection}
-          title={'Date Details'}
-          section={DateSection}
-        />
-        <div style={{ display: 'flex', alignItems: 'center', marginTop: 20 }}>
-          <Checkbox
-            onChange={(e) => setSendToCustomer(e.checked)}
-            checked={sendToCustomer}
-          />
-          <label
-            htmlFor='ingredient1'
-            className='ml-2'
-            style={{ marginLeft: 6 }}>
-            Send confirmation email to customer
-          </label>
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginTop: 20,
-          }}>
-          <Button style={{ marginRight: 10 }} onClick={() => handleCreateJob()}>
-            Create Job
-          </Button>
-          <div>Estimated Total: {formatPriceDisplay(estimatedTotal)}</div>
-        </div>
-      </Card>
-    </div>
+        <label htmlFor='ingredient1' className='ml-2' style={{ marginLeft: 6 }}>
+          Send confirmation email to customer
+        </label>
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginTop: 20,
+        }}>
+        <Button style={{ marginRight: 10 }} onClick={() => handleCreateJob()}>
+          Create Job
+        </Button>
+        <div>Estimated Total: {formatPriceDisplay(estimatedTotal)}</div>
+      </div>
+    </CardContainer>
   );
 };
 

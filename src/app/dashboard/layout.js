@@ -3,7 +3,7 @@
 import { Menu } from 'primereact/menu';
 import { useRouter } from 'next/navigation';
 import { _apiCall } from '../utils/helpers/functions';
-import { API_SERVICES } from '../utils/constants';
+import { API_SERVICES, containerMaxHeight } from '../utils/constants';
 
 export default function Layout({ children }) {
   const router = useRouter();
@@ -155,9 +155,15 @@ export default function Layout({ children }) {
       style={{
         display: 'flex',
         flexDirection: 'row',
-        padding: 10,
       }}>
-      <Menu model={dashboardMenuItems} style={{ marginRight: 20 }} />
+      <Menu
+        style={{
+          maxHeight: containerMaxHeight,
+          overflow: 'scroll',
+          marginRight: 10,
+        }}
+        model={dashboardMenuItems}
+      />
       {children}
     </div>
   );
