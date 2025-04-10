@@ -43,7 +43,7 @@ export default function Layout({ children }) {
       items: [
         {
           label: 'Home',
-          icon: 'pi pi-plus',
+          icon: 'pi pi-home',
           command: () => {
             router.push('/dashboard');
           },
@@ -62,7 +62,7 @@ export default function Layout({ children }) {
         },
         {
           label: 'Manage',
-          icon: 'pi pi-search',
+          icon: 'pi pi-list',
           command: () => {
             router.push('/dashboard/jobs/manage');
           },
@@ -74,7 +74,7 @@ export default function Layout({ children }) {
       items: [
         {
           label: 'Overview',
-          icon: 'pi pi-cog',
+          icon: 'pi pi-chart-line',
         },
       ],
     },
@@ -83,7 +83,7 @@ export default function Layout({ children }) {
       items: [
         {
           label: 'Users',
-          icon: 'pi pi-search',
+          icon: 'pi pi-address-book',
         },
       ],
     },
@@ -92,7 +92,7 @@ export default function Layout({ children }) {
       items: [
         {
           label: 'Account',
-          icon: 'pi pi-cog',
+          icon: 'pi pi-user',
         },
         {
           label: 'Preferences',
@@ -109,42 +109,42 @@ export default function Layout({ children }) {
     },
     {
       label: 'Delete Users',
-      icon: 'pi pi-sign-out',
+      icon: 'pi pi-megaphone',
       command: () => {
         handleDeleteAll(API_SERVICES.user, 'Users');
       },
     },
     {
       label: 'Delete Locations',
-      icon: 'pi pi-sign-out',
+      icon: 'pi pi-megaphone',
       command: () => {
         handleDeleteAll(API_SERVICES.location, 'Locations');
       },
     },
     {
       label: 'Delete Customers',
-      icon: 'pi pi-sign-out',
+      icon: 'pi pi-megaphone',
       command: () => {
         handleDeleteAll(API_SERVICES.customer, 'Customers');
       },
     },
     {
       label: 'Delete Jobs',
-      icon: 'pi pi-sign-out',
+      icon: 'pi pi-megaphone',
       command: () => {
         handleDeleteAll(API_SERVICES.job, 'Jobs');
       },
     },
     {
       label: 'Delete Orgs',
-      icon: 'pi pi-sign-out',
+      icon: 'pi pi-megaphone',
       command: () => {
         handleDeleteAll(API_SERVICES.organization, 'Orgs');
       },
     },
     {
       label: 'Delete Services',
-      icon: 'pi pi-sign-out',
+      icon: 'pi pi-megaphone',
       command: () => {
         handleDeleteAll(API_SERVICES.service, 'Services');
       },
