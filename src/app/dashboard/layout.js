@@ -71,14 +71,14 @@ export default function Layout({ children }) {
           label: 'Pictures',
           icon: 'pi pi-image',
           command: () => {
-            router.push('/dashboard/jobs/manage');
+            router.push('/dashboard/jobs/pictures');
           },
         },
         {
           label: 'View All',
           icon: 'pi pi-book',
           command: () => {
-            router.push('/dashboard/jobs/manage');
+            router.push('/dashboard/jobs/view');
           },
         },
       ],
@@ -89,6 +89,9 @@ export default function Layout({ children }) {
         {
           label: 'Overview',
           icon: 'pi pi-chart-line',
+          command: () => {
+            router.push('/dashboard/reports/');
+          },
         },
       ],
     },
@@ -99,10 +102,16 @@ export default function Layout({ children }) {
         {
           label: 'Organization',
           icon: 'pi pi-warehouse',
+          command: () => {
+            router.push('/dashboard/manage/organization');
+          },
         },
         {
           label: 'Users',
           icon: 'pi pi-address-book',
+          command: () => {
+            router.push('/dashboard/manage/users');
+          },
         },
       ],
     },
@@ -112,10 +121,16 @@ export default function Layout({ children }) {
         {
           label: 'Account',
           icon: 'pi pi-user',
+          command: () => {
+            router.push('/dashboard/settings/account');
+          },
         },
         {
           label: 'Preferences',
           icon: 'pi pi-cog',
+          command: () => {
+            router.push('/dashboard/settings/preferences');
+          },
         },
         {
           label: 'Logout',

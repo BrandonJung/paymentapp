@@ -30,7 +30,7 @@ const DashboardPage = () => {
     getUserData();
   }, []);
 
-  return <CardContainer></CardContainer>;
+  return <CardContainer title={'Home'}></CardContainer>;
 };
 
 export default DashboardPage;
