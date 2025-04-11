@@ -40,7 +40,8 @@ export default function Layout({ children }) {
   };
 
   const checkIfUserHasOrg = async () => {
-    const userOrg = localStorage.get('userHasOrg');
+    const userOrg = localStorage.getItem('userHasOrg');
+    console.log('user', userOrg);
     if (userOrg) {
       setUserHasOrg(userOrg);
     }

@@ -27,7 +27,11 @@ const LoginModal = ({ modalVisible, setModalVisible }) => {
   const setLocalStorageItems = (res) => {
     localStorage.setItem('userId', res.userId);
     localStorage.setItem('accessToken', res.accessToken);
-    localStorage.setItem('userHasOrg', true);
+    if (res.userHasOrg) {
+      localStorage.setItem('userHasOrg', true);
+    } else {
+      localStorage.setItem('userHasOrg', false);
+    }
   };
 
   const handleSignUp = async () => {
