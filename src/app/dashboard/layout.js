@@ -4,12 +4,9 @@ import { Menu } from 'primereact/menu';
 import { useRouter } from 'next/navigation';
 import { _apiCall } from '../utils/helpers/functions';
 import { API_SERVICES, containerMaxHeight } from '../utils/constants';
-import { useEffect, useState } from 'react';
 
 export default function Layout({ children }) {
   const router = useRouter();
-
-  const [userHasOrg, setUserHasOrg] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -39,18 +36,6 @@ export default function Layout({ children }) {
     }
   };
 
-  const checkIfUserHasOrg = async () => {
-    const userOrg = localStorage.getItem('userHasOrg');
-    console.log('user', userOrg);
-    if (userOrg) {
-      setUserHasOrg(userOrg);
-    }
-  };
-
-  useEffect(() => {
-    checkIfUserHasOrg();
-  }, []);
-
   const dashboardMenuItems = [
     {
       label: 'Dashboard',
@@ -73,7 +58,6 @@ export default function Layout({ children }) {
           command: () => {
             router.push('/dashboard/jobs/new');
           },
-          disabled: !userHasOrg,
         },
         {
           label: 'Manage',
@@ -81,7 +65,6 @@ export default function Layout({ children }) {
           command: () => {
             router.push('/dashboard/jobs/manage');
           },
-          disabled: !userHasOrg,
         },
         {
           label: 'Pictures',
@@ -89,7 +72,6 @@ export default function Layout({ children }) {
           command: () => {
             router.push('/dashboard/jobs/pictures');
           },
-          disabled: !userHasOrg,
         },
         {
           label: 'View All',
@@ -97,7 +79,6 @@ export default function Layout({ children }) {
           command: () => {
             router.push('/dashboard/jobs/view');
           },
-          disabled: !userHasOrg,
         },
       ],
     },
@@ -110,7 +91,6 @@ export default function Layout({ children }) {
           command: () => {
             router.push('/dashboard/reports/');
           },
-          disabled: !userHasOrg,
         },
       ],
     },
@@ -131,7 +111,6 @@ export default function Layout({ children }) {
           command: () => {
             router.push('/dashboard/manage/users');
           },
-          disabled: !userHasOrg,
         },
       ],
     },
