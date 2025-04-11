@@ -12,22 +12,29 @@ const InputSection = ({ handleOnClick, onClickParam, title, section }) => {
           }}>
           <h2
             style={{
-              cursor: 'pointer',
+              cursor: handleOnClick ? 'pointer' : 'default',
             }}
-            onClick={() => handleOnClick(!onClickParam)}>
+            onClick={() => {
+              if (handleOnClick) {
+                handleOnClick(!onClickParam);
+              }
+            }}>
             {title}
           </h2>
-          <i
-            style={{
-              cursor: 'pointer',
-              padding: 20,
-            }}
-            onClick={() => handleOnClick(!onClickParam)}
-            className={
-              onClickParam ? 'pi pi-angle-up' : 'pi pi-angle-down'
-            }></i>
+          {handleOnClick ? (
+            <i
+              style={{
+                cursor: 'pointer',
+                padding: 20,
+              }}
+              onClick={() => handleOnClick(!onClickParam)}
+              className={
+                onClickParam ? 'pi pi-angle-up' : 'pi pi-angle-down'
+              }></i>
+          ) : null}
         </div>
-        {onClickParam ? section() : null}
+        {/* Checks if function is passed, if it is then check if param is true */}
+        {!handleOnClick ? section() : onClickParam ? section() : null}
       </div>
       <Divider />
     </>

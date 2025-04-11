@@ -13,6 +13,7 @@ import ContentContainer from './contentContainer';
 import InputContainer from './inputContainer';
 import SelectContainer from './selectContainer';
 import FieldContainer from './fieldContainer';
+import SaveDeleteEditButton from './saveDeleteEditButton';
 
 const rateOptions = [
   { label: 'Flat Rate', value: 'flat' },
@@ -139,54 +140,11 @@ const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
             disabled={!isEditing}
           />
         </FieldContainer>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: isEditing ? 'space-between' : 'flex-end',
-              flex: 1,
-            }}>
-            {isEditing ? (
-              <Button
-                onClick={() => {
-                  handleDelete();
-                }}
-                style={{
-                  backgroundColor: 'grey',
-                  borderColor: '#000000',
-                  color: '#000000',
-                }}>
-                {isEditing ? 'Delete' : 'Edit'}
-                <i
-                  style={{
-                    color: '#000000',
-                    marginLeft: 10,
-                    cursor: 'pointer',
-                  }}
-                  className={isEditing ? 'pi pi-trash' : 'pi pi-pencil'}></i>
-              </Button>
-            ) : null}
-            <Button
-              onClick={() => {
-                handleSave();
-              }}>
-              {isEditing ? 'Save' : 'Edit'}
-              <i
-                style={{
-                  marginLeft: 10,
-                  cursor: 'pointer',
-                }}
-                className={isEditing ? 'pi pi-check' : 'pi pi-pencil'}></i>
-            </Button>
-          </div>
-        </div>
+        <SaveDeleteEditButton
+          isEditing={isEditing}
+          handleDelete={handleDelete}
+          handleSave={handleSave}
+        />
       </InputContainer>
       <Divider layout='vertical' />
 

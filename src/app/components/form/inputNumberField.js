@@ -10,6 +10,7 @@ const InputNumberField = ({
   currency = 'CAD',
   showButtons = false,
   numberOfDigits = 2,
+  customSuffix = '',
 }) => {
   return (
     <div
@@ -32,6 +33,7 @@ const InputNumberField = ({
         maxFractionDigits={numberOfDigits}
         disabled={disabled}
         variant='outlined'
+        suffix={customSuffix}
       />
     </div>
   );

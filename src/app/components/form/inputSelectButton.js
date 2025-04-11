@@ -15,7 +15,7 @@ const InputSelectButton = ({
         flexDirection: 'column',
         gap: 4,
         marginBottom: 20,
-        minWidth: 250,
+        marginRight: 20,
       }}>
       <label>{title}</label>
       <SelectButton

@@ -5,6 +5,7 @@ const InputTextField = ({
   value,
   setValue,
   customFlex = 1,
+  placeholder = '',
   disabled = false,
 }) => {
   return (
@@ -23,6 +24,7 @@ const InputTextField = ({
         disabled={disabled}
         value={value}
         onChange={(e) => setValue(e.target.value)}
+        placeholder={placeholder}
       />
     </div>
   );
