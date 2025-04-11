@@ -67,6 +67,20 @@ export default function Layout({ children }) {
             router.push('/dashboard/jobs/manage');
           },
         },
+        {
+          label: 'Pictures',
+          icon: 'pi pi-image',
+          command: () => {
+            router.push('/dashboard/jobs/manage');
+          },
+        },
+        {
+          label: 'View All',
+          icon: 'pi pi-book',
+          command: () => {
+            router.push('/dashboard/jobs/manage');
+          },
+        },
       ],
     },
     {
@@ -80,7 +94,12 @@ export default function Layout({ children }) {
     },
     {
       label: 'Management',
+
       items: [
+        {
+          label: 'Organization',
+          icon: 'pi pi-warehouse',
+        },
         {
           label: 'Users',
           icon: 'pi pi-address-book',
