@@ -63,3 +63,9 @@ export const _apiCall = async (service, path, method, data) => {
   }
   return { success: false };
 };
+
+export const checkForUserOrg = () => {
+  const userHasOrg = localStorage.getItem('userHasOrg');
+  const userHasOrgBool = userHasOrg === 'true';
+  return userHasOrgBool;
+};

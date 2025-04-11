@@ -1,6 +1,5 @@
 const { Divider } = require('primereact/divider');
 import { useState } from 'react';
-import styles from '../../dashboard/jobs/new/page.module.css';
 import InputTextField from './inputTextField';
 import InputMultiSelect from './inputMultiSelect';
 import { dummyTaxes } from '../../../../dummyData';
@@ -10,6 +9,10 @@ import { Dialog } from 'primereact/dialog';
 import { validateServiceFields } from '@/app/utils/helpers/form';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
+import ContentContainer from './contentContainer';
+import InputContainer from './inputContainer';
+import SelectContainer from './selectContainer';
+import FieldContainer from './fieldContainer';
 
 const rateOptions = [
   { label: 'Flat Rate', value: 'flat' },
@@ -82,9 +85,9 @@ const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
   };
 
   return (
-    <div className={styles.contentContainer}>
-      <div className={styles.inputContainer}>
-        <div className={styles.fieldContainer}>
+    <ContentContainer>
+      <InputContainer>
+        <FieldContainer>
           <InputTextField
             title={'Service Name'}
             value={sName}
@@ -97,8 +100,8 @@ const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
             setValue={setSDescription}
             disabled={!isEditing}
           />
-        </div>
-        <div className={styles.fieldContainer}>
+        </FieldContainer>
+        <FieldContainer>
           <InputSelectButton
             title={'Service Rate'}
             value={sRate}
@@ -124,8 +127,8 @@ const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
               disabled={!isEditing}
             />
           ) : null}
-        </div>
-        <div className={styles.fieldContainer}>
+        </FieldContainer>
+        <FieldContainer>
           <InputMultiSelect
             title={'Applicable Taxes'}
             value={sTaxes}
@@ -135,7 +138,7 @@ const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
             placeholder={'Select Applicable Taxes'}
             disabled={!isEditing}
           />
-        </div>
+        </FieldContainer>
         <div
           style={{
             display: 'flex',
@@ -184,12 +187,10 @@ const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
             </Button>
           </div>
         </div>
-      </div>
+      </InputContainer>
       <Divider layout='vertical' />
 
-      <div
-        className={styles.selectContainer}
-        style={{ gap: 4, marginLeft: 20 }}>
+      <SelectContainer>
         <label>{'Past Services'}</label>
         <Dropdown
           filter
@@ -202,7 +203,7 @@ const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
           placeholder='Search services'
           disabled={!isEditing}
         />
-      </div>
+      </SelectContainer>
       <Divider />
       <Dialog
         header='Invalid Service Field'
@@ -214,7 +215,7 @@ const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
         }}>
         <p className='m-0'>{errorMessage}</p>
       </Dialog>
-    </div>
+    </ContentContainer>
   );
 };
 

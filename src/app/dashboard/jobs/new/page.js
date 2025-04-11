@@ -1,14 +1,12 @@
 'use client';
 
 import InputTextField from '@/app/components/form/inputTextField';
-import { Card } from 'primereact/card';
 import { useEffect, useState } from 'react';
 import { dummyAddresses, dummyUsers } from '../../../../../dummyData';
 import { Dropdown } from 'primereact/dropdown';
 import InputSection from '@/app/components/form/inputSection';
 import { Divider } from 'primereact/divider';
 
-import styles from './page.module.css';
 import { Button } from 'primereact/button';
 import { formatPriceDisplay } from '@/app/utils/helpers/formatters';
 import ServiceRow from '@/app/components/form/serviceRow';
@@ -22,13 +20,13 @@ import { useRouter } from 'next/navigation';
 import { Checkbox } from 'primereact/checkbox';
 import InputDateSelect from '@/app/components/form/inputDateSelect';
 import InputSelectButton from '@/app/components/form/inputSelectButton';
-import {
-  API_SERVICES,
-  containerMaxHeight,
-  dateRangeOptions,
-} from '@/app/utils/constants';
+import { API_SERVICES, dateRangeOptions } from '@/app/utils/constants';
 import { _apiCall } from '@/app/utils/helpers/functions';
 import CardContainer from '@/app/components/cardContainer';
+import ContentContainer from '@/app/components/form/contentContainer';
+import InputContainer from '@/app/components/form/inputContainer';
+import SelectContainer from '@/app/components/form/selectContainer';
+import FieldContainer from '@/app/components/form/fieldContainer';
 
 const NewJobPage = () => {
   const router = useRouter();
@@ -127,9 +125,9 @@ const NewJobPage = () => {
 
   const CustomerSection = () => {
     return (
-      <div className={styles.contentContainer}>
-        <div className={styles.inputContainer}>
-          <div className={styles.fieldContainer}>
+      <ContentContainer>
+        <InputContainer>
+          <FieldContainer>
             <InputTextField
               title={'First Name'}
               value={firstName}
@@ -140,20 +138,18 @@ const NewJobPage = () => {
               value={lastName}
               setValue={setLastName}
             />
-          </div>
-          <div className={styles.fieldContainer}>
+          </FieldContainer>
+          <FieldContainer>
             <InputTextField title={'Email'} value={email} setValue={setEmail} />
             <InputTextField
               title={'Phone Number'}
               value={phoneNumber}
               setValue={setPhoneNumber}
             />
-          </div>
-        </div>
+          </FieldContainer>
+        </InputContainer>
         <Divider layout='vertical' />
-        <div
-          className={styles.selectContainer}
-          style={{ gap: 4, marginLeft: 20 }}>
+        <SelectContainer>
           <label>{'Existing Customers'}</label>
           <Dropdown
             value={selectedUsername}
@@ -165,16 +161,16 @@ const NewJobPage = () => {
             placeholder='Select a customers'
             filter
           />
-        </div>
-      </div>
+        </SelectContainer>
+      </ContentContainer>
     );
   };
 
   const LocationSection = () => {
     return (
-      <div className={styles.contentContainer}>
-        <div className={styles.inputContainer}>
-          <div className={styles.fieldContainer}>
+      <ContentContainer>
+        <InputContainer>
+          <FieldContainer>
             <InputTextField
               customFlex={3}
               title={'Address *'}
@@ -187,16 +183,16 @@ const NewJobPage = () => {
               value={unitNumber}
               setValue={setUnitNumber}
             />
-          </div>
-          <div className={styles.fieldContainer}>
+          </FieldContainer>
+          <FieldContainer>
             <InputTextField title={'City *'} value={city} setValue={setCity} />
             <InputTextField
               title={'Province *'}
               value={province}
               setValue={setProvince}
             />
-          </div>
-          <div className={styles.fieldContainer}>
+          </FieldContainer>
+          <FieldContainer>
             <InputTextField
               title={'Postal Code *'}
               value={postalCode}
@@ -208,12 +204,10 @@ const NewJobPage = () => {
               setValue={setCountry}
               disabled
             />
-          </div>
-        </div>
+          </FieldContainer>
+        </InputContainer>
         <Divider layout='vertical' />
-        <div
-          className={styles.selectContainer}
-          style={{ gap: 4, marginLeft: 20 }}>
+        <SelectContainer>
           <label>{'Past Addresses'}</label>
           <Dropdown
             filter
@@ -225,8 +219,8 @@ const NewJobPage = () => {
             optionLabel='search'
             placeholder='Search addresses'
           />
-        </div>
-      </div>
+        </SelectContainer>
+      </ContentContainer>
     );
   };
 
@@ -255,7 +249,6 @@ const NewJobPage = () => {
             </div>
           );
         })}
-        <div className={styles.fieldContainer}></div>
         <Button onClick={() => handleAddService()}>Add Service</Button>
       </div>
     );
@@ -263,9 +256,9 @@ const NewJobPage = () => {
 
   const DateSection = () => {
     return (
-      <div className={styles.contentContainer}>
-        <div className={styles.inputContainer}>
-          <div className={styles.fieldContainer}>
+      <ContentContainer>
+        <InputContainer>
+          <FieldContainer>
             <InputSelectButton
               title={'Service Dates'}
               value={selectedDateRange}
@@ -293,9 +286,9 @@ const NewJobPage = () => {
                 placeholder='End Date'
               />
             ) : null}
-          </div>
-        </div>
-      </div>
+          </FieldContainer>
+        </InputContainer>
+      </ContentContainer>
     );
   };
 
