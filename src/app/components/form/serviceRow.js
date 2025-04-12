@@ -71,7 +71,6 @@ const ServiceRow = ({
       return;
     }
     const tempSelectedServices = [...selectedServices];
-    console.log('asdf', service);
     let tempService = {
       ...selectedService,
       identifier: service.identifier || crypto.randomUUID(),
