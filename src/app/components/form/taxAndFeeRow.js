@@ -39,6 +39,7 @@ const TaxAndFeeRow = ({ taxAndFee, taxesAndFees, setTaxesAndFees }) => {
     const tempTaxesAndFees = [...taxesAndFees];
     let tempTaxAndFee = {
       ...taxAndFee,
+      identifier: taxAndFee.identifier || crypto.randomUUID(),
       name,
       type,
       amount,
@@ -60,7 +61,7 @@ const TaxAndFeeRow = ({ taxAndFee, taxesAndFees, setTaxesAndFees }) => {
 
   const handleDelete = () => {
     const tempTaxesAndFees = taxesAndFees.filter(
-      (taxAndFeeItem) => taxAndFee.id !== taxAndFeeItem.id,
+      (taxAndFeeItem) => taxAndFee.identifier !== taxAndFeeItem.identifier,
     );
     setTaxesAndFees(tempTaxesAndFees);
   };

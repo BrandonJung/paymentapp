@@ -64,7 +64,7 @@ const OrganizationPage = () => {
   const handleAddTaxAndFee = () => {
     let tempArray = [...taxesAndFees];
     tempArray.push({
-      id: Date.now() + Math.random(),
+      identifier: crypto.randomUUID(),
       name: '',
       code: '',
       amount: 0,
@@ -79,7 +79,7 @@ const OrganizationPage = () => {
         {taxesAndFees.map((taxAndFee, index) => {
           return (
             <TaxAndFeeRow
-              key={taxAndFee.id}
+              key={taxAndFee.identifier || crypto.randomUUID()}
               taxAndFee={taxAndFee}
               taxesAndFees={taxesAndFees}
               setTaxesAndFees={setTaxesAndFees}

@@ -262,7 +262,7 @@ const NewJobPage = () => {
       identifier: crypto.randomUUID(),
       name: '',
       description: '',
-      taxes: [],
+      taxAndFees: [],
       quantity: 1,
     });
     setSelectedServices(tempArray);
@@ -275,7 +275,7 @@ const NewJobPage = () => {
           return (
             <ServiceRow
               service={service}
-              key={service.identifier}
+              key={service.identifier || crypto.randomUUID()}
               selectedServices={selectedServices}
               setSelectedServices={setSelectedServices}
               existingServices={existingServices}
