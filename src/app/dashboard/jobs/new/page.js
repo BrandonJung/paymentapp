@@ -31,6 +31,10 @@ import FieldContainer from '@/app/components/form/fieldContainer';
 const NewJobPage = () => {
   const router = useRouter();
 
+  const [existingCustomers, setExistingCustomers] = useState(null);
+  const [existingLocations, setExistingLocations] = useState(null);
+  const [existingServices, setExistingServices] = useState(null);
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -63,6 +67,29 @@ const NewJobPage = () => {
 
   const [loading, setLoading] = useState(false);
 
+  const retrieveExistingData = async (passedUserId) => {
+    try {
+      setLoading(true);
+      const res = await _apiCall(API_SERVICES.job, 'existingData', 'get', {
+        userId: passedUserId,
+      });
+      console.log('Existing Data', res);
+      if (res.status === 200) {
+        setExistingCustomers(res.existingCustomers);
+        setExistingLocations(res.existingLocations);
+        setExistingServices(res.existingServices);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    retrieveExistingData(userId);
+  }, [userId]);
+
   useEffect(() => {
     const userIdRes = localStorage.getItem('userId');
     if (userIdRes) {
@@ -76,8 +103,13 @@ const NewJobPage = () => {
       if (isNaN(service.price)) continue;
       let sPrice = service.price;
       let taxTotalMultiplier = 1;
-      for (let tax of service.taxes) {
-        taxTotalMultiplier += tax.amount;
+      let flatAmount = 0;
+      for (let taxAndFee of service.taxAndFees) {
+        if (taxAndFee.type === 'percentage') {
+          taxTotalMultiplier += taxAndFee.amount;
+        } else if (taxAndFee.type === 'flat') {
+          flatAmount += taxAndFee.amount;
+        }
       }
       let sTotalAmount = sPrice * taxTotalMultiplier;
       retTotal += sTotalAmount;
@@ -156,8 +188,8 @@ const NewJobPage = () => {
             onChange={(e) => {
               selectExistingCustomer(e.value);
             }}
-            options={dummyUsers}
-            optionLabel='username'
+            options={existingCustomers ?? []}
+            optionLabel='label'
             placeholder='Select a customers'
             filter
           />
@@ -215,7 +247,7 @@ const NewJobPage = () => {
             onChange={(e) => {
               selectExistingLocation(e.value);
             }}
-            options={dummyAddresses}
+            options={existingLocations ?? []}
             optionLabel='search'
             placeholder='Search addresses'
           />
@@ -227,7 +259,7 @@ const NewJobPage = () => {
   const handleAddService = () => {
     let tempArray = [...selectedServices];
     tempArray.push({
-      id: Date.now() + Math.random(),
+      identifier: crypto.randomUUID(),
       name: '',
       description: '',
       taxes: [],
@@ -243,9 +275,10 @@ const NewJobPage = () => {
           return (
             <ServiceRow
               service={service}
-              key={service.id}
+              key={service.identifier}
               selectedServices={selectedServices}
               setSelectedServices={setSelectedServices}
+              existingServices={existingServices}
             />
           );
         })}

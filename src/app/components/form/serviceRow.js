@@ -20,7 +20,12 @@ const rateOptions = [
   { label: 'Hourly', value: 'hourly' },
 ];
 
-const ServiceRow = ({ service, selectedServices, setSelectedServices }) => {
+const ServiceRow = ({
+  service,
+  selectedServices,
+  setSelectedServices,
+  existingServices,
+}) => {
   const [sName, setSName] = useState('');
   const [sDescription, setSDescription] = useState('');
   const [sTaxes, setSTaxes] = useState([]);
@@ -33,17 +38,27 @@ const ServiceRow = ({ service, selectedServices, setSelectedServices }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [showErrorDialog, setShowErrorDialog] = useState(false);
 
-  const selectExistingService = (service) => {
-    const { name, description, taxes, quantity, price, rate } = service;
-    const allServiceFieldsValid = validateServiceFields(service);
+  const selectExistingService = (passedService) => {
+    const {
+      _id,
+      name,
+      description,
+      taxAndFees,
+      quantity,
+      price,
+      rate,
+      active,
+      organizationId,
+    } = passedService;
+    const allServiceFieldsValid = validateServiceFields(passedService);
     if (allServiceFieldsValid.valid) {
       setSName(name);
       setSDescription(description);
-      setSTaxes(taxes);
+      setSTaxes(taxAndFees);
       setSQuantity(quantity);
-      setSPrice(price);
+      setSPrice(price / 100);
       setSRate(rate);
-      setSelectedService(service);
+      setSelectedService(passedService);
     } else {
       setErrorMessage(allServiceFieldsValid.message);
       setShowErrorDialog(true);
@@ -56,11 +71,12 @@ const ServiceRow = ({ service, selectedServices, setSelectedServices }) => {
       return;
     }
     const tempSelectedServices = [...selectedServices];
+    console.log(service);
     let tempService = {
       ...service,
       name: sName,
       description: sDescription,
-      taxes: sTaxes,
+      taxAndFees: sTaxes,
       quantity: sQuantity,
       price: sPrice * 100,
       rate: sRate,
@@ -68,7 +84,9 @@ const ServiceRow = ({ service, selectedServices, setSelectedServices }) => {
 
     const allServiceFieldsValid = validateServiceFields(tempService);
     if (allServiceFieldsValid.valid) {
-      const index = tempSelectedServices.findIndex((s) => s.id === service.id);
+      const index = tempSelectedServices.findIndex(
+        (s) => s.identifier === service.identifier,
+      );
       if (index !== -1) {
         tempSelectedServices[index] = tempService;
         setSelectedServices(tempSelectedServices);
@@ -82,7 +100,7 @@ const ServiceRow = ({ service, selectedServices, setSelectedServices }) => {
 
   const handleDelete = () => {
     const tempSelectedServices = selectedServices.filter(
-      (serviceItem) => serviceItem.id !== service.id,
+      (serviceItem) => serviceItem.identifier !== service.identifier,
     );
     setSelectedServices(tempSelectedServices);
   };
@@ -158,7 +176,7 @@ const ServiceRow = ({ service, selectedServices, setSelectedServices }) => {
           onChange={(e) => {
             selectExistingService(e.value);
           }}
-          options={[]}
+          options={existingServices}
           optionLabel='search'
           placeholder='Search services'
           disabled={!isEditing}
