@@ -8,15 +8,16 @@ import ContentContainer from './contentContainer';
 import { Divider } from 'primereact/divider';
 import SaveDeleteEditButton from './saveDeleteEditButton';
 import { validateTaxAndFeeFields } from '@/app/utils/helpers/form';
+import { Dialog } from 'primereact/dialog';
 
 const taxAndFeeTypes = [
   {
     label: 'Tax',
-    value: 'tax',
+    value: 'percent',
   },
   {
     label: 'Fee',
-    value: 'fee',
+    value: 'flat',
   },
 ];
 
@@ -24,6 +25,9 @@ const TaxAndFeeRow = ({ taxAndFee, taxesAndFees, setTaxesAndFees }) => {
   const [type, setType] = useState(taxAndFeeTypes[0].value);
   const [name, setName] = useState('');
   const [amount, setAmount] = useState(null);
+
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
 
   const [isEditing, setIsEditing] = useState(true);
 
@@ -66,11 +70,11 @@ const TaxAndFeeRow = ({ taxAndFee, taxesAndFees, setTaxesAndFees }) => {
       <InputContainer>
         <FieldContainer>
           <InputTextField
-            title={type === 'fee' ? 'Fee name' : 'Tax name'}
+            title={type === 'flat' ? 'Fee name' : 'Tax name'}
             value={name}
             setValue={setName}
             placeholder={
-              type === 'fee'
+              type === 'flat'
                 ? 'Ex. Admin Fee, Products Fee'
                 : 'Ex. GST, PST, Alc'
             }
@@ -87,13 +91,13 @@ const TaxAndFeeRow = ({ taxAndFee, taxesAndFees, setTaxesAndFees }) => {
             disabled={!isEditing}
           />
           <InputNumberField
-            title={type === 'fee' ? 'Amount' : 'Percent'}
+            title={type === 'flat' ? 'Amount' : 'Percent'}
             value={amount}
             setValue={setAmount}
             disabled={!isEditing}
-            isCurrency={type === 'fee' ? true : false}
-            customSuffix={type === 'fee' ? '' : '%'}
-            numberOfDigits={type === 'fee' ? 2 : 0}
+            isCurrency={type === 'flat' ? true : false}
+            customSuffix={type === 'flat' ? '' : '%'}
+            numberOfDigits={type === 'flat' ? 2 : 0}
           />
         </FieldContainer>
         <SaveDeleteEditButton
@@ -105,6 +109,16 @@ const TaxAndFeeRow = ({ taxAndFee, taxesAndFees, setTaxesAndFees }) => {
       <div style={{ display: 'flex', flex: 1 }} />
 
       <Divider />
+      <Dialog
+        header='Invalid Service Field'
+        visible={showErrorDialog}
+        style={{ width: '50vw' }}
+        onHide={() => {
+          if (!showErrorDialog) return;
+          setShowErrorDialog(false);
+        }}>
+        <p className='m-0'>{errorMessage}</p>
+      </Dialog>
     </ContentContainer>
   );
 };

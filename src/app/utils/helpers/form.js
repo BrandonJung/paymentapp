@@ -124,10 +124,39 @@ export const validateTaxAndFeeFields = (taxAndFeeObj) => {
     return newValidityObject(false, 'Invalid name');
   } else if (!taxAndFeeObj.type) {
     return newValidityObject(false, 'No type chosen');
-  } else if (taxAndFeeObj.type !== 'tax' && taxAndFeeObj.type !== 'fee') {
+  } else if (taxAndFeeObj.type !== 'percent' && taxAndFeeObj.type !== 'flat') {
     return newValidityObject(false, 'Invalid type');
+  } else if (!taxAndFeeObj.amount) {
+    return newValidityObject(false, 'Please enter an amount');
   } else if (taxAndFeeObj.amount < 0) {
     return newValidityObject(false, 'Must be greater than 0');
+  }
+  return newValidityObject(true);
+};
+
+export const validateOrgFields = (org) => {
+  if (org.orgName && org.orgName.length < 3) {
+    return newValidityObject(false, 'Name must be at least 3 characters');
+  } else if (org.orgTag && (org.orgTag.length > 5 || org.orgTag.length < 3)) {
+    return newValidityObject(false, 'Tag must be between 3 and 5 characters');
+  }
+  return newValidityObject(true);
+};
+
+export const validateTaxAndFees = (taxAndFeeList) => {
+  const tempTFList = taxAndFeeList;
+  if (tempTFList.length < 1) {
+    return newValidityObject(false, 'No tax and fees added');
+  }
+  for (let index in tempTFList) {
+    const tf = tempTFList[index];
+    const validTF = validateTaxAndFeeFields(tf);
+    if (!validTF.valid) {
+      return newValidityObject(
+        false,
+        `Invalid tax and fee #${parseInt(index) + 1}`,
+      );
+    }
   }
   return newValidityObject(true);
 };

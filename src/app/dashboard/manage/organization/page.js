@@ -6,7 +6,12 @@ import InputContainer from '@/app/components/form/inputContainer';
 import InputSection from '@/app/components/form/inputSection';
 import InputTextField from '@/app/components/form/inputTextField';
 import TaxAndFeeRow from '@/app/components/form/taxAndFeeRow';
-import { checkForUserOrg } from '@/app/utils/helpers/functions';
+import { API_SERVICES } from '@/app/utils/constants';
+import {
+  validateOrgFields,
+  validateTaxAndFees,
+} from '@/app/utils/helpers/form';
+import { _apiCall, checkForUserOrg } from '@/app/utils/helpers/functions';
 import { Button } from 'primereact/button';
 import { useEffect, useState } from 'react';
 
@@ -16,6 +21,7 @@ const OrganizationPage = () => {
   const [organizationName, setOrganizationName] = useState('');
   const [organizationTag, setOrganizationTag] = useState('');
   const [taxesAndFees, setTaxesAndFees] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const retrieveOrganizationDetails = () => {
     return {};
@@ -35,16 +41,18 @@ const OrganizationPage = () => {
         <InputContainer>
           <FieldContainer>
             <InputTextField
-              title={'Name'}
+              title={'Name*'}
               value={organizationName}
               setValue={setOrganizationName}
               placeholder='Organization name'
             />
             <InputTextField
-              title={'Tag'}
+              title={'Tag (3-5 characters)'}
               value={organizationTag}
               setValue={setOrganizationTag}
               placeholder='For invoice number'
+              customMinLength={3}
+              customMaxLength={5}
             />
           </FieldContainer>
         </InputContainer>
@@ -83,8 +91,43 @@ const OrganizationPage = () => {
     );
   };
 
-  const handleCreateOrg = () => {
-    return 'yay';
+  const handleCreateOrg = async () => {
+    const organizationObj = {
+      orgName: organizationName,
+      orgTaxAndFeeRates: taxesAndFees,
+      orgTag: organizationTag,
+    };
+    const orgFieldsAreValid = validateOrgFields(organizationObj);
+    if (!orgFieldsAreValid.valid) {
+      alert(orgFieldsAreValid.message);
+      return;
+    }
+
+    const taxAndRatesAreValid = validateTaxAndFees(
+      organizationObj.orgTaxAndFeeRates,
+    );
+    if (!taxAndRatesAreValid.valid) {
+      alert(taxAndRatesAreValid.message);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const userId = localStorage.getItem('userId');
+      const createOrgRes = await _apiCall(
+        API_SERVICES.organization,
+        'create',
+        'post',
+        { ...organizationObj, userId },
+      );
+      if (createOrgRes.status === 200) {
+        alert('Organization created');
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

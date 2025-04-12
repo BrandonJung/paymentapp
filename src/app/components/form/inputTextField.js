@@ -5,6 +5,8 @@ const InputTextField = ({
   value,
   setValue,
   customFlex = 1,
+  customMinLength = 0,
+  customMaxLength = 30,
   placeholder = '',
   disabled = false,
 }) => {
@@ -23,6 +25,8 @@ const InputTextField = ({
       <InputText
         disabled={disabled}
         value={value}
+        minLength={customMinLength}
+        maxLength={customMaxLength}
         onChange={(e) => setValue(e.target.value)}
         placeholder={placeholder}
       />
