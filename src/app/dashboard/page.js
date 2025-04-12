@@ -1,27 +1,19 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { _apiCall, checkForUserOrg } from '../utils/helpers/functions';
+import { _apiCall } from '../utils/helpers/functions';
 import CardContainer from '../components/cardContainer';
-import { useEffect, useState } from 'react';
 
 const DashboardPage = () => {
   const router = useRouter();
-  const [userHasOrg, setUserHasOrg] = useState(false);
-
-  useEffect(() => {
-    const userHasOrgRes = checkForUserOrg();
-    setUserHasOrg(userHasOrgRes);
-  }, []);
 
   return (
     <CardContainer title={'Home'}>
-      {!userHasOrg ? (
-        <div>
-          To get started, go to Organization under Management on the menu bar
-          and create your organization
-        </div>
-      ) : null}
+      <h1>Getting started checklist</h1>
+      <h4>Create your organization</h4>
+      <h4>Set up your account details</h4>
+      <h4>Check your preferences</h4>
+      <h4>Start creating some jobs!</h4>
     </CardContainer>
   );
 };
