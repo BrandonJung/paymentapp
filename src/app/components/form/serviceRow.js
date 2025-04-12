@@ -20,7 +20,7 @@ const rateOptions = [
   { label: 'Hourly', value: 'hourly' },
 ];
 
-const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
+const ServiceRow = ({ service, selectedServices, setSelectedServices }) => {
   const [sName, setSName] = useState('');
   const [sDescription, setSDescription] = useState('');
   const [sTaxes, setSTaxes] = useState([]);
@@ -57,6 +57,7 @@ const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
     }
     const tempSelectedServices = [...selectedServices];
     let tempService = {
+      ...service,
       name: sName,
       description: sDescription,
       taxes: sTaxes,
@@ -67,12 +68,12 @@ const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
 
     const allServiceFieldsValid = validateServiceFields(tempService);
     if (allServiceFieldsValid.valid) {
-      if (selectedService._id) {
-        tempService._id = selectedService._id;
+      const index = tempSelectedServices.findIndex((s) => s.id === service.id);
+      if (index !== -1) {
+        tempSelectedServices[index] = tempService;
+        setSelectedServices(tempSelectedServices);
+        setIsEditing(false);
       }
-      tempSelectedServices[index] = tempService;
-      setSelectedServices(tempSelectedServices);
-      setIsEditing(false);
     } else {
       setErrorMessage(allServiceFieldsValid.message);
       setShowErrorDialog(true);
@@ -80,8 +81,9 @@ const ServiceRow = ({ index, selectedServices, setSelectedServices }) => {
   };
 
   const handleDelete = () => {
-    const tempSelectedServices = [...selectedServices];
-    tempSelectedServices.splice(index, 1);
+    const tempSelectedServices = selectedServices.filter(
+      (serviceItem) => serviceItem.id !== service.id,
+    );
     setSelectedServices(tempSelectedServices);
   };
 

@@ -227,6 +227,7 @@ const NewJobPage = () => {
   const handleAddService = () => {
     let tempArray = [...selectedServices];
     tempArray.push({
+      id: Date.now() + Math.random(),
       name: '',
       description: '',
       taxes: [],
@@ -238,15 +239,14 @@ const NewJobPage = () => {
   const ServicesSection = () => {
     return (
       <div>
-        {selectedServices.map((service, index) => {
+        {selectedServices.map((service) => {
           return (
-            <div key={index}>
-              <ServiceRow
-                index={index}
-                selectedServices={selectedServices}
-                setSelectedServices={setSelectedServices}
-              />
-            </div>
+            <ServiceRow
+              service={service}
+              key={service.id}
+              selectedServices={selectedServices}
+              setSelectedServices={setSelectedServices}
+            />
           );
         })}
         <Button onClick={() => handleAddService()}>Add Service</Button>
