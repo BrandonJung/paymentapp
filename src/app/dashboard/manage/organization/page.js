@@ -56,6 +56,7 @@ const OrganizationPage = () => {
   const handleAddTaxAndFee = () => {
     let tempArray = [...taxesAndFees];
     tempArray.push({
+      id: Date.now() + Math.random(),
       name: '',
       code: '',
       amount: 0,
@@ -67,15 +68,14 @@ const OrganizationPage = () => {
   const TaxesAndFeesSection = () => {
     return (
       <div>
-        {taxesAndFees.map((data, index) => {
+        {taxesAndFees.map((taxAndFee, index) => {
           return (
-            <div key={index}>
-              <TaxAndFeeRow
-                index={index}
-                taxesAndFees={taxesAndFees}
-                setTaxesAndFees={setTaxesAndFees}
-              />
-            </div>
+            <TaxAndFeeRow
+              key={taxAndFee.id}
+              taxAndFee={taxAndFee}
+              taxesAndFees={taxesAndFees}
+              setTaxesAndFees={setTaxesAndFees}
+            />
           );
         })}
         <Button onClick={() => handleAddTaxAndFee()}>Add Tax or Fee</Button>

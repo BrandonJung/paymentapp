@@ -5,9 +5,9 @@ import InputNumberField from './inputNumberField';
 import InputTextField from './inputTextField';
 import InputContainer from './inputContainer';
 import ContentContainer from './contentContainer';
-import { Button } from 'primereact/button';
 import { Divider } from 'primereact/divider';
 import SaveDeleteEditButton from './saveDeleteEditButton';
+import { validateTaxAndFeeFields } from '@/app/utils/helpers/form';
 
 const taxAndFeeTypes = [
   {
@@ -20,7 +20,7 @@ const taxAndFeeTypes = [
   },
 ];
 
-const TaxAndFeeRow = ({ index, taxesAndFees, setTaxesAndFees }) => {
+const TaxAndFeeRow = ({ taxAndFee, taxesAndFees, setTaxesAndFees }) => {
   const [type, setType] = useState(taxAndFeeTypes[0].value);
   const [name, setName] = useState('');
   const [amount, setAmount] = useState(null);
@@ -32,12 +32,33 @@ const TaxAndFeeRow = ({ index, taxesAndFees, setTaxesAndFees }) => {
       setIsEditing(true);
       return;
     }
+    const tempTaxesAndFees = [...taxesAndFees];
+    let tempTaxAndFee = {
+      ...taxAndFee,
+      name,
+      type,
+      amount,
+    };
 
-    setIsEditing(false);
+    const allTaxAndFeesValid = validateTaxAndFeeFields(tempTaxAndFee);
+    if (allTaxAndFeesValid.valid) {
+      const index = tempTaxesAndFees.findIndex((t) => t.id === taxAndFee.id);
+      if (index !== -1) {
+        tempTaxesAndFees[index] = tempTaxAndFee;
+        setTaxesAndFees(tempTaxesAndFees);
+        setIsEditing(false);
+      }
+    } else {
+      setErrorMessage(allTaxAndFeesValid.message);
+      setShowErrorDialog(true);
+    }
   };
 
   const handleDelete = () => {
-    return 'yay';
+    const tempTaxesAndFees = taxesAndFees.filter(
+      (taxAndFeeItem) => taxAndFee.id !== taxAndFeeItem.id,
+    );
+    setTaxesAndFees(tempTaxesAndFees);
   };
 
   return (

@@ -118,3 +118,16 @@ const newValidityObject = (valid = true, message = '') => {
   const ret = { valid, message };
   return ret;
 };
+
+export const validateTaxAndFeeFields = (taxAndFeeObj) => {
+  if (!taxAndFeeObj.name) {
+    return newValidityObject(false, 'Invalid name');
+  } else if (!taxAndFeeObj.type) {
+    return newValidityObject(false, 'No type chosen');
+  } else if (taxAndFeeObj.type !== 'tax' && taxAndFeeObj.type !== 'fee') {
+    return newValidityObject(false, 'Invalid type');
+  } else if (taxAndFeeObj.amount < 0) {
+    return newValidityObject(false, 'Must be greater than 0');
+  }
+  return newValidityObject(true);
+};
