@@ -21,7 +21,7 @@ const InputNumberField = ({
         flex: customFlex,
         paddingRight: 20,
         marginBottom: 20,
-        minWidth: 125,
+        minWidth: 150,
       }}>
       <label>{title}</label>
       <InputNumber

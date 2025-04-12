@@ -9,16 +9,16 @@ import { Button } from 'primereact/button';
 
 const ManageJobCard = ({ job }) => {
   const {
-    user,
+    customer,
     services,
-    address,
+    location,
     totalPrice,
     date,
     invoiceNumber,
     statusCode,
   } = job;
-  const { name, email, phoneNumber } = user;
-  const { street } = address;
+  const { username, email, phoneNumber } = customer;
+  const { street } = location;
   const { startDate, endDate } = date;
   const statusColumn = statusCode.toString().charAt(0);
 
@@ -56,7 +56,7 @@ const ManageJobCard = ({ job }) => {
           onClick={() => {
             setShowDetails(true);
           }}>
-          <div style={{ marginBottom: 10 }}>{`${name}`}</div>
+          <div style={{ marginBottom: 10 }}>{`${username}`}</div>
           <ManageJobCardRow title={'Start Date'} value={startDate.dateString} />
           {endDate ? (
             <ManageJobCardRow title={'End Date'} value={endDate.dateString} />
