@@ -5,7 +5,7 @@ const InputSection = ({
   showSection,
   sectionIndex,
   title,
-  section,
+  children,
 }) => {
   return (
     <>
@@ -23,7 +23,7 @@ const InputSection = ({
             onClick={() => {
               if (handleOnClick) {
                 if (showSection === sectionIndex) {
-                  handleOnClick(null);
+                  handleOnClick(-1);
                 } else {
                   handleOnClick(sectionIndex);
                 }
@@ -40,7 +40,7 @@ const InputSection = ({
               onClick={() => {
                 if (handleOnClick) {
                   if (showSection === sectionIndex) {
-                    handleOnClick(null);
+                    handleOnClick(-1);
                   } else {
                     handleOnClick(sectionIndex);
                   }
@@ -53,8 +53,7 @@ const InputSection = ({
               }></i>
           ) : null}
         </div>
-        {/* Checks if function is passed, if it is then check if param is true */}
-        {showSection === sectionIndex ? section() : null}
+        {showSection === sectionIndex ? children : null}
       </div>
       <Divider />
     </>

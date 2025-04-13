@@ -26,3 +26,22 @@ export const API_SERVICES = {
   location: 'http://localhost:3001/api/location/',
   organization: 'http://localhost:3001/api/organization/',
 };
+
+export const defaultCustomerObj = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  phoneNumber: '',
+  username: '',
+  _id: null,
+};
+
+export const defaultLocationObj = {
+  city: '',
+  country: 'Canada',
+  postalCode: '',
+  province: '',
+  street: '',
+  unitNumber: '',
+  _id: null,
+};

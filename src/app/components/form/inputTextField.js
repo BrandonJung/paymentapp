@@ -2,6 +2,7 @@ const { InputText } = require('primereact/inputtext');
 
 const InputTextField = ({
   title,
+  field,
   value,
   setValue,
   customFlex = 1,
@@ -27,7 +28,7 @@ const InputTextField = ({
         value={value}
         minLength={customMinLength}
         maxLength={customMaxLength}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => setValue(e.target.value, field)}
         placeholder={placeholder}
       />
     </div>

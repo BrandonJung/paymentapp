@@ -1,8 +1,7 @@
 'use client';
 
 import InputTextField from '@/app/components/form/inputTextField';
-import { useEffect, useState } from 'react';
-import { dummyAddresses, dummyUsers } from '../../../../../dummyData';
+import { useCallback, useEffect, useState } from 'react';
 import { Dropdown } from 'primereact/dropdown';
 import InputSection from '@/app/components/form/inputSection';
 import { Divider } from 'primereact/divider';
@@ -20,13 +19,19 @@ import { useRouter } from 'next/navigation';
 import { Checkbox } from 'primereact/checkbox';
 import InputDateSelect from '@/app/components/form/inputDateSelect';
 import InputSelectButton from '@/app/components/form/inputSelectButton';
-import { API_SERVICES, dateRangeOptions } from '@/app/utils/constants';
+import {
+  API_SERVICES,
+  dateRangeOptions,
+  defaultCustomerObj,
+  defaultLocationObj,
+} from '@/app/utils/constants';
 import { _apiCall } from '@/app/utils/helpers/functions';
 import CardContainer from '@/app/components/cardContainer';
 import ContentContainer from '@/app/components/form/contentContainer';
 import InputContainer from '@/app/components/form/inputContainer';
 import SelectContainer from '@/app/components/form/selectContainer';
 import FieldContainer from '@/app/components/form/fieldContainer';
+import CustomerSection from '@/app/components/form/customerSection';
 
 const NewJobPage = () => {
   const router = useRouter();
@@ -35,11 +40,11 @@ const NewJobPage = () => {
   const [existingLocations, setExistingLocations] = useState(null);
   const [existingServices, setExistingServices] = useState(null);
 
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [selectedUsername, setSelectedUsername] = useState('');
+  const [customer, setCustomer] = useState(defaultCustomerObj);
+  const [location, setLocation] = useState(defaultLocationObj);
+  const [services, setServices] = useState([]);
+
+  // ------------------------------------- ^ cleaned up ----//
 
   const [selectedServices, setSelectedServices] = useState([]);
 
@@ -120,80 +125,37 @@ const NewJobPage = () => {
     }
   }, [selectedServices]);
 
-  const selectExistingCustomer = (customer) => {
-    if (!customer) return;
-    const uFirstName = customer.firstName;
-    const uLastName = customer.lastName;
-    const uEmail = customer.email;
-    const uPhoneNumber = customer.phoneNumber;
-    setFirstName(uFirstName);
-    setLastName(uLastName);
-    setEmail(uEmail);
-    setPhoneNumber(uPhoneNumber);
-    setSelectedUsername(customer);
-  };
+  // const selectExistingCustomer = (customer) => {
+  //   if (!customer) return;
+  //   const uFirstName = customer.firstName;
+  //   const uLastName = customer.lastName;
+  //   const uEmail = customer.email;
+  //   const uPhoneNumber = customer.phoneNumber;
+  //   setFirstName(uFirstName);
+  //   setLastName(uLastName);
+  //   setEmail(uEmail);
+  //   setPhoneNumber(uPhoneNumber);
+  //   setSelectedUsername(customer);
+  // };
 
-  const selectExistingLocation = (location) => {
-    const address = location.address;
-    if (!address) return;
-    const lStreet = address.street;
-    const lUnitNumber = address.unitNumber;
-    const lCity = address.city;
-    const lProvince = address.province;
-    const lPostalCode = address.postalCode;
-    const lCountry = address.country;
+  // const selectExistingLocation = (location) => {
+  //   const address = location.address;
+  //   if (!address) return;
+  //   const lStreet = address.street;
+  //   const lUnitNumber = address.unitNumber;
+  //   const lCity = address.city;
+  //   const lProvince = address.province;
+  //   const lPostalCode = address.postalCode;
+  //   const lCountry = address.country;
 
-    setStreet(lStreet);
-    setUnitNumber(lUnitNumber);
-    setCity(lCity);
-    setProvince(lProvince);
-    setPostalCode(lPostalCode);
-    setCountry(lCountry);
-    setSelectedLocation(location);
-  };
-
-  const CustomerSection = () => {
-    return (
-      <ContentContainer>
-        <InputContainer>
-          <FieldContainer>
-            <InputTextField
-              title={'First Name'}
-              value={firstName}
-              setValue={setFirstName}
-            />
-            <InputTextField
-              title={'Last Name'}
-              value={lastName}
-              setValue={setLastName}
-            />
-          </FieldContainer>
-          <FieldContainer>
-            <InputTextField title={'Email'} value={email} setValue={setEmail} />
-            <InputTextField
-              title={'Phone Number'}
-              value={phoneNumber}
-              setValue={setPhoneNumber}
-            />
-          </FieldContainer>
-        </InputContainer>
-        <Divider layout='vertical' />
-        <SelectContainer>
-          <label>{'Existing Customers'}</label>
-          <Dropdown
-            value={selectedUsername}
-            onChange={(e) => {
-              selectExistingCustomer(e.value);
-            }}
-            options={existingCustomers ?? []}
-            optionLabel='label'
-            placeholder='Select a customers'
-            filter
-          />
-        </SelectContainer>
-      </ContentContainer>
-    );
-  };
+  //   setStreet(lStreet);
+  //   setUnitNumber(lUnitNumber);
+  //   setCity(lCity);
+  //   setProvince(lProvince);
+  //   setPostalCode(lPostalCode);
+  //   setCountry(lCountry);
+  //   setSelectedLocation(location);
+  // };
 
   const LocationSection = () => {
     return (
@@ -323,76 +285,95 @@ const NewJobPage = () => {
   };
 
   const handleCreateJob = async () => {
-    const customerObj = {
-      firstName,
-      lastName,
-      email,
-      phoneNumber,
-    };
-    const locationObj = {
-      street,
-      unitNumber,
-      city,
-      province,
-      postalCode,
-      country,
-    };
-    const dateObj = {
-      mode: selectedDateRange,
-      startDate: selectedStartDate,
-      endDate: selectedEndDate,
-    };
-    const servicesList = selectedServices;
-    const customerIsValid = validateCustomerFields(customerObj);
-    if (!customerIsValid.valid) {
-      alert(customerIsValid.message);
-      return;
-    }
-    const locationIsValid = validateLocationFields(locationObj);
-    if (!locationIsValid.valid) {
-      alert(locationIsValid.message);
-      return;
-    }
-    const servicesIsValid = validateServices(servicesList);
-    if (!servicesIsValid.valid) {
-      alert(servicesIsValid.message);
-      return;
-    }
-    const dateIsValid = validateDate(dateObj);
-    if (!dateIsValid.valid) {
-      alert(dateIsValid.message);
-      return;
-    }
+    console.log('Create job', customer, location);
+    // const customerObj = {
+    //   firstName,
+    //   lastName,
+    //   email,
+    //   phoneNumber,
+    // };
+    // const locationObj = {
+    //   street,
+    //   unitNumber,
+    //   city,
+    //   province,
+    //   postalCode,
+    //   country,
+    // };
+    // const dateObj = {
+    //   mode: selectedDateRange,
+    //   startDate: selectedStartDate,
+    //   endDate: selectedEndDate,
+    // };
+    // const servicesList = selectedServices;
+    // const customerIsValid = validateCustomerFields(customerObj);
+    // if (!customerIsValid.valid) {
+    //   alert(customerIsValid.message);
+    //   return;
+    // }
+    // const locationIsValid = validateLocationFields(locationObj);
+    // if (!locationIsValid.valid) {
+    //   alert(locationIsValid.message);
+    //   return;
+    // }
+    // const servicesIsValid = validateServices(servicesList);
+    // if (!servicesIsValid.valid) {
+    //   alert(servicesIsValid.message);
+    //   return;
+    // }
+    // const dateIsValid = validateDate(dateObj);
+    // if (!dateIsValid.valid) {
+    //   alert(dateIsValid.message);
+    //   return;
+    // }
+    // if (selectedUsername._id) {
+    //   customerObj._id = selectedUsername._id;
+    // }
+    // if (selectedLocation._id) {
+    //   locationObj._id = selectedLocation._id;
+    // }
+    // if (customerIsValid && locationIsValid && servicesIsValid && dateIsValid) {
+    //   try {
+    //     setLoading(true);
+    //     const res = await _apiCall(API_SERVICES.job, 'create', 'post', {
+    //       customer: customerObj,
+    //       location: locationObj,
+    //       services: servicesList,
+    //       date: dateObj,
+    //       userId,
+    //       sendToCustomer,
+    //     });
+    //     console.log('Create job res', res);
+    //     if (res.status === 200) {
+    //       alert('Job created');
+    //       // router.push('/dashboard/jobs/manage');
+    //     }
+    //   } catch (err) {
+    //     console.log(err);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // }
+  };
 
-    if (selectedUsername._id) {
-      customerObj._id = selectedUsername._id;
-    }
-    if (selectedLocation._id) {
-      locationObj._id = selectedLocation._id;
-    }
+  // ------------ cleaned up ------------------- //
 
-    if (customerIsValid && locationIsValid && servicesIsValid && dateIsValid) {
-      try {
-        setLoading(true);
-        const res = await _apiCall(API_SERVICES.job, 'create', 'post', {
-          customer: customerObj,
-          location: locationObj,
-          services: servicesList,
-          date: dateObj,
-          userId,
-          sendToCustomer,
-        });
-        console.log('Create job res', res);
-        if (res.status === 200) {
-          alert('Job created');
-          // router.push('/dashboard/jobs/manage');
-        }
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    }
+  const updateCustomer = useCallback((value, field) => {
+    setCustomer((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  }, []);
+
+  const selectExistingCustomer = (passedCustomer) => {
+    setCustomer({
+      firstName: passedCustomer.firstName,
+      lastName: passedCustomer.lastName,
+      email: passedCustomer.email,
+      phoneNumber: passedCustomer.phoneNumber,
+      _id: passedCustomer._id,
+      username: passedCustomer.username,
+    });
   };
 
   return (
@@ -401,9 +382,15 @@ const NewJobPage = () => {
         handleOnClick={setShowSection}
         showSection={showSection}
         sectionIndex={0}
-        title={'Customer Information'}
-        section={CustomerSection}
-      />
+        title={'Customer Information'}>
+        <CustomerSection
+          customer={customer}
+          updateCustomer={updateCustomer}
+          selectExistingCustomer={selectExistingCustomer}
+          existingCustomers={existingCustomers}
+          disableEditing={customer._id}
+        />
+      </InputSection>
       <InputSection
         handleOnClick={setShowSection}
         showSection={showSection}
