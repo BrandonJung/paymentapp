@@ -1,5 +1,5 @@
 const { Divider } = require('primereact/divider');
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import InputTextField from './inputTextField';
 import InputMultiSelect from './inputMultiSelect';
 import { dummyTaxes } from '../../../../dummyData';
@@ -8,7 +8,6 @@ import InputNumberField from './inputNumberField';
 import { Dialog } from 'primereact/dialog';
 import { validateServiceFields } from '@/app/utils/helpers/form';
 import { Dropdown } from 'primereact/dropdown';
-import { Button } from 'primereact/button';
 import ContentContainer from './contentContainer';
 import InputContainer from './inputContainer';
 import SelectContainer from './selectContainer';
@@ -21,77 +20,27 @@ const rateOptions = [
 ];
 
 const ServiceRow = ({
-  service,
-  selectedServices,
-  setSelectedServices,
+  serviceObj,
   existingServices,
+  saveService,
+  deleteService,
+  selectExistingService,
 }) => {
-  const [sName, setSName] = useState('');
-  const [sDescription, setSDescription] = useState('');
-  const [sTaxes, setSTaxes] = useState([]);
-  const [sQuantity, setSQuantity] = useState(1);
-  const [sPrice, setSPrice] = useState(null);
-  const [sRate, setSRate] = useState('flat');
-  const [isEditing, setIsEditing] = useState(true);
-  const [selectedService, setSelectedService] = useState('');
+  const [service, setService] = useState(serviceObj);
 
+  const [isEditing, setIsEditing] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [showErrorDialog, setShowErrorDialog] = useState(false);
-
-  const selectExistingService = (passedService) => {
-    const {
-      _id,
-      name,
-      description,
-      taxAndFees,
-      quantity,
-      price,
-      rate,
-      active,
-      organizationId,
-    } = passedService;
-    const allServiceFieldsValid = validateServiceFields(passedService);
-    if (allServiceFieldsValid.valid) {
-      setSName(name);
-      setSDescription(description);
-      setSTaxes(taxAndFees);
-      setSQuantity(quantity);
-      setSPrice(price / 100);
-      setSRate(rate);
-      setSelectedService(passedService);
-    } else {
-      setErrorMessage(allServiceFieldsValid.message);
-      setShowErrorDialog(true);
-    }
-  };
 
   const handleSave = () => {
     if (!isEditing) {
       setIsEditing(true);
       return;
     }
-    const tempSelectedServices = [...selectedServices];
-    let tempService = {
-      ...selectedService,
-      identifier: service.identifier || crypto.randomUUID(),
-      name: sName,
-      description: sDescription,
-      taxAndFees: sTaxes,
-      quantity: sQuantity,
-      price: sPrice * 100,
-      rate: sRate,
-    };
-
-    const allServiceFieldsValid = validateServiceFields(tempService);
+    const allServiceFieldsValid = validateServiceFields(service);
     if (allServiceFieldsValid.valid) {
-      const index = tempSelectedServices.findIndex(
-        (s) => s.identifier === service.identifier,
-      );
-      if (index !== -1) {
-        tempSelectedServices[index] = tempService;
-        setSelectedServices(tempSelectedServices);
-        setIsEditing(false);
-      }
+      saveService(service);
+      setIsEditing(false);
     } else {
       setErrorMessage(allServiceFieldsValid.message);
       setShowErrorDialog(true);
@@ -99,51 +48,75 @@ const ServiceRow = ({
   };
 
   const handleDelete = () => {
-    const tempSelectedServices = selectedServices.filter(
-      (serviceItem) => serviceItem.identifier !== service.identifier,
-    );
-    setSelectedServices(tempSelectedServices);
+    deleteService(service);
   };
 
+  const handleSelectService = (passedService) => {
+    selectExistingService(passedService);
+    const { name, description, rate, price, taxesAndFees, _id } = passedService;
+    const { identifier } = service;
+    setService({
+      identifier,
+      name,
+      description,
+      rate,
+      price,
+      taxesAndFees,
+      _id,
+    });
+  };
+
+  const updateService = useCallback((value, field) => {
+    setService((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  }, []);
+
   return (
-    <ContentContainer>
+    <ContentContainer style={{ flexWrap: 'wrap' }}>
       <InputContainer>
         <FieldContainer>
           <InputTextField
             title={'Service Name'}
-            value={sName}
-            setValue={setSName}
+            field={'name'}
+            value={service.name}
+            setValue={updateService}
             disabled={!isEditing}
           />
           <InputTextField
             title={'Service Description'}
-            value={sDescription}
-            setValue={setSDescription}
+            field={'description'}
+            value={service.description}
+            setValue={updateService}
             disabled={!isEditing}
           />
         </FieldContainer>
         <FieldContainer>
           <InputSelectButton
             title={'Service Rate'}
-            value={sRate}
-            setValue={setSRate}
+            field={'rate'}
+            value={service.rate}
+            setValue={updateService}
             options={rateOptions}
             optionLabel={'label'}
             disabled={!isEditing}
           />
           <InputNumberField
-            title={sRate === 'hourly' ? 'Hourly' : 'Price'}
-            value={sPrice}
-            setValue={setSPrice}
+            title={service.rate === 'hourly' ? 'Hourly' : 'Price'}
+            field={'price'}
+            value={service.price / 100}
+            setValue={updateService}
             isCurrency={true}
             numberOfDigits={2}
             disabled={!isEditing}
           />
-          {sRate === 'hourly' ? (
+          {service.rate === 'hourly' ? (
             <InputNumberField
               title={'Number of hours'}
-              value={sQuantity}
-              setValue={setSQuantity}
+              field={'quantity'}
+              value={service.quantity}
+              setValue={updateService}
               numberOfDigits={0}
               disabled={!isEditing}
             />
@@ -152,8 +125,9 @@ const ServiceRow = ({
         <FieldContainer>
           <InputMultiSelect
             title={'Applicable Taxes'}
-            value={sTaxes}
-            setValue={setSTaxes}
+            field={'taxesAndFees'}
+            value={service.taxesAndFees}
+            setValue={updateService}
             options={dummyTaxes}
             optionLabel='name'
             placeholder={'Select Applicable Taxes'}
@@ -167,16 +141,15 @@ const ServiceRow = ({
         />
       </InputContainer>
       <Divider layout='vertical' />
-
       <SelectContainer>
         <label>{'Past Services'}</label>
         <Dropdown
           filter
-          value={selectedService}
+          value={service}
           onChange={(e) => {
-            selectExistingService(e.value);
+            handleSelectService(e.value);
           }}
-          options={existingServices}
+          options={existingServices.filter((item) => !item.selected)}
           optionLabel='search'
           placeholder='Search services'
           disabled={!isEditing}

@@ -9,7 +9,7 @@ import TaxAndFeeRow from '@/app/components/form/taxAndFeeRow';
 import { API_SERVICES } from '@/app/utils/constants';
 import {
   validateOrgFields,
-  validateTaxAndFees,
+  validateTaxesAndFees,
 } from '@/app/utils/helpers/form';
 import { _apiCall, checkForUserOrg } from '@/app/utils/helpers/functions';
 import { Button } from 'primereact/button';
@@ -103,7 +103,7 @@ const OrganizationPage = () => {
       return;
     }
 
-    const taxAndRatesAreValid = validateTaxAndFees(
+    const taxAndRatesAreValid = validateTaxesAndFees(
       organizationObj.orgTaxAndFeeRates,
     );
     if (!taxAndRatesAreValid.valid) {

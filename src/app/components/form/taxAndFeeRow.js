@@ -45,8 +45,8 @@ const TaxAndFeeRow = ({ taxAndFee, taxesAndFees, setTaxesAndFees }) => {
       amount,
     };
 
-    const allTaxAndFeesValid = validateTaxAndFeeFields(tempTaxAndFee);
-    if (allTaxAndFeesValid.valid) {
+    const allTaxesAndFeesValid = validateTaxAndFeeFields(tempTaxAndFee);
+    if (allTaxesAndFeesValid.valid) {
       const index = tempTaxesAndFees.findIndex((t) => t.id === taxAndFee.id);
       if (index !== -1) {
         tempTaxesAndFees[index] = tempTaxAndFee;
@@ -54,7 +54,7 @@ const TaxAndFeeRow = ({ taxAndFee, taxesAndFees, setTaxesAndFees }) => {
         setIsEditing(false);
       }
     } else {
-      setErrorMessage(allTaxAndFeesValid.message);
+      setErrorMessage(allTaxesAndFeesValid.message);
       setShowErrorDialog(true);
     }
   };

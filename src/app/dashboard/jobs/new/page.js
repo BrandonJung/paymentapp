@@ -1,15 +1,12 @@
 'use client';
 
-import InputTextField from '@/app/components/form/inputTextField';
 import { useCallback, useEffect, useState } from 'react';
-import { Dropdown } from 'primereact/dropdown';
 import InputSection from '@/app/components/form/inputSection';
-import { Divider } from 'primereact/divider';
 
 import { Button } from 'primereact/button';
 import { formatPriceDisplay } from '@/app/utils/helpers/formatters';
-import ServiceRow from '@/app/components/form/serviceRow';
 import {
+  createDefaultServiceObj,
   validateCustomerFields,
   validateDate,
   validateLocationFields,
@@ -29,10 +26,10 @@ import { _apiCall } from '@/app/utils/helpers/functions';
 import CardContainer from '@/app/components/cardContainer';
 import ContentContainer from '@/app/components/form/contentContainer';
 import InputContainer from '@/app/components/form/inputContainer';
-import SelectContainer from '@/app/components/form/selectContainer';
 import FieldContainer from '@/app/components/form/fieldContainer';
 import CustomerSection from '@/app/components/form/customerSection';
 import LocationSection from '@/app/components/form/locationSection';
+import ServiceSection from '@/app/components/form/serviceSection';
 
 const NewJobPage = () => {
   const router = useRouter();
@@ -46,16 +43,6 @@ const NewJobPage = () => {
   const [services, setServices] = useState([]);
 
   // ------------------------------------- ^ cleaned up ----//
-
-  const [selectedServices, setSelectedServices] = useState([]);
-
-  const [street, setStreet] = useState('');
-  const [unitNumber, setUnitNumber] = useState('');
-  const [city, setCity] = useState('');
-  const [province, setProvince] = useState('');
-  const [postalCode, setPostalCode] = useState('');
-  const [country, setCountry] = useState('Canada');
-  const [selectedLocation, setSelectedLocation] = useState('');
 
   const [selectedDateRange, setSelectedDateRange] = useState('');
   const [selectedStartDate, setSelectedStartDate] = useState('');
@@ -78,9 +65,12 @@ const NewJobPage = () => {
       });
       console.log('Existing Data', res);
       if (res.status === 200) {
+        const modifiedExistingServices = res.existingServices.map((item) => {
+          return { ...item, selected: false };
+        });
         setExistingCustomers(res.existingCustomers);
         setExistingLocations(res.existingLocations);
-        setExistingServices(res.existingServices);
+        setExistingServices(modifiedExistingServices);
       }
     } catch (err) {
       console.log(err);
@@ -107,7 +97,7 @@ const NewJobPage = () => {
       let sPrice = service.price;
       let taxTotalMultiplier = 1;
       let flatAmount = 0;
-      for (let taxAndFee of service.taxAndFees) {
+      for (let taxAndFee of service.taxesAndFees) {
         if (taxAndFee.type === 'percentage') {
           taxTotalMultiplier += taxAndFee.amount;
         } else if (taxAndFee.type === 'flat') {
@@ -120,11 +110,11 @@ const NewJobPage = () => {
     setEstimatedTotal(retTotal);
   };
 
-  useEffect(() => {
-    if (selectedServices.length > 0) {
-      calculateEstimatedTotal(selectedServices);
-    }
-  }, [selectedServices]);
+  // useEffect(() => {
+  //   if (selectedServices.length > 0) {
+  //     calculateEstimatedTotal(selectedServices);
+  //   }
+  // }, [selectedServices]);
 
   // const selectExistingCustomer = (customer) => {
   //   if (!customer) return;
@@ -157,37 +147,6 @@ const NewJobPage = () => {
   //   setCountry(lCountry);
   //   setSelectedLocation(location);
   // };
-
-  const handleAddService = () => {
-    let tempArray = [...selectedServices];
-    tempArray.push({
-      identifier: crypto.randomUUID(),
-      name: '',
-      description: '',
-      taxAndFees: [],
-      quantity: 1,
-    });
-    setSelectedServices(tempArray);
-  };
-
-  const ServicesSection = () => {
-    return (
-      <div>
-        {selectedServices.map((service) => {
-          return (
-            <ServiceRow
-              service={service}
-              key={service.identifier || crypto.randomUUID()}
-              selectedServices={selectedServices}
-              setSelectedServices={setSelectedServices}
-              existingServices={existingServices}
-            />
-          );
-        })}
-        <Button onClick={() => handleAddService()}>Add Service</Button>
-      </div>
-    );
-  };
 
   const DateSection = () => {
     return (
@@ -228,7 +187,7 @@ const NewJobPage = () => {
   };
 
   const handleCreateJob = async () => {
-    console.log('Create job', customer, location);
+    console.log('Create job', customer, location, services);
     // const customerObj = {
     //   firstName,
     //   lastName,
@@ -347,6 +306,56 @@ const NewJobPage = () => {
     setLocation(defaultLocationObj);
   };
 
+  const addService = () => {
+    const defaultServiceObj = createDefaultServiceObj();
+    setServices((prevServices) => [...prevServices, defaultServiceObj]);
+  };
+
+  const saveService = (passedService) => {
+    setServices((prevServices) =>
+      prevServices.map((item) => {
+        return item.identifier === passedService.identifier
+          ? { ...item, ...passedService }
+          : item;
+      }),
+    );
+  };
+
+  const deleteService = (passedService) => {
+    setServices((prevServices) =>
+      prevServices.filter(
+        (item) => item.identifier !== passedService.identifier,
+      ),
+    );
+    toggleExistingServiceSelected(passedService);
+  };
+
+  const toggleExistingServiceSelected = (passedService) => {
+    setExistingServices((prevExistingServices) =>
+      prevExistingServices.map((item) => {
+        return item._id === passedService._id
+          ? { ...item, selected: !item.selected }
+          : item;
+      }),
+    );
+  };
+
+  const selectExistingService = (passedService) => {
+    const { identifier, name, description, rate, price, taxesAndFees, _id } =
+      passedService;
+    const serviceObj = {
+      identifier,
+      name,
+      description,
+      rate,
+      price,
+      taxesAndFees,
+      _id,
+    };
+    saveService(serviceObj);
+    toggleExistingServiceSelected(passedService);
+  };
+
   return (
     <CardContainer title={'Create New Job'} overflow='scroll'>
       <InputSection
@@ -381,9 +390,16 @@ const NewJobPage = () => {
         handleOnClick={setShowSection}
         showSection={showSection}
         sectionIndex={2}
-        title={'Service Details'}
-        section={ServicesSection}
-      />
+        title={'Service Details'}>
+        <ServiceSection
+          services={services}
+          existingServices={existingServices}
+          addService={addService}
+          saveService={saveService}
+          deleteService={deleteService}
+          selectExistingService={selectExistingService}
+        />
+      </InputSection>
       <InputSection
         handleOnClick={setShowSection}
         showSection={showSection}

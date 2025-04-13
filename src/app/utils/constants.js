@@ -45,3 +45,12 @@ export const defaultLocationObj = {
   unitNumber: '',
   _id: null,
 };
+
+export const defaultServiceObj = {
+  name: '',
+  description: '',
+  taxesAndFees: [],
+  quantity: 1,
+  price: null,
+  rate: 'flat',
+};

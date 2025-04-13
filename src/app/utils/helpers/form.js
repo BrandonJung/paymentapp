@@ -1,4 +1,4 @@
-import { dateRangeOptions } from '../constants';
+import { dateRangeOptions, defaultServiceObj } from '../constants';
 
 export const validateServiceFields = (service) => {
   const { name, description, taxes, quantity, price, rate } = service;
@@ -143,7 +143,7 @@ export const validateOrgFields = (org) => {
   return newValidityObject(true);
 };
 
-export const validateTaxAndFees = (taxAndFeeList) => {
+export const validateTaxesAndFees = (taxAndFeeList) => {
   const tempTFList = taxAndFeeList;
   if (tempTFList.length < 1) {
     return newValidityObject(false, 'No tax and fees added');
@@ -159,4 +159,12 @@ export const validateTaxAndFees = (taxAndFeeList) => {
     }
   }
   return newValidityObject(true);
+};
+
+export const createDefaultServiceObj = () => {
+  const identifier = crypto.randomUUID();
+  return {
+    ...defaultServiceObj,
+    identifier,
+  };
 };
