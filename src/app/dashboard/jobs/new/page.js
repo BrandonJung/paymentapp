@@ -55,6 +55,8 @@ const NewJobPage = () => {
   const [selectedStartDate, setSelectedStartDate] = useState('');
   const [selectedEndDate, setSelectedEndDate] = useState('');
 
+  const [showSection, setShowSection] = useState(0);
+
   const [showCustomerSection, setShowCustomerSection] = useState(true);
   const [showLocationSection, setShowLocationSection] = useState(false);
   const [showServicesSection, setShowServicesSection] = useState(false);
@@ -401,26 +403,30 @@ const NewJobPage = () => {
   return (
     <CardContainer title={'Create New Job'} overflow='scroll'>
       <InputSection
-        handleOnClick={setShowCustomerSection}
-        onClickParam={showCustomerSection}
+        handleOnClick={setShowSection}
+        showSection={showSection}
+        sectionIndex={0}
         title={'Customer Information'}
         section={CustomerSection}
       />
       <InputSection
-        handleOnClick={setShowLocationSection}
-        onClickParam={showLocationSection}
+        handleOnClick={setShowSection}
+        showSection={showSection}
+        sectionIndex={1}
         title={'Location Details'}
         section={LocationSection}
       />
       <InputSection
-        handleOnClick={setShowServicesSection}
-        onClickParam={showServicesSection}
+        handleOnClick={setShowSection}
+        showSection={showSection}
+        sectionIndex={2}
         title={'Service Details'}
         section={ServicesSection}
       />
       <InputSection
-        handleOnClick={setShowDateSection}
-        onClickParam={showDateSection}
+        handleOnClick={setShowSection}
+        showSection={showSection}
+        sectionIndex={3}
         title={'Date Details'}
         section={DateSection}
       />

@@ -1,6 +1,12 @@
 import { Divider } from 'primereact/divider';
 
-const InputSection = ({ handleOnClick, onClickParam, title, section }) => {
+const InputSection = ({
+  handleOnClick,
+  showSection,
+  sectionIndex,
+  title,
+  section,
+}) => {
   return (
     <>
       <div style={{ margin: 10 }}>
@@ -16,7 +22,11 @@ const InputSection = ({ handleOnClick, onClickParam, title, section }) => {
             }}
             onClick={() => {
               if (handleOnClick) {
-                handleOnClick(!onClickParam);
+                if (showSection === sectionIndex) {
+                  handleOnClick(null);
+                } else {
+                  handleOnClick(sectionIndex);
+                }
               }
             }}>
             {title}
@@ -27,14 +37,24 @@ const InputSection = ({ handleOnClick, onClickParam, title, section }) => {
                 cursor: 'pointer',
                 padding: 20,
               }}
-              onClick={() => handleOnClick(!onClickParam)}
+              onClick={() => {
+                if (handleOnClick) {
+                  if (showSection === sectionIndex) {
+                    handleOnClick(null);
+                  } else {
+                    handleOnClick(sectionIndex);
+                  }
+                }
+              }}
               className={
-                onClickParam ? 'pi pi-angle-up' : 'pi pi-angle-down'
+                showSection === sectionIndex
+                  ? 'pi pi-angle-up'
+                  : 'pi pi-angle-down'
               }></i>
           ) : null}
         </div>
         {/* Checks if function is passed, if it is then check if param is true */}
-        {!handleOnClick ? section() : onClickParam ? section() : null}
+        {showSection === sectionIndex ? section() : null}
       </div>
       <Divider />
     </>
