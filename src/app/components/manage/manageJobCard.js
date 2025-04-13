@@ -25,16 +25,16 @@ const ManageJobCard = ({ job }) => {
   let buttonText = '';
 
   switch (statusColumn) {
-    case '0':
+    case '1':
       buttonText = 'Send Email';
       break;
-    case '1':
+    case '2':
       buttonText = 'Send Invoice';
       break;
-    case '2':
+    case '3':
       buttonText = 'Paid By Cash';
       break;
-    case '3':
+    case '4':
       buttonText = 'Archive';
       break;
     default:
