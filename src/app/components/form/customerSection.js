@@ -7,7 +7,6 @@ import { Divider } from 'primereact/divider';
 import SelectContainer from './selectContainer';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
-import { defaultCustomerObj } from '@/app/utils/constants';
 
 const CustomerSection = ({
   customer,
@@ -15,6 +14,7 @@ const CustomerSection = ({
   selectExistingCustomer,
   existingCustomers,
   disableEditing = false,
+  resetCustomer,
 }) => {
   const [isUpdateExistingCustomer, setIsUpdateExistingCustomer] =
     useState(false);
@@ -87,7 +87,7 @@ const CustomerSection = ({
             }}>
             <Button
               onClick={() => {
-                selectExistingCustomer(defaultCustomerObj);
+                resetCustomer();
                 setIsUpdateExistingCustomer(false);
               }}>
               New customer

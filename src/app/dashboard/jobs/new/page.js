@@ -32,6 +32,7 @@ import InputContainer from '@/app/components/form/inputContainer';
 import SelectContainer from '@/app/components/form/selectContainer';
 import FieldContainer from '@/app/components/form/fieldContainer';
 import CustomerSection from '@/app/components/form/customerSection';
+import LocationSection from '@/app/components/form/locationSection';
 
 const NewJobPage = () => {
   const router = useRouter();
@@ -156,64 +157,6 @@ const NewJobPage = () => {
   //   setCountry(lCountry);
   //   setSelectedLocation(location);
   // };
-
-  const LocationSection = () => {
-    return (
-      <ContentContainer>
-        <InputContainer>
-          <FieldContainer>
-            <InputTextField
-              customFlex={3}
-              title={'Address *'}
-              value={street}
-              setValue={setStreet}
-            />
-            <InputTextField
-              customFlex={1}
-              title={'Unit #'}
-              value={unitNumber}
-              setValue={setUnitNumber}
-            />
-          </FieldContainer>
-          <FieldContainer>
-            <InputTextField title={'City *'} value={city} setValue={setCity} />
-            <InputTextField
-              title={'Province *'}
-              value={province}
-              setValue={setProvince}
-            />
-          </FieldContainer>
-          <FieldContainer>
-            <InputTextField
-              title={'Postal Code *'}
-              value={postalCode}
-              setValue={setPostalCode}
-            />
-            <InputTextField
-              title={'Country'}
-              value={country}
-              setValue={setCountry}
-              disabled
-            />
-          </FieldContainer>
-        </InputContainer>
-        <Divider layout='vertical' />
-        <SelectContainer>
-          <label>{'Past Addresses'}</label>
-          <Dropdown
-            filter
-            value={selectedLocation}
-            onChange={(e) => {
-              selectExistingLocation(e.value);
-            }}
-            options={existingLocations ?? []}
-            optionLabel='search'
-            placeholder='Search addresses'
-          />
-        </SelectContainer>
-      </ContentContainer>
-    );
-  };
 
   const handleAddService = () => {
     let tempArray = [...selectedServices];
@@ -372,8 +315,36 @@ const NewJobPage = () => {
       email: passedCustomer.email,
       phoneNumber: passedCustomer.phoneNumber,
       _id: passedCustomer._id,
-      username: passedCustomer.username,
     });
+  };
+
+  const resetCustomer = () => {
+    setCustomer(defaultCustomerObj);
+  };
+
+  const updateLocation = useCallback((value, field) => {
+    setLocation((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  }, []);
+
+  const selectExistingLocation = (passedLocation) => {
+    const { address } = passedLocation;
+    const { city, country, postalCode, province, street, unitNumber } = address;
+    setLocation({
+      city,
+      country,
+      postalCode,
+      province,
+      street,
+      unitNumber,
+      _id: passedLocation._id,
+    });
+  };
+
+  const resetLocation = () => {
+    setLocation(defaultLocationObj);
   };
 
   return (
@@ -389,15 +360,23 @@ const NewJobPage = () => {
           selectExistingCustomer={selectExistingCustomer}
           existingCustomers={existingCustomers}
           disableEditing={customer._id}
+          resetCustomer={resetCustomer}
         />
       </InputSection>
       <InputSection
         handleOnClick={setShowSection}
         showSection={showSection}
         sectionIndex={1}
-        title={'Location Details'}
-        section={LocationSection}
-      />
+        title={'Location Details'}>
+        <LocationSection
+          location={location}
+          updateLocation={updateLocation}
+          selectExistingLocation={selectExistingLocation}
+          existingLocations={existingLocations}
+          disableEditing={location._id}
+          resetLocation={resetLocation}
+        />
+      </InputSection>
       <InputSection
         handleOnClick={setShowSection}
         showSection={showSection}
