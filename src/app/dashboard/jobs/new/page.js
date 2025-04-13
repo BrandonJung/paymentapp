@@ -57,11 +57,6 @@ const NewJobPage = () => {
 
   const [showSection, setShowSection] = useState(0);
 
-  const [showCustomerSection, setShowCustomerSection] = useState(true);
-  const [showLocationSection, setShowLocationSection] = useState(false);
-  const [showServicesSection, setShowServicesSection] = useState(false);
-  const [showDateSection, setShowDateSection] = useState(false);
-
   const [estimatedTotal, setEstimatedTotal] = useState(0);
   const [sendToCustomer, setSendToCustomer] = useState(false);
 
