@@ -85,13 +85,13 @@ export const validateServices = (servicesList) => {
 };
 
 export const validateDate = (date) => {
-  if (date.mode === dateRangeOptions[0].value) {
+  if (date.type === dateRangeOptions[0].value) {
     // single
     if (!DateIsValid(date.startDate)) {
       return newValidityObject(false, 'Invalid start date');
     }
     return newValidityObject(true);
-  } else if (date.mode === dateRangeOptions[1].value) {
+  } else if (date.type === dateRangeOptions[1].value) {
     // multi
     if (!DateIsValid(date.startDate)) {
       return newValidityObject(false, 'Invalid start date');

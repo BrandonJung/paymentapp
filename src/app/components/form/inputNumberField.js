@@ -2,6 +2,7 @@ import { InputNumber } from 'primereact/inputnumber';
 
 const InputNumberField = ({
   title,
+  field,
   value,
   setValue,
   customFlex = 1,
@@ -26,7 +27,7 @@ const InputNumberField = ({
       <label>{title}</label>
       <InputNumber
         value={value}
-        onValueChange={(e) => setValue(e.value)}
+        onValueChange={(e) => setValue(e.value, field)}
         mode={isCurrency ? 'currency' : 'decimal'}
         currency={currency}
         showButtons={showButtons}

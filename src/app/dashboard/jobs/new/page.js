@@ -42,10 +42,9 @@ const NewJobPage = () => {
   const [showSection, setShowSection] = useState(0);
   const [isAnyEditing, setIsAnyEditing] = useState([]);
 
-  // ------------------------------------- ^ cleaned up ----//
+  const [sendToCustomer, setSendToCustomer] = useState(false);
 
   const [estimatedTotal, setEstimatedTotal] = useState(0);
-  const [sendToCustomer, setSendToCustomer] = useState(false);
 
   const [userId, setUserId] = useState(null);
 
@@ -84,65 +83,13 @@ const NewJobPage = () => {
     }
   }, []);
 
-  const calculateEstimatedTotal = (services) => {
-    let retTotal = 0;
-    for (let service of services) {
-      if (isNaN(service.price)) continue;
-      let sPrice = service.price;
-      let taxTotalMultiplier = 1;
-      let flatAmount = 0;
-      for (let taxAndFee of service.taxesAndFees) {
-        if (taxAndFee.type === 'percentage') {
-          taxTotalMultiplier += taxAndFee.amount;
-        } else if (taxAndFee.type === 'flat') {
-          flatAmount += taxAndFee.amount;
-        }
-      }
-      let sTotalAmount = sPrice * taxTotalMultiplier;
-      retTotal += sTotalAmount;
-    }
-    setEstimatedTotal(retTotal);
+  const calculateEstimatedTotal = (passedServices) => {
+    setEstimatedTotal(0);
   };
 
-  // useEffect(() => {
-  //   if (selectedServices.length > 0) {
-  //     calculateEstimatedTotal(selectedServices);
-  //   }
-  // }, [selectedServices]);
-
-  // const selectExistingCustomer = (customer) => {
-  //   if (!customer) return;
-  //   const uFirstName = customer.firstName;
-  //   const uLastName = customer.lastName;
-  //   const uEmail = customer.email;
-  //   const uPhoneNumber = customer.phoneNumber;
-  //   setFirstName(uFirstName);
-  //   setLastName(uLastName);
-  //   setEmail(uEmail);
-  //   setPhoneNumber(uPhoneNumber);
-  //   setSelectedUsername(customer);
-  // };
-
-  // const selectExistingLocation = (location) => {
-  //   const address = location.address;
-  //   if (!address) return;
-  //   const lStreet = address.street;
-  //   const lUnitNumber = address.unitNumber;
-  //   const lCity = address.city;
-  //   const lProvince = address.province;
-  //   const lPostalCode = address.postalCode;
-  //   const lCountry = address.country;
-
-  //   setStreet(lStreet);
-  //   setUnitNumber(lUnitNumber);
-  //   setCity(lCity);
-  //   setProvince(lProvince);
-  //   setPostalCode(lPostalCode);
-  //   setCountry(lCountry);
-  //   setSelectedLocation(location);
-  // };
-
-  // ------------ cleaned up ------------------- //
+  useEffect(() => {
+    calculateEstimatedTotal(services);
+  }, [services]);
 
   const updateCustomer = useCallback((value, field) => {
     setCustomer((prevState) => ({

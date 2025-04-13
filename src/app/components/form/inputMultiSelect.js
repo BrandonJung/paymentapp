@@ -2,6 +2,7 @@ import { MultiSelect } from 'primereact/multiselect';
 
 const InputMultiSelect = ({
   title,
+  field,
   value,
   setValue,
   options,
@@ -25,7 +26,7 @@ const InputMultiSelect = ({
       <label>{title}</label>
       <MultiSelect
         value={value}
-        onChange={(e) => setValue(e.value)}
+        onChange={(e) => setValue(e.value, field)}
         options={options}
         optionLabel={optionLabel}
         placeholder={placeholder}

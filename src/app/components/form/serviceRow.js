@@ -113,7 +113,7 @@ const ServiceRow = ({
           <InputNumberField
             title={service.rate === 'hourly' ? 'Hourly' : 'Price'}
             field={'price'}
-            value={service.price / 100}
+            value={service.price}
             setValue={updateService}
             isCurrency={true}
             numberOfDigits={2}
