@@ -56,11 +56,14 @@ const ManageJobCard = ({ job }) => {
           onClick={() => {
             setShowDetails(true);
           }}>
-          <div style={{ marginBottom: 10 }}>{`${username}`}</div>
+          <div style={{ marginBottom: 20, fontSize: 18 }}>{`${username}`}</div>
           <ManageJobCardRow title={'Start Date'} value={startDate.dateString} />
-          {endDate ? (
-            <ManageJobCardRow title={'End Date'} value={endDate.dateString} />
-          ) : null}
+
+          <ManageJobCardRow
+            title={'End Date'}
+            value={endDate.dateString ?? startDate.dateString}
+          />
+
           <ManageJobCardRow title={'Price'} value={totalPrice} />
           <ManageJobCardRow title={'Invoice Number'} value={invoiceNumber} />
         </div>
