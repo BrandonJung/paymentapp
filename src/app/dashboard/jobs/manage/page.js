@@ -1,17 +1,19 @@
 'use client';
 import ManageColumn from '@/app/components/manage/manageColumn';
 import { Divider } from 'primereact/divider';
-import { dummyManageServicesList } from '../../../../../dummyData';
 import styles from '@/app/dashboard/jobs/manage/page.module.css';
 import CardContainer from '@/app/components/cardContainer';
 import { useEffect, useState } from 'react';
-import { _apiCall } from '@/app/utils/helpers/functions';
+import { _apiCall, checkForUserOrg } from '@/app/utils/helpers/functions';
 import { API_SERVICES } from '@/app/utils/constants';
+import NoOrganizationPage from '@/app/components/noOrganizationPage';
 
 const ManageJobsPage = () => {
   const [jobs, setJobs] = useState({});
 
   const [loading, setLoading] = useState(false);
+
+  const userHasOrg = checkForUserOrg();
 
   const retrieveJobs = async () => {
     try {
@@ -37,7 +39,7 @@ const ManageJobsPage = () => {
 
   return (
     <CardContainer title={'Manage Jobs'}>
-      {!loading ? (
+      {!loading && userHasOrg ? (
         <div className={styles.columnsContainer}>
           <ManageColumn title={'In Queue'} jobs={jobs[1]} />
           <Divider layout='vertical' />
@@ -47,7 +49,9 @@ const ManageJobsPage = () => {
           <Divider layout='vertical' />
           <ManageColumn title={'Done'} jobs={jobs[4]} />
         </div>
-      ) : null}
+      ) : (
+        <NoOrganizationPage />
+      )}
     </CardContainer>
   );
 };

@@ -20,12 +20,13 @@ import {
   defaultDateObj,
   defaultLocationObj,
 } from '@/app/utils/constants';
-import { _apiCall } from '@/app/utils/helpers/functions';
+import { _apiCall, checkForUserOrg } from '@/app/utils/helpers/functions';
 import CardContainer from '@/app/components/cardContainer';
 import CustomerSection from '@/app/components/form/customerSection';
 import LocationSection from '@/app/components/form/locationSection';
 import ServiceSection from '@/app/components/form/serviceSection';
 import DateSection from '@/app/components/form/dateSection';
+import NoOrganizationPage from '@/app/components/noOrganizationPage';
 
 const NewJobPage = () => {
   const router = useRouter();
@@ -49,6 +50,8 @@ const NewJobPage = () => {
   const [userId, setUserId] = useState(null);
 
   const [loading, setLoading] = useState(false);
+
+  const userHasOrg = checkForUserOrg();
 
   const retrieveExistingData = async (passedUserId) => {
     try {
@@ -281,79 +284,90 @@ const NewJobPage = () => {
 
   return (
     <CardContainer title={'Create New Job'} overflow='scroll'>
-      <InputSection
-        handleOnClick={updateOpenSection}
-        showSection={showSection}
-        sectionIndex={0}
-        title={'Customer Information'}>
-        <CustomerSection
-          customer={customer}
-          updateCustomer={updateCustomer}
-          selectExistingCustomer={selectExistingCustomer}
-          existingCustomers={existingCustomers}
-          disableEditing={customer._id}
-          resetCustomer={resetCustomer}
-        />
-      </InputSection>
-      <InputSection
-        handleOnClick={updateOpenSection}
-        showSection={showSection}
-        sectionIndex={1}
-        title={'Location Details'}>
-        <LocationSection
-          location={location}
-          updateLocation={updateLocation}
-          selectExistingLocation={selectExistingLocation}
-          existingLocations={existingLocations}
-          disableEditing={location._id}
-          resetLocation={resetLocation}
-        />
-      </InputSection>
-      <InputSection
-        handleOnClick={updateOpenSection}
-        showSection={showSection}
-        sectionIndex={2}
-        title={'Service Details'}>
-        <ServiceSection
-          services={services}
-          existingServices={existingServices}
-          addService={addService}
-          saveService={saveService}
-          deleteService={deleteService}
-          selectExistingService={selectExistingService}
-          updateIsAnyEditing={updateIsAnyEditing}
-          removeIsAnyEditing={removeIsAnyEditing}
-        />
-      </InputSection>
-      <InputSection
-        handleOnClick={updateOpenSection}
-        showSection={showSection}
-        sectionIndex={3}
-        title={'Date Details'}
-        section={DateSection}>
-        <DateSection date={date} updateDate={updateDate} />
-      </InputSection>
-      <div style={{ display: 'flex', alignItems: 'center', marginTop: 20 }}>
-        <Checkbox
-          onChange={(e) => setSendToCustomer(e.checked)}
-          checked={sendToCustomer}
-        />
-        <label htmlFor='ingredient1' className='ml-2' style={{ marginLeft: 6 }}>
-          Send confirmation email to customer
-        </label>
-      </div>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginTop: 20,
-        }}>
-        <Button style={{ marginRight: 10 }} onClick={() => handleCreateJob()}>
-          Create Job
-        </Button>
-        <div>Estimated Total: {formatPriceDisplay(estimatedTotal)}</div>
-      </div>
+      {userHasOrg ? (
+        <>
+          <InputSection
+            handleOnClick={updateOpenSection}
+            showSection={showSection}
+            sectionIndex={0}
+            title={'Customer Information'}>
+            <CustomerSection
+              customer={customer}
+              updateCustomer={updateCustomer}
+              selectExistingCustomer={selectExistingCustomer}
+              existingCustomers={existingCustomers}
+              disableEditing={customer._id}
+              resetCustomer={resetCustomer}
+            />
+          </InputSection>
+          <InputSection
+            handleOnClick={updateOpenSection}
+            showSection={showSection}
+            sectionIndex={1}
+            title={'Location Details'}>
+            <LocationSection
+              location={location}
+              updateLocation={updateLocation}
+              selectExistingLocation={selectExistingLocation}
+              existingLocations={existingLocations}
+              disableEditing={location._id}
+              resetLocation={resetLocation}
+            />
+          </InputSection>
+          <InputSection
+            handleOnClick={updateOpenSection}
+            showSection={showSection}
+            sectionIndex={2}
+            title={'Service Details'}>
+            <ServiceSection
+              services={services}
+              existingServices={existingServices}
+              addService={addService}
+              saveService={saveService}
+              deleteService={deleteService}
+              selectExistingService={selectExistingService}
+              updateIsAnyEditing={updateIsAnyEditing}
+              removeIsAnyEditing={removeIsAnyEditing}
+            />
+          </InputSection>
+          <InputSection
+            handleOnClick={updateOpenSection}
+            showSection={showSection}
+            sectionIndex={3}
+            title={'Date Details'}
+            section={DateSection}>
+            <DateSection date={date} updateDate={updateDate} />
+          </InputSection>
+          <div style={{ display: 'flex', alignItems: 'center', marginTop: 20 }}>
+            <Checkbox
+              onChange={(e) => setSendToCustomer(e.checked)}
+              checked={sendToCustomer}
+            />
+            <label
+              htmlFor='ingredient1'
+              className='ml-2'
+              style={{ marginLeft: 6 }}>
+              Send confirmation email to customer
+            </label>
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: 20,
+            }}>
+            <Button
+              style={{ marginRight: 10 }}
+              onClick={() => handleCreateJob()}>
+              Create Job
+            </Button>
+            <div>Estimated Total: {formatPriceDisplay(estimatedTotal)}</div>
+          </div>
+        </>
+      ) : (
+        <NoOrganizationPage />
+      )}
     </CardContainer>
   );
 };
