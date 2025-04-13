@@ -14,22 +14,18 @@ import {
 } from '@/app/utils/helpers/form';
 import { useRouter } from 'next/navigation';
 import { Checkbox } from 'primereact/checkbox';
-import InputDateSelect from '@/app/components/form/inputDateSelect';
-import InputSelectButton from '@/app/components/form/inputSelectButton';
 import {
   API_SERVICES,
-  dateRangeOptions,
   defaultCustomerObj,
+  defaultDateObj,
   defaultLocationObj,
 } from '@/app/utils/constants';
 import { _apiCall } from '@/app/utils/helpers/functions';
 import CardContainer from '@/app/components/cardContainer';
-import ContentContainer from '@/app/components/form/contentContainer';
-import InputContainer from '@/app/components/form/inputContainer';
-import FieldContainer from '@/app/components/form/fieldContainer';
 import CustomerSection from '@/app/components/form/customerSection';
 import LocationSection from '@/app/components/form/locationSection';
 import ServiceSection from '@/app/components/form/serviceSection';
+import DateSection from '@/app/components/form/dateSection';
 
 const NewJobPage = () => {
   const router = useRouter();
@@ -41,14 +37,12 @@ const NewJobPage = () => {
   const [customer, setCustomer] = useState(defaultCustomerObj);
   const [location, setLocation] = useState(defaultLocationObj);
   const [services, setServices] = useState([]);
-
-  // ------------------------------------- ^ cleaned up ----//
-
-  const [selectedDateRange, setSelectedDateRange] = useState('');
-  const [selectedStartDate, setSelectedStartDate] = useState('');
-  const [selectedEndDate, setSelectedEndDate] = useState('');
+  const [date, setDate] = useState(defaultDateObj);
 
   const [showSection, setShowSection] = useState(0);
+  const [isAnyEditing, setIsAnyEditing] = useState([]);
+
+  // ------------------------------------- ^ cleaned up ----//
 
   const [estimatedTotal, setEstimatedTotal] = useState(0);
   const [sendToCustomer, setSendToCustomer] = useState(false);
@@ -148,116 +142,6 @@ const NewJobPage = () => {
   //   setSelectedLocation(location);
   // };
 
-  const DateSection = () => {
-    return (
-      <ContentContainer>
-        <InputContainer>
-          <FieldContainer>
-            <InputSelectButton
-              title={'Service Dates'}
-              value={selectedDateRange}
-              setValue={setSelectedDateRange}
-              options={dateRangeOptions}
-              optionLabel={'label'}
-            />
-            <InputDateSelect
-              title={
-                selectedDateRange === 'multi'
-                  ? 'Start Date'
-                  : 'Choose service date'
-              }
-              value={selectedStartDate}
-              setValue={setSelectedStartDate}
-              placeholder={
-                selectedDateRange === 'multi' ? 'Start date' : 'Service Date'
-              }
-            />
-            {selectedDateRange === 'multi' ? (
-              <InputDateSelect
-                title={'End Date'}
-                value={selectedEndDate}
-                setValue={setSelectedEndDate}
-                placeholder='End Date'
-              />
-            ) : null}
-          </FieldContainer>
-        </InputContainer>
-      </ContentContainer>
-    );
-  };
-
-  const handleCreateJob = async () => {
-    console.log('Create job', customer, location, services);
-    // const customerObj = {
-    //   firstName,
-    //   lastName,
-    //   email,
-    //   phoneNumber,
-    // };
-    // const locationObj = {
-    //   street,
-    //   unitNumber,
-    //   city,
-    //   province,
-    //   postalCode,
-    //   country,
-    // };
-    // const dateObj = {
-    //   mode: selectedDateRange,
-    //   startDate: selectedStartDate,
-    //   endDate: selectedEndDate,
-    // };
-    // const servicesList = selectedServices;
-    // const customerIsValid = validateCustomerFields(customerObj);
-    // if (!customerIsValid.valid) {
-    //   alert(customerIsValid.message);
-    //   return;
-    // }
-    // const locationIsValid = validateLocationFields(locationObj);
-    // if (!locationIsValid.valid) {
-    //   alert(locationIsValid.message);
-    //   return;
-    // }
-    // const servicesIsValid = validateServices(servicesList);
-    // if (!servicesIsValid.valid) {
-    //   alert(servicesIsValid.message);
-    //   return;
-    // }
-    // const dateIsValid = validateDate(dateObj);
-    // if (!dateIsValid.valid) {
-    //   alert(dateIsValid.message);
-    //   return;
-    // }
-    // if (selectedUsername._id) {
-    //   customerObj._id = selectedUsername._id;
-    // }
-    // if (selectedLocation._id) {
-    //   locationObj._id = selectedLocation._id;
-    // }
-    // if (customerIsValid && locationIsValid && servicesIsValid && dateIsValid) {
-    //   try {
-    //     setLoading(true);
-    //     const res = await _apiCall(API_SERVICES.job, 'create', 'post', {
-    //       customer: customerObj,
-    //       location: locationObj,
-    //       services: servicesList,
-    //       date: dateObj,
-    //       userId,
-    //       sendToCustomer,
-    //     });
-    //     console.log('Create job res', res);
-    //     if (res.status === 200) {
-    //       alert('Job created');
-    //       // router.push('/dashboard/jobs/manage');
-    //     }
-    //   } catch (err) {
-    //     console.log(err);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // }
-  };
-
   // ------------ cleaned up ------------------- //
 
   const updateCustomer = useCallback((value, field) => {
@@ -356,10 +240,102 @@ const NewJobPage = () => {
     toggleExistingServiceSelected(passedService);
   };
 
+  const updateIsAnyEditing = (index, isEditing) => {
+    setIsAnyEditing((prevStates) => {
+      const newStates = [...prevStates];
+      newStates[index] = isEditing;
+      return newStates;
+    });
+  };
+
+  const removeIsAnyEditing = (index) => {
+    const newList = [...isAnyEditing];
+    newList.splice(index, 1);
+    setIsAnyEditing(newList);
+  };
+
+  const updateDate = useCallback((value, field) => {
+    setDate((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  }, []);
+
+  const handleCreateJob = async () => {
+    const customerObj = customer;
+    const locationObj = location;
+    const servicesList = services;
+    const dateObj = date;
+
+    const customerIsValid = validateCustomerFields(customerObj);
+    if (!customerIsValid.valid) {
+      alert(customerIsValid.message);
+      return;
+    }
+    const locationIsValid = validateLocationFields(locationObj);
+    if (!locationIsValid.valid) {
+      alert(locationIsValid.message);
+      return;
+    }
+    const servicesIsValid = validateServices(servicesList);
+    if (!servicesIsValid.valid) {
+      alert(servicesIsValid.message);
+      return;
+    }
+    const dateIsValid = validateDate(dateObj);
+    if (!dateIsValid.valid) {
+      alert(dateIsValid.message);
+      return;
+    }
+
+    console.log(
+      'Create Job Objects: ',
+      customerObj,
+      locationObj,
+      servicesList,
+      dateObj,
+    );
+    if (customerIsValid && locationIsValid && servicesIsValid && dateIsValid) {
+      try {
+        setLoading(true);
+        const res = await _apiCall(API_SERVICES.job, 'create', 'post', {
+          customer: customerObj,
+          location: locationObj,
+          services: servicesList,
+          date: dateObj,
+          userId,
+          sendToCustomer,
+        });
+        console.log('Create job res', res);
+        if (res.status === 200) {
+          alert('Job created');
+          // router.push('/dashboard/jobs/manage');
+        }
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const updateOpenSection = (index) => {
+    if (isAnyEditing.length === 0) {
+      setShowSection(index);
+    } else {
+      const noServicesEditing = isAnyEditing.every((state) => state === false);
+      if (noServicesEditing) {
+        setShowSection(index);
+      } else {
+        alert('A service is not saved');
+      }
+    }
+  };
+
   return (
     <CardContainer title={'Create New Job'} overflow='scroll'>
       <InputSection
-        handleOnClick={setShowSection}
+        handleOnClick={updateOpenSection}
         showSection={showSection}
         sectionIndex={0}
         title={'Customer Information'}>
@@ -373,7 +349,7 @@ const NewJobPage = () => {
         />
       </InputSection>
       <InputSection
-        handleOnClick={setShowSection}
+        handleOnClick={updateOpenSection}
         showSection={showSection}
         sectionIndex={1}
         title={'Location Details'}>
@@ -387,7 +363,7 @@ const NewJobPage = () => {
         />
       </InputSection>
       <InputSection
-        handleOnClick={setShowSection}
+        handleOnClick={updateOpenSection}
         showSection={showSection}
         sectionIndex={2}
         title={'Service Details'}>
@@ -398,15 +374,18 @@ const NewJobPage = () => {
           saveService={saveService}
           deleteService={deleteService}
           selectExistingService={selectExistingService}
+          updateIsAnyEditing={updateIsAnyEditing}
+          removeIsAnyEditing={removeIsAnyEditing}
         />
       </InputSection>
       <InputSection
-        handleOnClick={setShowSection}
+        handleOnClick={updateOpenSection}
         showSection={showSection}
         sectionIndex={3}
         title={'Date Details'}
-        section={DateSection}
-      />
+        section={DateSection}>
+        <DateSection date={date} updateDate={updateDate} />
+      </InputSection>
       <div style={{ display: 'flex', alignItems: 'center', marginTop: 20 }}>
         <Checkbox
           onChange={(e) => setSendToCustomer(e.checked)}

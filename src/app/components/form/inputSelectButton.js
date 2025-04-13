@@ -2,6 +2,7 @@ const { SelectButton } = require('primereact/selectbutton');
 
 const InputSelectButton = ({
   title,
+  field,
   value,
   setValue,
   options,
@@ -20,7 +21,7 @@ const InputSelectButton = ({
       <label>{title}</label>
       <SelectButton
         value={value}
-        onChange={(e) => setValue(e.value)}
+        onChange={(e) => setValue(e.value, field)}
         options={options}
         optionLabel={optionLabel}
         disabled={disabled}

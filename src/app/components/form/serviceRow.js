@@ -1,5 +1,5 @@
 const { Divider } = require('primereact/divider');
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import InputTextField from './inputTextField';
 import InputMultiSelect from './inputMultiSelect';
 import { dummyTaxes } from '../../../../dummyData';
@@ -25,10 +25,13 @@ const ServiceRow = ({
   saveService,
   deleteService,
   selectExistingService,
+  updateIsAnyEditing,
+  index,
+  removeIsAnyEditing,
 }) => {
   const [service, setService] = useState(serviceObj);
 
-  const [isEditing, setIsEditing] = useState(true);
+  const [isEditing, setIsEditing] = useState(serviceObj.name ? false : true);
   const [errorMessage, setErrorMessage] = useState('');
   const [showErrorDialog, setShowErrorDialog] = useState(false);
 
@@ -49,6 +52,7 @@ const ServiceRow = ({
 
   const handleDelete = () => {
     deleteService(service);
+    removeIsAnyEditing(index);
   };
 
   const handleSelectService = (passedService) => {
@@ -72,6 +76,10 @@ const ServiceRow = ({
       [field]: value,
     }));
   }, []);
+
+  useEffect(() => {
+    updateIsAnyEditing(index, isEditing);
+  }, [isEditing, index]);
 
   return (
     <ContentContainer style={{ flexWrap: 'wrap' }}>

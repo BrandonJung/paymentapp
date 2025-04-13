@@ -54,3 +54,9 @@ export const defaultServiceObj = {
   price: null,
   rate: 'flat',
 };
+
+export const defaultDateObj = {
+  type: 'single',
+  startDate: '',
+  endDate: '',
+};

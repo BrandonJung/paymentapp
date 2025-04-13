@@ -8,10 +8,12 @@ const ServiceSection = ({
   saveService,
   deleteService,
   selectExistingService,
+  updateIsAnyEditing,
+  removeIsAnyEditing,
 }) => {
   return (
     <div>
-      {services.map((service) => {
+      {services.map((service, index) => {
         return (
           <ServiceRow
             serviceObj={service}
@@ -20,6 +22,9 @@ const ServiceSection = ({
             saveService={saveService}
             deleteService={deleteService}
             selectExistingService={selectExistingService}
+            updateIsAnyEditing={updateIsAnyEditing}
+            index={index}
+            removeIsAnyEditing={removeIsAnyEditing}
           />
         );
       })}

@@ -2,6 +2,7 @@ import { Calendar } from 'primereact/calendar';
 
 const InputDateSelect = ({
   title,
+  field,
   value,
   setValue,
   disabled = false,
@@ -23,7 +24,7 @@ const InputDateSelect = ({
       <Calendar
         value={value}
         onChange={(e) => {
-          setValue(e.value);
+          setValue(e.value, field);
         }}
         placeholder={placeholder}
         disabled={disabled}
