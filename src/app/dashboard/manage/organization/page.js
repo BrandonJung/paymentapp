@@ -100,6 +100,7 @@ const OrganizationPage = () => {
         setOrganization(createOrgRes.details);
         setTaxesAndFees(createOrgRes.taxesAndFeeRates);
         setIsAnyEditing(isAnyEditingArray);
+        localStorage.setItem('userHasOrg', true);
         alert('Organization saved');
       }
     } catch (err) {
