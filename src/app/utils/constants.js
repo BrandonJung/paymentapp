@@ -15,6 +15,17 @@ export const dateRangeOptions = [
   },
 ];
 
+export const taxAndFeeTypes = [
+  {
+    label: 'Tax',
+    value: 'percent',
+  },
+  {
+    label: 'Fee',
+    value: 'flat',
+  },
+];
+
 export const containerMaxHeight = 'calc(100vh - 16px)';
 
 export const API_SERVICES = {
@@ -59,4 +70,17 @@ export const defaultDateObj = {
   type: 'single',
   startDate: '',
   endDate: '',
+};
+
+export const defaultOrgObj = {
+  name: '',
+  tag: '',
+  taxesAndFees: [],
+};
+
+export const defaultTaxAndFeeObj = {
+  _id: null,
+  name: '',
+  amount: null,
+  type: taxAndFeeTypes[0].value,
 };

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import FieldContainer from './fieldContainer';
 import InputSelectButton from './inputSelectButton';
 import InputNumberField from './inputNumberField';
@@ -9,50 +9,33 @@ import { Divider } from 'primereact/divider';
 import SaveDeleteEditButton from './saveDeleteEditButton';
 import { validateTaxAndFeeFields } from '@/app/utils/helpers/form';
 import { Dialog } from 'primereact/dialog';
+import { taxAndFeeTypes } from '@/app/utils/constants';
 
-const taxAndFeeTypes = [
-  {
-    label: 'Tax',
-    value: 'percent',
-  },
-  {
-    label: 'Fee',
-    value: 'flat',
-  },
-];
-
-const TaxAndFeeRow = ({ taxAndFee, taxesAndFees, setTaxesAndFees }) => {
-  const [type, setType] = useState(taxAndFeeTypes[0].value);
-  const [name, setName] = useState('');
-  const [amount, setAmount] = useState(null);
+const TaxAndFeeRow = ({
+  taxAndFeeObj,
+  saveTaxAndFee,
+  deleteTaxAndFee,
+  updateIsAnyEditing,
+  index,
+  removeIsAnyEditing,
+}) => {
+  const [taxAndFee, setTaxAndFee] = useState(taxAndFeeObj);
 
   const [errorMessage, setErrorMessage] = useState('');
   const [showErrorDialog, setShowErrorDialog] = useState(false);
 
-  const [isEditing, setIsEditing] = useState(true);
+  const [isEditing, setIsEditing] = useState(taxAndFee.name ? false : true);
 
   const handleSave = () => {
     if (!isEditing) {
       setIsEditing(true);
       return;
     }
-    const tempTaxesAndFees = [...taxesAndFees];
-    let tempTaxAndFee = {
-      ...taxAndFee,
-      identifier: taxAndFee.identifier || crypto.randomUUID(),
-      name,
-      type,
-      amount,
-    };
 
-    const allTaxesAndFeesValid = validateTaxAndFeeFields(tempTaxAndFee);
+    const allTaxesAndFeesValid = validateTaxAndFeeFields(taxAndFee);
     if (allTaxesAndFeesValid.valid) {
-      const index = tempTaxesAndFees.findIndex((t) => t.id === taxAndFee.id);
-      if (index !== -1) {
-        tempTaxesAndFees[index] = tempTaxAndFee;
-        setTaxesAndFees(tempTaxesAndFees);
-        setIsEditing(false);
-      }
+      saveTaxAndFee(taxAndFee);
+      setIsEditing(false);
     } else {
       setErrorMessage(allTaxesAndFeesValid.message);
       setShowErrorDialog(true);
@@ -60,22 +43,32 @@ const TaxAndFeeRow = ({ taxAndFee, taxesAndFees, setTaxesAndFees }) => {
   };
 
   const handleDelete = () => {
-    const tempTaxesAndFees = taxesAndFees.filter(
-      (taxAndFeeItem) => taxAndFee.identifier !== taxAndFeeItem.identifier,
-    );
-    setTaxesAndFees(tempTaxesAndFees);
+    deleteTaxAndFee(taxAndFee);
+    removeIsAnyEditing(index);
   };
 
+  const updateTaxAndFee = useCallback((value, field) => {
+    setTaxAndFee((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  }, []);
+
+  useEffect(() => {
+    updateIsAnyEditing(index, isEditing);
+  }, [isEditing, index]);
+
   return (
-    <ContentContainer>
+    <ContentContainer style={{ flexWrap: 'wrap' }}>
       <InputContainer>
         <FieldContainer>
           <InputTextField
-            title={type === 'flat' ? 'Fee name' : 'Tax name'}
-            value={name}
-            setValue={setName}
+            title={taxAndFee.type === 'flat' ? 'Fee name' : 'Tax name'}
+            field={'name'}
+            value={taxAndFee.name}
+            setValue={updateTaxAndFee}
             placeholder={
-              type === 'flat'
+              taxAndFee.type === 'flat'
                 ? 'Ex. Admin Fee, Products Fee'
                 : 'Ex. GST, PST, Alc'
             }
@@ -85,20 +78,22 @@ const TaxAndFeeRow = ({ taxAndFee, taxesAndFees, setTaxesAndFees }) => {
         <FieldContainer>
           <InputSelectButton
             title={'Type'}
-            value={type}
-            setValue={setType}
+            field={'type'}
+            value={taxAndFee.type}
+            setValue={updateTaxAndFee}
             options={taxAndFeeTypes}
             optionLabel={'label'}
             disabled={!isEditing}
           />
           <InputNumberField
-            title={type === 'flat' ? 'Amount' : 'Percent'}
-            value={amount}
-            setValue={setAmount}
+            title={taxAndFee.type === 'flat' ? 'Amount' : 'Percent'}
+            field={'amount'}
+            value={taxAndFee.amount}
+            setValue={updateTaxAndFee}
             disabled={!isEditing}
-            isCurrency={type === 'flat' ? true : false}
-            customSuffix={type === 'flat' ? '' : '%'}
-            numberOfDigits={type === 'flat' ? 2 : 0}
+            isCurrency={taxAndFee.type === 'flat' ? true : false}
+            customSuffix={taxAndFee.type === 'flat' ? '' : '%'}
+            numberOfDigits={taxAndFee.type === 'flat' ? 2 : 0}
           />
         </FieldContainer>
         <SaveDeleteEditButton

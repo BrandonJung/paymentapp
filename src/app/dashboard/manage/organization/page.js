@@ -1,30 +1,53 @@
 'use client';
 import CardContainer from '@/app/components/cardContainer';
-import ContentContainer from '@/app/components/form/contentContainer';
-import FieldContainer from '@/app/components/form/fieldContainer';
-import InputContainer from '@/app/components/form/inputContainer';
+import DetailsSection from '@/app/components/form/DetailsSection';
 import InputSection from '@/app/components/form/inputSection';
-import InputTextField from '@/app/components/form/inputTextField';
-import TaxAndFeeRow from '@/app/components/form/taxAndFeeRow';
-import { API_SERVICES } from '@/app/utils/constants';
+import TaxesAndFeesSection from '@/app/components/form/taxesAndFeesSection';
+import { API_SERVICES, defaultOrgObj } from '@/app/utils/constants';
 import {
+  createDefaultTaxAndFeeObj,
   validateOrgFields,
   validateTaxesAndFees,
 } from '@/app/utils/helpers/form';
 import { _apiCall, checkForUserOrg } from '@/app/utils/helpers/functions';
 import { Button } from 'primereact/button';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const OrganizationPage = () => {
   const [userHasOrg, setUserHasOrg] = useState(false);
 
-  const [organizationName, setOrganizationName] = useState('');
-  const [organizationTag, setOrganizationTag] = useState('');
+  const [organization, setOrganization] = useState(defaultOrgObj);
+
   const [taxesAndFees, setTaxesAndFees] = useState([]);
+  const [isAnyEditing, setIsAnyEditing] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const retrieveOrganizationDetails = () => {
-    return {};
+  const retrieveOrganizationDetails = async () => {
+    const userId = localStorage.getItem('userId');
+
+    const orgRes = await _apiCall(
+      API_SERVICES.organization,
+      'retrieve',
+      'get',
+      { userId },
+    );
+    console.log('Org res: ', orgRes);
+    if (orgRes.status === 200) {
+      const isAnyEditingArray = new Array(orgRes.taxesAndFeeRates.length)
+        .fill(0)
+        .map((e) => new Array(orgRes.taxesAndFeeRates.length).fill(!1));
+      setOrganization(orgRes.details);
+      setTaxesAndFees(orgRes.taxesAndFeeRates);
+      setIsAnyEditing(isAnyEditingArray);
+    }
+
+    try {
+      setLoading(true);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -35,68 +58,15 @@ const OrganizationPage = () => {
     setUserHasOrg(userHasOrgRes);
   }, []);
 
-  const DetailsSection = () => {
-    return (
-      <ContentContainer>
-        <InputContainer>
-          <FieldContainer>
-            <InputTextField
-              title={'Name*'}
-              value={organizationName}
-              setValue={setOrganizationName}
-              placeholder='Organization name'
-            />
-            <InputTextField
-              title={'Tag (3-5 characters)'}
-              value={organizationTag}
-              setValue={setOrganizationTag}
-              placeholder='For invoice number'
-              customMinLength={3}
-              customMaxLength={5}
-            />
-          </FieldContainer>
-        </InputContainer>
-        <div style={{ display: 'flex', flex: 1 }} />
-      </ContentContainer>
-    );
-  };
-
-  const handleAddTaxAndFee = () => {
-    let tempArray = [...taxesAndFees];
-    tempArray.push({
-      identifier: crypto.randomUUID(),
-      name: '',
-      code: '',
-      amount: 0,
-      type: 'percent',
-    });
-    setTaxesAndFees(tempArray);
-  };
-
-  const TaxesAndFeesSection = () => {
-    return (
-      <div>
-        {taxesAndFees.map((taxAndFee, index) => {
-          return (
-            <TaxAndFeeRow
-              key={taxAndFee.identifier || crypto.randomUUID()}
-              taxAndFee={taxAndFee}
-              taxesAndFees={taxesAndFees}
-              setTaxesAndFees={setTaxesAndFees}
-            />
-          );
-        })}
-        <Button onClick={() => handleAddTaxAndFee()}>Add Tax or Fee</Button>
-      </div>
-    );
-  };
-
   const handleCreateOrg = async () => {
-    const organizationObj = {
-      orgName: organizationName,
-      orgTaxAndFeeRates: taxesAndFees,
-      orgTag: organizationTag,
-    };
+    if (isAnyEditing.length > 0) {
+      const somethingEditing = isAnyEditing.every((state) => state === true);
+      if (somethingEditing) {
+        alert('A tax or fee is not saved');
+        return;
+      }
+    }
+    const organizationObj = { ...organization, taxesAndFees };
     const orgFieldsAreValid = validateOrgFields(organizationObj);
     if (!orgFieldsAreValid.valid) {
       alert(orgFieldsAreValid.message);
@@ -104,7 +74,7 @@ const OrganizationPage = () => {
     }
 
     const taxAndRatesAreValid = validateTaxesAndFees(
-      organizationObj.orgTaxAndFeeRates,
+      organizationObj.taxesAndFees,
     );
     if (!taxAndRatesAreValid.valid) {
       alert(taxAndRatesAreValid.message);
@@ -120,8 +90,17 @@ const OrganizationPage = () => {
         'post',
         { ...organizationObj, userId },
       );
+      console.log(createOrgRes);
       if (createOrgRes.status === 200) {
-        alert('Organization created');
+        const isAnyEditingArray = new Array(
+          createOrgRes.taxesAndFeeRates.length,
+        )
+          .fill(0)
+          .map((e) => new Array(createOrgRes.taxesAndFeeRates.length).fill(!1));
+        setOrganization(createOrgRes.details);
+        setTaxesAndFees(createOrgRes.taxesAndFeeRates);
+        setIsAnyEditing(isAnyEditingArray);
+        alert('Organization saved');
       }
     } catch (err) {
       console.log(err);
@@ -130,12 +109,70 @@ const OrganizationPage = () => {
     }
   };
 
+  const updateOrganization = useCallback((value, field) => {
+    setOrganization((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  }, []);
+
+  const addTaxAndFee = () => {
+    const defaultTaxAndFeeObj = createDefaultTaxAndFeeObj();
+    setTaxesAndFees((prevState) => [...prevState, defaultTaxAndFeeObj]);
+  };
+
+  const saveTaxAndFee = (passedTaxAndFee) => {
+    setTaxesAndFees((prevStates) =>
+      prevStates.map((item) => {
+        return item.identifier === passedTaxAndFee.identifier
+          ? { ...item, ...passedTaxAndFee }
+          : item;
+      }),
+    );
+  };
+
+  const deleteTaxAndFee = (passedTaxAndFee) => {
+    setTaxesAndFees((prevStates) =>
+      prevStates.filter(
+        (item) => item.identifier !== passedTaxAndFee.identifier,
+      ),
+    );
+  };
+
+  const updateIsAnyEditing = (index, isEditing) => {
+    setIsAnyEditing((prevStates) => {
+      const newStates = [...prevStates];
+      newStates[index] = isEditing;
+      return newStates;
+    });
+  };
+
+  const removeIsAnyEditing = (index) => {
+    const newList = [...isAnyEditing];
+    newList.splice(index, 1);
+    setIsAnyEditing(newList);
+  };
+
   return (
     <CardContainer
       title={userHasOrg ? 'New Organization' : 'Organization'}
       overflow='scroll'>
-      <InputSection title={'Details'} section={DetailsSection} />
-      <InputSection title={'Taxes and Fees'} section={TaxesAndFeesSection} />
+      <InputSection title={'Details'}>
+        <DetailsSection
+          organization={organization}
+          updateOrganization={updateOrganization}
+        />
+      </InputSection>
+      <InputSection title={'Taxes and Fees'}>
+        <TaxesAndFeesSection
+          taxesAndFees={taxesAndFees}
+          addTaxAndFee={addTaxAndFee}
+          saveTaxAndFee={saveTaxAndFee}
+          deleteTaxAndFee={deleteTaxAndFee}
+          updateIsAnyEditing={updateIsAnyEditing}
+          removeIsAnyEditing={removeIsAnyEditing}
+        />
+      </InputSection>
       <div
         style={{
           display: 'flex',

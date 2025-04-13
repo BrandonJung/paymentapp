@@ -1,4 +1,8 @@
-import { dateRangeOptions, defaultServiceObj } from '../constants';
+import {
+  dateRangeOptions,
+  defaultServiceObj,
+  defaultTaxAndFeeObj,
+} from '../constants';
 
 export const validateServiceFields = (service) => {
   const { name, description, taxes, quantity, price, rate } = service;
@@ -165,6 +169,14 @@ export const createDefaultServiceObj = () => {
   const identifier = crypto.randomUUID();
   return {
     ...defaultServiceObj,
+    identifier,
+  };
+};
+
+export const createDefaultTaxAndFeeObj = () => {
+  const identifier = crypto.randomUUID();
+  return {
+    ...defaultTaxAndFeeObj,
     identifier,
   };
 };
