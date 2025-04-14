@@ -1,8 +1,13 @@
+import { Card } from 'primereact/card';
 import { containerMaxHeight } from '../utils/constants';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
-const { Card } = require('primereact/card');
-
-const CardContainer = ({ title, overflow = 'hidden', children }) => {
+const CardContainer = ({
+  title,
+  overflow = 'hidden',
+  isLoading = false,
+  children,
+}) => {
   return (
     <div style={{ width: '100%' }}>
       <Card
@@ -11,7 +16,17 @@ const CardContainer = ({ title, overflow = 'hidden', children }) => {
           height: containerMaxHeight,
         }}
         title={title}>
-        {children}
+        {!isLoading ? (
+          children
+        ) : (
+          <ProgressSpinner
+            style={{
+              position: 'absolute',
+              top: '40%',
+              left: '50%',
+            }}
+          />
+        )}
       </Card>
     </div>
   );
