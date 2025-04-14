@@ -13,6 +13,7 @@ import InputContainer from './inputContainer';
 import SelectContainer from './selectContainer';
 import FieldContainer from './fieldContainer';
 import SaveDeleteEditButton from './saveDeleteEditButton';
+import { convertPriceToDisplay } from '@/app/utils/helpers/formatters';
 
 const rateOptions = [
   { label: 'Flat Rate', value: 'flat' },
@@ -113,7 +114,7 @@ const ServiceRow = ({
           <InputNumberField
             title={service.rate === 'hourly' ? 'Hourly' : 'Price'}
             field={'price'}
-            value={service.price}
+            value={convertPriceToDisplay(service.price)}
             setValue={updateService}
             isCurrency={true}
             numberOfDigits={2}

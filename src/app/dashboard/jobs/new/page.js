@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import InputSection from '@/app/components/form/inputSection';
 
 import { Button } from 'primereact/button';
-import { formatPriceDisplay } from '@/app/utils/helpers/formatters';
+import { convertPriceToDisplay } from '@/app/utils/helpers/formatters';
 import {
   createDefaultServiceObj,
   validateCustomerFields,
@@ -372,7 +372,10 @@ const NewJobPage = () => {
               onClick={() => handleCreateJob()}>
               Create Job
             </Button>
-            <div>Estimated Total: {formatPriceDisplay(estimatedTotal)}</div>
+            <div>
+              Estimated Total:{' '}
+              {`$${convertPriceToDisplay(estimatedTotal).toFixed(2)}`}
+            </div>
           </div>
         </>
       ) : (
