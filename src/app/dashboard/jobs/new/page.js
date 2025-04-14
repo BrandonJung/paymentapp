@@ -27,6 +27,7 @@ import LocationSection from '@/app/components/form/locationSection';
 import ServiceSection from '@/app/components/form/serviceSection';
 import DateSection from '@/app/components/form/dateSection';
 import NoOrganizationPage from '@/app/components/noOrganizationPage';
+import { Dialog } from 'primereact/dialog';
 
 const NewJobPage = () => {
   const router = useRouter();
@@ -50,6 +51,7 @@ const NewJobPage = () => {
   const [userId, setUserId] = useState(null);
 
   const [loading, setLoading] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
 
   const userHasOrg = checkForUserOrg();
 
@@ -258,8 +260,7 @@ const NewJobPage = () => {
         });
         console.log('Create job res', res);
         if (res.status === 200) {
-          alert('Job created');
-          // router.push('/dashboard/jobs/manage');
+          setShowDialog(true);
         }
       } catch (err) {
         console.log(err);
@@ -368,6 +369,18 @@ const NewJobPage = () => {
       ) : (
         <NoOrganizationPage />
       )}
+      <Dialog
+        header='Success!'
+        visible={showDialog}
+        closeOnEscape
+        style={{ width: '50vw' }}
+        onHide={() => {
+          if (!showDialog) return;
+          setShowDialog(false);
+          router.push('/dashboard/jobs/manage');
+        }}>
+        <p>Job created</p>
+      </Dialog>
     </CardContainer>
   );
 };

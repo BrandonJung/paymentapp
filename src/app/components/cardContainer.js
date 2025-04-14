@@ -5,7 +5,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 const CardContainer = ({
   title,
   overflow = 'hidden',
-  isLoading = false,
+  loading = false,
   children,
 }) => {
   return (
@@ -16,18 +16,23 @@ const CardContainer = ({
           height: containerMaxHeight,
         }}
         title={title}>
-        {!isLoading ? (
-          children
-        ) : (
-          <ProgressSpinner
-            style={{
-              position: 'absolute',
-              top: '40%',
-              left: '50%',
-            }}
-          />
-        )}
+        {children}
       </Card>
+      {loading ? (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: '#000000',
+            opacity: '60%',
+          }}>
+          <ProgressSpinner
+            style={{ position: 'absolute', top: '40%', left: '40%' }}
+          />
+        </div>
+      ) : null}
     </div>
   );
 };

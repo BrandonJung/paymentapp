@@ -11,6 +11,7 @@ import {
 } from '@/app/utils/helpers/form';
 import { _apiCall, checkForUserOrg } from '@/app/utils/helpers/functions';
 import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
 import { useCallback, useEffect, useState } from 'react';
 
 const OrganizationPage = () => {
@@ -20,29 +21,30 @@ const OrganizationPage = () => {
 
   const [taxesAndFees, setTaxesAndFees] = useState([]);
   const [isAnyEditing, setIsAnyEditing] = useState([]);
-  const [loading, setLoading] = useState(false);
+
+  const [showDialog, setShowDialog] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const retrieveOrganizationDetails = async () => {
     const userId = localStorage.getItem('userId');
 
-    const orgRes = await _apiCall(
-      API_SERVICES.organization,
-      'retrieve',
-      'get',
-      { userId },
-    );
-    console.log('Org res: ', orgRes);
-    if (orgRes.status === 200) {
-      const isAnyEditingArray = new Array(orgRes.taxesAndFeeRates.length)
-        .fill(0)
-        .map((e) => new Array(orgRes.taxesAndFeeRates.length).fill(!1));
-      setOrganization(orgRes.details);
-      setTaxesAndFees(orgRes.taxesAndFeeRates);
-      setIsAnyEditing(isAnyEditingArray);
-    }
-
     try {
       setLoading(true);
+      const orgRes = await _apiCall(
+        API_SERVICES.organization,
+        'retrieve',
+        'get',
+        { userId },
+      );
+      console.log('Org res: ', orgRes);
+      if (orgRes.status === 200) {
+        const isAnyEditingArray = new Array(orgRes.taxesAndFeeRates.length)
+          .fill(0)
+          .map((e) => new Array(orgRes.taxesAndFeeRates.length).fill(!1));
+        setOrganization(orgRes.details);
+        setTaxesAndFees(orgRes.taxesAndFeeRates);
+        setIsAnyEditing(isAnyEditingArray);
+      }
     } catch (err) {
       console.log(err);
     } finally {
@@ -101,7 +103,7 @@ const OrganizationPage = () => {
         setTaxesAndFees(createOrgRes.taxesAndFeeRates);
         setIsAnyEditing(isAnyEditingArray);
         localStorage.setItem('userHasOrg', true);
-        alert('Organization saved');
+        setShowDialog(true);
       }
     } catch (err) {
       console.log(err);
@@ -155,9 +157,7 @@ const OrganizationPage = () => {
   };
 
   return (
-    <CardContainer
-      title={userHasOrg ? 'New Organization' : 'Organization'}
-      overflow='scroll'>
+    <CardContainer title={'Organization'} overflow='scroll'>
       <InputSection title={'Details'}>
         <DetailsSection
           organization={organization}
@@ -181,10 +181,23 @@ const OrganizationPage = () => {
           alignItems: 'center',
           marginTop: 20,
         }}>
-        <Button style={{ marginRight: 10 }} onClick={() => handleCreateOrg()}>
+        <Button
+          styles={{ marginRight: 10 }}
+          onClick={() => handleCreateOrg()}
+          disabled={loading}>
           Save
         </Button>
       </div>
+      <Dialog
+        header='Success!'
+        visible={showDialog}
+        style={{ width: '50vw' }}
+        onHide={() => {
+          if (!showDialog) return;
+          setShowDialog(false);
+        }}>
+        <p>Organization saved</p>
+      </Dialog>
     </CardContainer>
   );
 };

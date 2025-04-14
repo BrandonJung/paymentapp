@@ -20,7 +20,7 @@ const DetailsSection = ({ organization, updateOrganization }) => {
             field={'tag'}
             value={organization.tag}
             setValue={updateOrganization}
-            placeholder='For invoice number'
+            placeholder='For invoice numbers'
             customMinLength={3}
             customMaxLength={5}
           />
