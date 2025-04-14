@@ -23,9 +23,11 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
-    if (userId) {
-      setIsLoggedIn(true);
+    if (typeof window !== 'undefined') {
+      const userId = localStorage.getItem('userId');
+      if (userId) {
+        setIsLoggedIn(true);
+      }
     }
   }, []);
 

@@ -53,7 +53,7 @@ const NewJobPage = () => {
   const [loading, setLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
 
-  const userHasOrg = checkForUserOrg();
+  const [userHasOrg, setUserHasOrg] = useState(false);
 
   const retrieveExistingData = async (passedUserId) => {
     try {
@@ -82,9 +82,18 @@ const NewJobPage = () => {
   }, [userId]);
 
   useEffect(() => {
-    const userIdRes = localStorage.getItem('userId');
-    if (userIdRes) {
-      setUserId(userIdRes);
+    if (typeof window !== 'undefined') {
+      const userIdRes = localStorage.getItem('userId');
+      if (userIdRes) {
+        setUserId(userIdRes);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const userHasOrgRes = checkForUserOrg();
+      setUserHasOrg(userHasOrgRes);
     }
   }, []);
 

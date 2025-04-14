@@ -53,11 +53,13 @@ const OrganizationPage = () => {
   };
 
   useEffect(() => {
-    const userHasOrgRes = checkForUserOrg();
-    if (userHasOrgRes) {
-      retrieveOrganizationDetails();
+    if (typeof window !== undefined) {
+      const userHasOrgRes = checkForUserOrg();
+      if (userHasOrgRes) {
+        retrieveOrganizationDetails();
+        setUserHasOrg(userHasOrgRes);
+      }
     }
-    setUserHasOrg(userHasOrgRes);
   }, []);
 
   const handleCreateOrg = async () => {

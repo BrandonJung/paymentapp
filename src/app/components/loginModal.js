@@ -25,12 +25,14 @@ const LoginModal = ({ modalVisible, setModalVisible }) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const setLocalStorageItems = (res) => {
-    localStorage.setItem('userId', res.userId);
-    localStorage.setItem('accessToken', res.accessToken);
-    if (res.userHasOrg) {
-      localStorage.setItem('userHasOrg', true);
-    } else {
-      localStorage.setItem('userHasOrg', false);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('userId', res.userId);
+      localStorage.setItem('accessToken', res.accessToken);
+      if (res.userHasOrg) {
+        localStorage.setItem('userHasOrg', true);
+      } else {
+        localStorage.setItem('userHasOrg', false);
+      }
     }
   };
 

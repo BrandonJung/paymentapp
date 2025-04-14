@@ -13,7 +13,7 @@ const ManageJobsPage = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const userHasOrg = checkForUserOrg();
+  const [userHasOrg, setUserHasOrg] = useState(false);
 
   const retrieveJobs = async () => {
     try {
@@ -32,6 +32,13 @@ const ManageJobsPage = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const userHasOrgRes = checkForUserOrg();
+      setUserHasOrg(userHasOrgRes);
+    }
+  }, []);
 
   useEffect(() => {
     retrieveJobs();
