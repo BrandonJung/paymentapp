@@ -158,7 +158,7 @@ const ServiceRow = ({
           onChange={(e) => {
             handleSelectService(e.value);
           }}
-          options={existingServices.filter((item) => !item.selected)}
+          options={existingServices?.filter((item) => !item.selected)}
           optionLabel='search'
           placeholder='Search services'
           disabled={!isEditing}
