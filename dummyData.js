@@ -147,7 +147,7 @@ export const dummyTaxes = [
   {
     name: 'Alcohol',
     code: 'alc',
-    amount: 2200,
+    amount: 22,
     type: 'flat',
   },
 ];
