@@ -79,7 +79,6 @@ export const defaultOrgObj = {
 };
 
 export const defaultTaxAndFeeObj = {
-  _id: null,
   name: '',
   amount: null,
   type: taxAndFeeTypes[0].value,

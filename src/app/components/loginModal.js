@@ -71,7 +71,7 @@ const LoginModal = ({ modalVisible, setModalVisible }) => {
         console.log('Logged in', res);
         if (res.status === 200) {
           setErrorMessage('');
-          setLocalStorageItems(res);
+          setLocalStorageItems('userId', res.userId);
           router.push('/dashboard');
         } else {
           setErrorMessage('Invalid login credentials');

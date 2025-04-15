@@ -23,7 +23,7 @@ const OrganizationPage = () => {
   const [isAnyEditing, setIsAnyEditing] = useState([]);
 
   const [showDialog, setShowDialog] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const retrieveOrganizationDetails = async () => {
     const userId = localStorage.getItem('userId');

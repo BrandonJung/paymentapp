@@ -135,18 +135,20 @@ export const dummyTaxes = [
   {
     name: 'GST',
     code: 'gst',
-    amount: 0.05,
+    amount: 5,
+    type: 'percent',
   },
   {
     name: 'PST',
     code: 'pst',
-    amount: 0.07,
+    amount: 7,
+    type: 'percent',
   },
   {
     name: 'Alcohol',
     code: 'alc',
-    amount: 0.1,
-    type: 'percent' || 'flat',
+    amount: 2200,
+    type: 'flat',
   },
 ];
 
