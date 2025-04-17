@@ -228,6 +228,14 @@ const NewJobPage = () => {
     const servicesList = services;
     const dateObj = date;
 
+    console.log(
+      'Create Job Objects: ',
+      customerObj,
+      locationObj,
+      servicesList,
+      dateObj,
+    );
+
     const customerIsValid = validateCustomerFields(customerObj);
     if (!customerIsValid.valid) {
       alert(customerIsValid.message);
@@ -249,13 +257,6 @@ const NewJobPage = () => {
       return;
     }
 
-    console.log(
-      'Create Job Objects: ',
-      customerObj,
-      locationObj,
-      servicesList,
-      dateObj,
-    );
     if (customerIsValid && locationIsValid && servicesIsValid && dateIsValid) {
       try {
         setLoading(true);
