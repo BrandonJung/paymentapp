@@ -35,6 +35,7 @@ const NewJobPage = () => {
   const [existingCustomers, setExistingCustomers] = useState(null);
   const [existingLocations, setExistingLocations] = useState(null);
   const [existingServices, setExistingServices] = useState(null);
+  const [organization, setOrganization] = useState(null);
 
   const [customer, setCustomer] = useState(defaultCustomerObj);
   const [location, setLocation] = useState(defaultLocationObj);
@@ -69,6 +70,7 @@ const NewJobPage = () => {
         setExistingCustomers(res.existingCustomers);
         setExistingLocations(res.existingLocations);
         setExistingServices(modifiedExistingServices);
+        setOrganization(res.organization);
       }
     } catch (err) {
       console.log(err);
@@ -228,15 +230,6 @@ const NewJobPage = () => {
     const servicesList = services;
     const dateObj = date;
 
-    for (let serviceIndex in servicesList) {
-      const service = servicesList[serviceIndex];
-      for (let tf of service.taxesAndFees) {
-        if (tf.type === 'flat') {
-          tf.amount *= 100;
-        }
-      }
-    }
-
     console.log(
       'Create Job Objects: ',
       customerObj,
@@ -348,6 +341,7 @@ const NewJobPage = () => {
               selectExistingService={selectExistingService}
               updateIsAnyEditing={updateIsAnyEditing}
               removeIsAnyEditing={removeIsAnyEditing}
+              organization={organization}
             />
           </InputSection>
           <InputSection

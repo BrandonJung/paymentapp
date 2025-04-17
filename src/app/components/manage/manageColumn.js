@@ -13,7 +13,7 @@ const ManageColumn = ({ title, customFlex = 1, jobs }) => {
         <div>
           {jobs?.length
             ? jobs.map((job, index) => {
-                return <ManageJobCard key={`${job.id}_${index}`} job={job} />;
+                return <ManageJobCard key={`${job._id}_${index}`} job={job} />;
               })
             : null}
         </div>

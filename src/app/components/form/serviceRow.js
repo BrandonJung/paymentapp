@@ -29,6 +29,7 @@ const ServiceRow = ({
   updateIsAnyEditing,
   index,
   removeIsAnyEditing,
+  organization,
 }) => {
   const [service, setService] = useState(serviceObj);
 
@@ -141,7 +142,7 @@ const ServiceRow = ({
             field={'taxesAndFees'}
             value={service.taxesAndFees}
             setValue={updateService}
-            options={dummyTaxes}
+            options={organization?.taxesAndFeeRates}
             optionLabel='name'
             placeholder={'Select Applicable Taxes'}
             disabled={!isEditing}

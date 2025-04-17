@@ -10,6 +10,7 @@ const ServiceSection = ({
   selectExistingService,
   updateIsAnyEditing,
   removeIsAnyEditing,
+  organization,
 }) => {
   return (
     <div>
@@ -25,6 +26,7 @@ const ServiceSection = ({
             updateIsAnyEditing={updateIsAnyEditing}
             index={index}
             removeIsAnyEditing={removeIsAnyEditing}
+            organization={organization}
           />
         );
       })}
