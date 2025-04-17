@@ -27,7 +27,13 @@ const InputNumberField = ({
       <label>{title}</label>
       <InputNumber
         value={value}
-        onValueChange={(e) => setValue(e.value, field)}
+        onValueChange={(e) => {
+          if (field === 'price') {
+            setValue(e.value * 100, field);
+          } else {
+            setValue(e.value, field);
+          }
+        }}
         mode={isCurrency ? 'currency' : 'decimal'}
         currency={currency}
         showButtons={showButtons}

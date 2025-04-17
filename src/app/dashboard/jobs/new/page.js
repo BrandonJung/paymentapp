@@ -228,6 +228,15 @@ const NewJobPage = () => {
     const servicesList = services;
     const dateObj = date;
 
+    for (let serviceIndex in servicesList) {
+      const service = servicesList[serviceIndex];
+      for (let tf of service.taxesAndFees) {
+        if (tf.type === 'flat') {
+          tf.amount *= 100;
+        }
+      }
+    }
+
     console.log(
       'Create Job Objects: ',
       customerObj,

@@ -33,6 +33,7 @@ const ServiceRow = ({
   const [service, setService] = useState(serviceObj);
 
   const [isEditing, setIsEditing] = useState(serviceObj.name ? false : true);
+  const [selectedExisting, setSelectedExisting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [showErrorDialog, setShowErrorDialog] = useState(false);
 
@@ -57,11 +58,14 @@ const ServiceRow = ({
   };
 
   const handleSelectService = (passedService) => {
+    setSelectedExisting(true);
     selectExistingService(passedService);
-    const { name, description, rate, price, taxesAndFees, _id } = passedService;
+    const { name, description, rate, price, taxesAndFees, quantity, _id } =
+      passedService;
     const { identifier } = service;
     setService({
       identifier,
+      quantity,
       name,
       description,
       rate,
@@ -161,7 +165,7 @@ const ServiceRow = ({
           options={existingServices?.filter((item) => !item.selected)}
           optionLabel='search'
           placeholder='Search services'
-          disabled={!isEditing}
+          disabled={!isEditing || selectedExisting}
         />
       </SelectContainer>
       <Divider />
