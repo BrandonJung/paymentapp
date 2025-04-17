@@ -20,18 +20,19 @@ const InputSection = ({
             style={{
               cursor: handleOnClick ? 'pointer' : 'default',
             }}
-            onClick={() => {
-              if (handleOnClick) {
-                if (showSection === sectionIndex) {
-                  handleOnClick(-1);
-                } else {
-                  handleOnClick(sectionIndex);
-                }
-              }
-            }}>
+            // onClick={() => {
+            //   if (handleOnClick) {
+            //     if (showSection === sectionIndex) {
+            //       handleOnClick(-1);
+            //     } else {
+            //       handleOnClick(sectionIndex);
+            //     }
+            //   }
+            // }}
+          >
             {title}
           </h2>
-          {handleOnClick ? (
+          {/* {handleOnClick ? (
             <i
               style={{
                 cursor: 'pointer',
@@ -51,9 +52,10 @@ const InputSection = ({
                   ? 'pi pi-angle-up'
                   : 'pi pi-angle-down'
               }></i>
-          ) : null}
+          ) : null} */}
         </div>
-        {showSection === sectionIndex ? children : null}
+        {/* {showSection === sectionIndex ? children : null} */}
+        {children}
       </div>
       <Divider />
     </>
