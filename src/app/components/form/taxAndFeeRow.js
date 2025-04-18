@@ -11,27 +11,15 @@ import { validateTaxAndFeeFields } from '@/app/utils/helpers/form';
 import { Dialog } from 'primereact/dialog';
 import { taxAndFeeTypes } from '@/app/utils/constants';
 
-const TaxAndFeeRow = ({
-  taxAndFeeObj,
-  saveTaxAndFee,
-  deleteTaxAndFee,
-  updateIsAnyEditing,
-  index,
-  removeIsAnyEditing,
-}) => {
+const TaxAndFeeRow = ({ taxAndFeeObj, saveTaxAndFee, deleteTaxAndFee }) => {
   const [taxAndFee, setTaxAndFee] = useState(taxAndFeeObj);
 
   const [errorMessage, setErrorMessage] = useState('');
   const [showErrorDialog, setShowErrorDialog] = useState(false);
 
-  const [isEditing, setIsEditing] = useState(taxAndFee.name ? false : true);
+  const [isEditing, setIsEditing] = useState(taxAndFeeObj?.name ? false : true);
 
   const handleSave = () => {
-    if (!isEditing) {
-      setIsEditing(true);
-      return;
-    }
-
     const allTaxesAndFeesValid = validateTaxAndFeeFields(taxAndFee);
     if (allTaxesAndFeesValid.valid) {
       saveTaxAndFee(taxAndFee);
@@ -42,9 +30,12 @@ const TaxAndFeeRow = ({
     }
   };
 
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
   const handleDelete = () => {
     deleteTaxAndFee(taxAndFee);
-    removeIsAnyEditing(index);
   };
 
   const updateTaxAndFee = useCallback((value, field) => {
@@ -53,10 +44,6 @@ const TaxAndFeeRow = ({
       [field]: value,
     }));
   }, []);
-
-  useEffect(() => {
-    updateIsAnyEditing(index, isEditing);
-  }, [isEditing, index]);
 
   return (
     <ContentContainer style={{ flexWrap: 'wrap' }}>
@@ -99,6 +86,7 @@ const TaxAndFeeRow = ({
         <SaveDeleteEditButton
           isEditing={isEditing}
           handleSave={handleSave}
+          handleEdit={handleEdit}
           handleDelete={handleDelete}
         />
       </InputContainer>

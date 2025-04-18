@@ -6,22 +6,17 @@ const TaxesAndFeesSection = ({
   addTaxAndFee,
   saveTaxAndFee,
   deleteTaxAndFee,
-  updateIsAnyEditing,
-  removeIsAnyEditing,
 }) => {
   return (
     <div>
       {taxesAndFees.map((taxAndFee, index) => {
         return (
           <TaxAndFeeRow
+            key={taxAndFee?.identifier || crypto.randomUUID()}
             taxAndFeeObj={taxAndFee}
-            key={taxAndFee.identifier || crypto.randomUUID()}
             taxesAndFees={taxesAndFees}
             saveTaxAndFee={saveTaxAndFee}
             deleteTaxAndFee={deleteTaxAndFee}
-            updateIsAnyEditing={updateIsAnyEditing}
-            index={index}
-            removeIsAnyEditing={removeIsAnyEditing}
           />
         );
       })}

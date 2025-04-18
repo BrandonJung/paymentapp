@@ -20,16 +20,15 @@ const OrganizationPage = () => {
   const [organization, setOrganization] = useState(defaultOrgObj);
 
   const [taxesAndFees, setTaxesAndFees] = useState([]);
-  const [isAnyEditing, setIsAnyEditing] = useState([]);
+  const [isAnyEditing, setIsAnyEditing] = useState(0);
 
   const [showDialog, setShowDialog] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const retrieveOrganizationDetails = async () => {
     const userId = localStorage.getItem('userId');
 
     try {
-      setLoading(true);
       const orgRes = await _apiCall(
         API_SERVICES.organization,
         'retrieve',
@@ -38,17 +37,19 @@ const OrganizationPage = () => {
       );
       console.log('Org res: ', orgRes);
       if (orgRes.status === 200) {
-        const isAnyEditingArray = new Array(orgRes.taxesAndFeeRates.length)
-          .fill(0)
-          .map((e) => new Array(orgRes.taxesAndFeeRates.length).fill(!1));
         setOrganization(orgRes.details);
-        setTaxesAndFees(orgRes.taxesAndFeeRates);
-        setIsAnyEditing(isAnyEditingArray);
+        const cloneTaxAndFeeRates = orgRes.taxesAndFeeRates;
+        cloneTaxAndFeeRates.map((tf) => {
+          if (tf.type === 'flat') {
+            tf.amount = tf.amount / 100;
+          }
+        });
+        setTaxesAndFees(cloneTaxAndFeeRates);
       }
     } catch (err) {
       console.log(err);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -56,19 +57,16 @@ const OrganizationPage = () => {
     if (typeof window !== undefined) {
       const userHasOrgRes = checkForUserOrg();
       if (userHasOrgRes) {
-        retrieveOrganizationDetails();
         setUserHasOrg(userHasOrgRes);
+        retrieveOrganizationDetails();
       }
     }
   }, []);
 
   const handleCreateOrg = async () => {
-    if (isAnyEditing.length > 0) {
-      const somethingEditing = isAnyEditing.every((state) => state === true);
-      if (somethingEditing) {
-        alert('A tax or fee is not saved');
-        return;
-      }
+    if (isAnyEditing > 0) {
+      alert('A tax or fee is not saved');
+      return;
     }
     const organizationObj = { ...organization, taxesAndFees };
     const orgFieldsAreValid = validateOrgFields(organizationObj);
@@ -86,7 +84,6 @@ const OrganizationPage = () => {
     }
 
     try {
-      setLoading(true);
       const userId = localStorage.getItem('userId');
       const createOrgRes = await _apiCall(
         API_SERVICES.organization,
@@ -109,8 +106,6 @@ const OrganizationPage = () => {
       }
     } catch (err) {
       console.log(err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -124,6 +119,7 @@ const OrganizationPage = () => {
   const addTaxAndFee = () => {
     const defaultTaxAndFeeObj = createDefaultTaxAndFeeObj();
     setTaxesAndFees((prevState) => [...prevState, defaultTaxAndFeeObj]);
+    isEditingTax();
   };
 
   const saveTaxAndFee = (passedTaxAndFee) => {
@@ -134,6 +130,7 @@ const OrganizationPage = () => {
           : item;
       }),
     );
+    saveEditingTax();
   };
 
   const deleteTaxAndFee = (passedTaxAndFee) => {
@@ -142,20 +139,15 @@ const OrganizationPage = () => {
         (item) => item.identifier !== passedTaxAndFee.identifier,
       ),
     );
+    saveEditingTax();
   };
 
-  const updateIsAnyEditing = (index, isEditing) => {
-    setIsAnyEditing((prevStates) => {
-      const newStates = [...prevStates];
-      newStates[index] = isEditing;
-      return newStates;
-    });
+  const isEditingTax = () => {
+    setIsAnyEditing(isAnyEditing + 1);
   };
 
-  const removeIsAnyEditing = (index) => {
-    const newList = [...isAnyEditing];
-    newList.splice(index, 1);
-    setIsAnyEditing(newList);
+  const saveEditingTax = () => {
+    setIsAnyEditing(isAnyEditing - 1);
   };
 
   return (
@@ -172,8 +164,8 @@ const OrganizationPage = () => {
           addTaxAndFee={addTaxAndFee}
           saveTaxAndFee={saveTaxAndFee}
           deleteTaxAndFee={deleteTaxAndFee}
-          updateIsAnyEditing={updateIsAnyEditing}
-          removeIsAnyEditing={removeIsAnyEditing}
+          isEditingTax={isEditingTax}
+          saveEditingTax={saveEditingTax}
         />
       </InputSection>
       <div
@@ -183,10 +175,7 @@ const OrganizationPage = () => {
           alignItems: 'center',
           marginTop: 20,
         }}>
-        <Button
-          styles={{ marginRight: 10 }}
-          onClick={() => handleCreateOrg()}
-          disabled={loading}>
+        <Button styles={{ marginRight: 10 }} onClick={() => handleCreateOrg()}>
           Save
         </Button>
       </div>

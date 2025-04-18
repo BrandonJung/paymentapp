@@ -106,12 +106,19 @@ export default function Layout({ children }) {
           },
         },
         {
-          label: 'Users',
-          icon: 'pi pi-address-book',
+          label: 'Services',
+          icon: 'pi pi-warehouse',
           command: () => {
-            router.push('/dashboard/manage/users');
+            router.push('/dashboard/manage/services');
           },
         },
+        // {
+        //   label: 'Users',
+        //   icon: 'pi pi-address-book',
+        //   command: () => {
+        //     router.push('/dashboard/manage/users');
+        //   },
+        // },
       ],
     },
     {

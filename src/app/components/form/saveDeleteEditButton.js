@@ -1,6 +1,11 @@
 import { Button } from 'primereact/button';
 
-const SaveDeleteEditButton = ({ isEditing, handleDelete, handleSave }) => {
+const SaveDeleteEditButton = ({
+  isEditing,
+  handleDelete,
+  handleSave,
+  handleEdit,
+}) => {
   return (
     <div
       style={{
@@ -39,7 +44,11 @@ const SaveDeleteEditButton = ({ isEditing, handleDelete, handleSave }) => {
         ) : null}
         <Button
           onClick={() => {
-            handleSave();
+            if (isEditing) {
+              handleSave();
+            } else {
+              handleEdit();
+            }
           }}>
           {isEditing ? 'Save' : 'Edit'}
           <i
