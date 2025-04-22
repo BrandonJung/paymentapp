@@ -18,11 +18,12 @@ const SaveDeleteEditButton = ({
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: isEditing ? 'space-between' : 'flex-end',
+          justifyContent:
+            isEditing && handleDelete ? 'space-between' : 'flex-end',
           flex: 1,
           marginRight: 20,
         }}>
-        {isEditing ? (
+        {isEditing && handleDelete ? (
           <Button
             onClick={() => {
               handleDelete();

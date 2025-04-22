@@ -74,7 +74,7 @@ export default function Layout({ children }) {
           },
         },
         {
-          label: 'View All',
+          label: 'History',
           icon: 'pi pi-book',
           command: () => {
             router.push('/dashboard/jobs/view');

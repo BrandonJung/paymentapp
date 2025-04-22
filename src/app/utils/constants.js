@@ -4,6 +4,17 @@ export const COLOURS = {
   tertiary: '#AE9EEE',
 };
 
+export const paymentOptions = [
+  {
+    label: 'Credit Card',
+    value: 'cc',
+  },
+  {
+    label: 'Cash',
+    value: 'cash',
+  },
+];
+
 export const dateRangeOptions = [
   {
     label: 'Single-Day',
@@ -82,4 +93,24 @@ export const defaultTaxAndFeeObj = {
   name: '',
   amount: null,
   type: taxAndFeeTypes[0].value,
+};
+
+export const defaultPaymentInformation = {
+  method: 'cc',
+  creditCard: {
+    _id: '',
+    firstName: '',
+    lastName: '',
+    number: '',
+    expiryDate: '',
+    cvc: '',
+  },
+};
+
+export const defaultBillingInformation = {
+  billing: {
+    _id: '',
+    firstName: '',
+    lastName: '',
+  },
 };

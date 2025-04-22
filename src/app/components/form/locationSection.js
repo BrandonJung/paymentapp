@@ -91,6 +91,7 @@ const LocationSection = ({
             optionLabel='search'
             placeholder='Select past addresses'
             filter
+            disabled
           />
         </div>
         {location._id ? (

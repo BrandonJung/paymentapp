@@ -19,6 +19,7 @@ const InputDateSelect = ({
         paddingRight: 20,
         marginBottom: 20,
         minWidth: 250,
+        maxWidth: '40%',
       }}>
       <label>{title}</label>
       <Calendar

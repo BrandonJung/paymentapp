@@ -25,14 +25,12 @@ const LoginModal = ({ modalVisible, setModalVisible }) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const setLocalStorageItems = (res) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('userId', res.userId);
-      localStorage.setItem('accessToken', res.accessToken);
-      if (res.userHasOrg) {
-        localStorage.setItem('userHasOrg', true);
-      } else {
-        localStorage.setItem('userHasOrg', false);
-      }
+    localStorage.setItem('userId', res.userId);
+    localStorage.setItem('accessToken', res.accessToken);
+    if (res.userHasOrg) {
+      localStorage.setItem('userHasOrg', true);
+    } else {
+      localStorage.setItem('userHasOrg', false);
     }
   };
 
@@ -71,7 +69,7 @@ const LoginModal = ({ modalVisible, setModalVisible }) => {
         console.log('Logged in', res);
         if (res.status === 200) {
           setErrorMessage('');
-          setLocalStorageItems('userId', res.userId);
+          setLocalStorageItems(res);
           router.push('/dashboard');
         } else {
           setErrorMessage('Invalid login credentials');

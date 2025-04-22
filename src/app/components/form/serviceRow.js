@@ -166,7 +166,8 @@ const ServiceRow = ({
           options={existingServices?.filter((item) => !item.selected)}
           optionLabel='search'
           placeholder='Search services'
-          disabled={!isEditing || selectedExisting}
+          // disabled={!isEditing || selectedExisting}
+          disabled
         />
       </SelectContainer>
       <Divider />

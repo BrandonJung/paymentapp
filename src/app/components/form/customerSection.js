@@ -55,52 +55,55 @@ const CustomerSection = ({
           />
         </FieldContainer>
       </InputContainer>
-      <Divider layout='vertical' />
-      <SelectContainer>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            flex: 1,
-          }}>
-          <label style={{ marginBottom: 4 }}>{'Existing Customers'}</label>
-          <Dropdown
-            value={customer}
-            onChange={(e) => {
-              selectExistingCustomer(e.value);
-            }}
-            options={existingCustomers ?? []}
-            optionLabel='label'
-            placeholder='Select a customer'
-            filter
-          />
-        </div>
-        {customer._id ? (
+      {existingCustomers ? <Divider layout='vertical' /> : null}
+      {existingCustomers ? (
+        <SelectContainer>
           <div
             style={{
               display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-evenly',
-              alignItems: 'center',
-              flexWrap: 'wrap',
+              flexDirection: 'column',
               flex: 1,
             }}>
-            <Button
-              onClick={() => {
-                resetCustomer();
-                setIsUpdateExistingCustomer(false);
-              }}>
-              New customer
-            </Button>
-            <Button
-              onClick={() => {
-                setIsUpdateExistingCustomer(true);
-              }}>
-              Edit customer
-            </Button>
+            <label style={{ marginBottom: 4 }}>{'Existing Customers'}</label>
+            <Dropdown
+              value={customer}
+              onChange={(e) => {
+                selectExistingCustomer(e.value);
+              }}
+              options={existingCustomers ?? []}
+              optionLabel='label'
+              placeholder='Select a customer'
+              filter
+              disabled
+            />
           </div>
-        ) : null}
-      </SelectContainer>
+          {customer._id ? (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-evenly',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                flex: 1,
+              }}>
+              <Button
+                onClick={() => {
+                  resetCustomer();
+                  setIsUpdateExistingCustomer(false);
+                }}>
+                New customer
+              </Button>
+              <Button
+                onClick={() => {
+                  setIsUpdateExistingCustomer(true);
+                }}>
+                Edit customer
+              </Button>
+            </div>
+          ) : null}
+        </SelectContainer>
+      ) : null}
     </ContentContainer>
   );
 };
