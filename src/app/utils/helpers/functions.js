@@ -69,3 +69,43 @@ export const checkForUserOrg = () => {
   const userHasOrgBool = userHasOrg === 'true';
   return userHasOrgBool;
 };
+
+export const calculateServiceTotals = (services, taxesAndFeeRates) => {
+  const servicesList = services;
+  const tfList = taxesAndFeeRates;
+  let retSubTotal = 0;
+  let taxAndFeesTotal = 0;
+  let totalPrice = 0;
+  for (let service of servicesList) {
+    const price = service.price;
+    retSubTotal += price;
+
+    let totalTFMultiplier = 0;
+    let totalTFFlatAdd = 0;
+
+    for (let tf of service.taxesAndFees) {
+      const taxAndFee = tfList.find((t) => t.code === tf.code);
+      const type = taxAndFee.type;
+      const tfAmount = taxAndFee.amount;
+      if (type === 'percent') {
+        totalTFMultiplier += tfAmount;
+      } else if (type === 'flat') {
+        totalTFFlatAdd += tfAmount;
+      }
+    }
+
+    taxAndFeesTotal += price * (totalTFMultiplier / 100);
+    taxAndFeesTotal += totalTFFlatAdd;
+  }
+  totalPrice = taxAndFeesTotal + retSubTotal;
+  return {
+    subTotal: toFixedNumber(retSubTotal),
+    taxAndFeesTotal: toFixedNumber(taxAndFeesTotal),
+    totalPrice: toFixedNumber(totalPrice),
+  };
+};
+
+export const toFixedNumber = (num, digits = 2, base = 10) => {
+  const pow = Math.pow(base, digits);
+  return Math.round(num * pow) / pow;
+};

@@ -50,7 +50,7 @@ const Home = () => {
         password={password}
         setPassword={setPassword}
       />
-      <div>hey</div>
+      <div></div>
     </div>
   );
 };

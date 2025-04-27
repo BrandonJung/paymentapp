@@ -103,6 +103,8 @@ const OrganizationPage = () => {
         setIsAnyEditing(isAnyEditingArray);
         localStorage.setItem('userHasOrg', true);
         setShowDialog(true);
+      } else {
+        alert(`${createOrgRes.message}`);
       }
     } catch (err) {
       console.log(err);

@@ -92,7 +92,7 @@ const ServiceRow = ({
       <InputContainer>
         <FieldContainer>
           <InputTextField
-            title={'Service Name'}
+            title={'Service Name*'}
             field={'name'}
             value={service.name}
             setValue={updateService}
@@ -117,7 +117,7 @@ const ServiceRow = ({
             disabled={!isEditing}
           />
           <InputNumberField
-            title={service.rate === 'hourly' ? 'Hourly' : 'Price'}
+            title={service.rate === 'hourly' ? 'Hourly*' : 'Price*'}
             field={'price'}
             value={convertPriceToDisplay(service.price)}
             setValue={updateService}
@@ -152,6 +152,7 @@ const ServiceRow = ({
           isEditing={isEditing}
           handleDelete={handleDelete}
           handleSave={handleSave}
+          handleEdit={handleSave}
         />
       </InputContainer>
       <Divider layout='vertical' />

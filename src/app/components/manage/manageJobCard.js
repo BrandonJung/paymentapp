@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import styles from '@/app/dashboard/jobs/manage/page.module.css';
 import { Button } from 'primereact/button';
+import { convertPriceToDisplay } from '@/app/utils/helpers/formatters';
 
 const ManageJobCard = ({ job }) => {
   const {
@@ -64,7 +65,10 @@ const ManageJobCard = ({ job }) => {
             value={endDate.dateString ?? startDate.dateString}
           />
 
-          <ManageJobCardRow title={'Price'} value={totalPrice} />
+          <ManageJobCardRow
+            title={'Price'}
+            value={`$${convertPriceToDisplay(totalPrice)}`}
+          />
           <ManageJobCardRow title={'Invoice Number'} value={invoiceNumber} />
         </div>
         <Button

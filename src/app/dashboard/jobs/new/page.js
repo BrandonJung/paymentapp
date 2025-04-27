@@ -20,7 +20,11 @@ import {
   defaultDateObj,
   defaultLocationObj,
 } from '@/app/utils/constants';
-import { _apiCall, checkForUserOrg } from '@/app/utils/helpers/functions';
+import {
+  _apiCall,
+  calculateServiceTotals,
+  checkForUserOrg,
+} from '@/app/utils/helpers/functions';
 import CardContainer from '@/app/components/cardContainer';
 import CustomerSection from '@/app/components/form/customerSection';
 import LocationSection from '@/app/components/form/locationSection';
@@ -100,7 +104,14 @@ const NewJobPage = () => {
   }, []);
 
   const calculateEstimatedTotal = (passedServices) => {
-    setEstimatedTotal(0);
+    let retTotal;
+    if (passedServices?.length > 0 && organization) {
+      retTotal = calculateServiceTotals(
+        passedServices,
+        organization.taxesAndFeeRates,
+      );
+    }
+    setEstimatedTotal(retTotal.totalPrice);
   };
 
   useEffect(() => {
