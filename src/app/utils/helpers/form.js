@@ -144,6 +144,14 @@ export const validateOrgFields = (org) => {
   } else if (org.orgTag && (org.orgTag.length > 5 || org.orgTag.length < 3)) {
     return newValidityObject(false, 'Tag must be between 3 and 5 characters');
   }
+  const emailValid = validateEmail(org.email);
+  if (!emailValid) {
+    return newValidityObject(false, 'Invalid email');
+  }
+  const phoneValid = validatePhone(org.phoneNumber);
+  if (!phoneValid) {
+    return newValidityObject(false, 'Invalid phone number');
+  }
   return newValidityObject(true);
 };
 

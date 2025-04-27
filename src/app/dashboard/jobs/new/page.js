@@ -111,7 +111,9 @@ const NewJobPage = () => {
         organization.taxesAndFeeRates,
       );
     }
-    setEstimatedTotal(retTotal.totalPrice);
+    if (retTotal?.totalPrice) {
+      setEstimatedTotal(retTotal.totalPrice);
+    }
   };
 
   useEffect(() => {

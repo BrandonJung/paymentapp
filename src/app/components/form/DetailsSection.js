@@ -25,6 +25,22 @@ const DetailsSection = ({ organization, updateOrganization }) => {
             customMaxLength={5}
           />
         </FieldContainer>
+        <FieldContainer>
+          <InputTextField
+            title={'Email*'}
+            field={'email'}
+            value={organization.email}
+            setValue={updateOrganization}
+            placeholder='Email'
+          />
+          <InputTextField
+            title={'Phone Number*'}
+            field={'phoneNumber'}
+            value={organization.phoneNumber}
+            setValue={updateOrganization}
+            placeholder='Phone number'
+          />
+        </FieldContainer>
       </InputContainer>
       <div style={{ display: 'flex', flex: 1 }} />
     </ContentContainer>
