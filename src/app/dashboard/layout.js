@@ -112,13 +112,6 @@ export default function Layout({ children }) {
             router.push('/dashboard/manage/services');
           },
         },
-        // {
-        //   label: 'Users',
-        //   icon: 'pi pi-address-book',
-        //   command: () => {
-        //     router.push('/dashboard/manage/users');
-        //   },
-        // },
       ],
     },
     {

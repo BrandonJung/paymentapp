@@ -1,12 +1,13 @@
 'use client';
 
-import { COLOURS } from '@/app/utils/constants';
+import { API_SERVICES, COLOURS } from '@/app/utils/constants';
 import ManageJobCardRow from './manageJobCardRow';
 import { useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import styles from '@/app/dashboard/jobs/manage/page.module.css';
 import { Button } from 'primereact/button';
 import { convertPriceToDisplay } from '@/app/utils/helpers/formatters';
+import { _apiCall } from '@/app/utils/helpers/functions';
 
 const ManageJobCard = ({ job }) => {
   const {
@@ -44,6 +45,31 @@ const ManageJobCard = ({ job }) => {
 
   const [showDetails, setShowDetails] = useState(false);
 
+  const handleSendEmail = () => {
+    try {
+      const res = _apiCall(API_SERVICES.email, 'startJob', 'post', { job });
+      console.log('Send email to customer res', res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleOnClick = () => {
+    switch (statusColumn) {
+      case '1':
+        handleSendEmail();
+        break;
+      case '2':
+        break;
+      case '3':
+        break;
+      case '4':
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <div>
       <div
@@ -78,6 +104,9 @@ const ManageJobCard = ({ job }) => {
             justifyContent: 'center',
             height: 30,
             zIndex: 10,
+          }}
+          onClick={() => {
+            handleOnClick();
           }}>
           {buttonText}
         </Button>

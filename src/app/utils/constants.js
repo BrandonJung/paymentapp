@@ -1,3 +1,13 @@
+export const API_SERVICES = {
+  user: 'http://localhost:3001/api/user/',
+  customer: 'http://localhost:3001/api/customer/',
+  service: 'http://localhost:3001/api/service/',
+  job: 'http://localhost:3001/api/job/',
+  report: 'http://localhost:3001/api/report/',
+  location: 'http://localhost:3001/api/location/',
+  organization: 'http://localhost:3001/api/organization/',
+  email: 'http://localhost:3001/api/email/',
+};
 export const COLOURS = {
   primary: '#282935',
   secondary: '#333543',
@@ -39,16 +49,6 @@ export const taxAndFeeTypes = [
 
 export const containerMaxHeight = 'calc(100vh - 16px)';
 
-export const API_SERVICES = {
-  user: 'http://localhost:3001/api/user/',
-  customer: 'http://localhost:3001/api/customer/',
-  service: 'http://localhost:3001/api/service/',
-  job: 'http://localhost:3001/api/job/',
-  report: 'http://localhost:3001/api/report/',
-  location: 'http://localhost:3001/api/location/',
-  organization: 'http://localhost:3001/api/organization/',
-};
-
 export const defaultCustomerObj = {
   firstName: '',
   lastName: '',
@@ -87,6 +87,8 @@ export const defaultOrgObj = {
   name: '',
   tag: '',
   taxesAndFees: [],
+  email: '',
+  phoneNumber: '',
 };
 
 export const defaultTaxAndFeeObj = {

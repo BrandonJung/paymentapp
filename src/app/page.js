@@ -50,7 +50,6 @@ const Home = () => {
         password={password}
         setPassword={setPassword}
       />
-      <div></div>
     </div>
   );
 };
