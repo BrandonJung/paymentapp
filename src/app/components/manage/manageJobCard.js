@@ -9,7 +9,7 @@ import { Button } from 'primereact/button';
 import { convertPriceToDisplay } from '@/app/utils/helpers/formatters';
 import { _apiCall } from '@/app/utils/helpers/functions';
 
-const ManageJobCard = ({ job }) => {
+const ManageJobCard = ({ job, moveJob, colIndex }) => {
   const {
     customer,
     services,
@@ -45,10 +45,15 @@ const ManageJobCard = ({ job }) => {
 
   const [showDetails, setShowDetails] = useState(false);
 
-  const handleSendEmail = () => {
+  const handleSendStartEmail = async () => {
     try {
-      const res = _apiCall(API_SERVICES.email, 'startJob', 'post', { job });
+      const res = await _apiCall(API_SERVICES.email, 'startJob', 'post', {
+        job,
+      });
       console.log('Send email to customer res', res);
+      if (res.success) {
+        moveJob(job._id, colIndex, 200);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -57,7 +62,7 @@ const ManageJobCard = ({ job }) => {
   const handleOnClick = () => {
     switch (statusColumn) {
       case '1':
-        handleSendEmail();
+        handleSendStartEmail();
         break;
       case '2':
         break;

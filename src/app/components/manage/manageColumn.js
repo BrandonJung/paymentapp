@@ -1,7 +1,7 @@
 import ManageJobCard from './manageJobCard';
 import styles from '@/app/dashboard/jobs/manage/page.module.css';
 
-const ManageColumn = ({ title, customFlex = 1, jobs }) => {
+const ManageColumn = ({ title, customFlex = 1, jobs, moveJob, colIndex }) => {
   return (
     <div
       className={styles.columnContainer}
@@ -13,7 +13,14 @@ const ManageColumn = ({ title, customFlex = 1, jobs }) => {
         <div>
           {jobs?.length
             ? jobs.map((job, index) => {
-                return <ManageJobCard key={`${job._id}_${index}`} job={job} />;
+                return (
+                  <ManageJobCard
+                    key={`${job._id}_${index}`}
+                    job={job}
+                    moveJob={moveJob}
+                    colIndex={colIndex}
+                  />
+                );
               })
             : null}
         </div>

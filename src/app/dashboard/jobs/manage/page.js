@@ -33,6 +33,30 @@ const ManageJobsPage = () => {
     }
   };
 
+  const moveJob = (jobId, colIndex, newStatus) => {
+    if (colIndex === 4) {
+      // Do something to archive
+      return;
+    }
+    const jobsClone = { ...jobs };
+    const currJobsClone = [...jobsClone[colIndex]];
+
+    const currJobIndex = currJobsClone.findIndex((job) => job._id === jobId);
+    if (currJobIndex > -1) {
+      const currJob = { ...currJobsClone[currJobIndex] };
+
+      const nextJobsClone = [...jobsClone[colIndex + 1]];
+
+      currJobsClone.splice(currJobIndex, 1);
+      nextJobsClone.push({ ...currJob, statusCode: newStatus });
+
+      jobsClone[colIndex] = currJobsClone;
+      jobsClone[colIndex + 1] = nextJobsClone;
+
+      setJobs(jobsClone);
+    }
+  };
+
   useEffect(() => {
     if (typeof window !== undefined) {
       const userHasOrgRes = checkForUserOrg();
@@ -48,13 +72,33 @@ const ManageJobsPage = () => {
     <CardContainer title={'Manage Jobs'}>
       {!loading && userHasOrg ? (
         <div className={styles.columnsContainer}>
-          <ManageColumn title={'In Queue'} jobs={jobs[1]} />
+          <ManageColumn
+            title={'In Queue'}
+            jobs={jobs[1]}
+            moveJob={moveJob}
+            colIndex={1}
+          />
           <Divider layout='vertical' />
-          <ManageColumn title={'In Progress'} jobs={jobs[2]} />
+          <ManageColumn
+            title={'In Progress'}
+            jobs={jobs[2]}
+            moveJob={moveJob}
+            colIndex={2}
+          />
           <Divider layout='vertical' />
-          <ManageColumn title={'Waiting for Payment'} jobs={jobs[3]} />
+          <ManageColumn
+            title={'Waiting for Payment'}
+            jobs={jobs[3]}
+            moveJob={moveJob}
+            colIndex={3}
+          />
           <Divider layout='vertical' />
-          <ManageColumn title={'Done'} jobs={jobs[4]} />
+          <ManageColumn
+            title={'Done'}
+            jobs={jobs[4]}
+            moveJob={moveJob}
+            colIndex={4}
+          />
         </div>
       ) : (
         <NoOrganizationPage />
