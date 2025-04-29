@@ -16,23 +16,11 @@ export default function Layout({ children }) {
             router.push('/customer/dashboard');
           },
         },
-      ],
-    },
-    {
-      label: 'Jobs',
-      items: [
         {
           label: 'Pictures',
           icon: 'pi pi-image',
           command: () => {
             router.push('/customer/pictures');
-          },
-        },
-        {
-          label: 'View All',
-          icon: 'pi pi-book',
-          command: () => {
-            router.push('/customer/jobs');
           },
         },
       ],

@@ -7,6 +7,7 @@ export const API_SERVICES = {
   location: 'http://localhost:3001/api/location/',
   organization: 'http://localhost:3001/api/organization/',
   email: 'http://localhost:3001/api/email/',
+  payment: 'http://localhost:3001/api/payment/',
 };
 export const COLOURS = {
   primary: '#282935',

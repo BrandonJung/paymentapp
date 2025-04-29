@@ -4,6 +4,7 @@
   justify-content: space-between;
   flex-wrap: nowrap;
   margin: 10;
+  flex: 1;
 }
 
 .inputContainer {

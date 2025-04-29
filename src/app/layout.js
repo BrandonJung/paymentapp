@@ -3,6 +3,7 @@ import './globals.css';
 import { PrimeReactProvider } from 'primereact/api';
 import 'primereact/resources/themes/soho-dark/theme.css';
 import 'primeicons/primeicons.css';
+import { _apiCall } from './utils/helpers/functions';
 // const geistSans = Geist({
 //   variable: '--font-geist-sans',
 //   subsets: ['latin'],
