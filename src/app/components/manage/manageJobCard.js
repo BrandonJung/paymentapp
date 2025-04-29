@@ -59,12 +59,27 @@ const ManageJobCard = ({ job, moveJob, colIndex }) => {
     }
   };
 
+  const handleSendInvoiceEmail = async () => {
+    try {
+      const res = await _apiCall(API_SERVICES.email, 'sendInvoice', 'post', {
+        job,
+      });
+      console.log('Send invoice to customer res', res);
+      if (res.success) {
+        moveJob(job._id, colIndex, 300);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const handleOnClick = () => {
     switch (statusColumn) {
       case '1':
         handleSendStartEmail();
         break;
       case '2':
+        handleSendInvoiceEmail();
         break;
       case '3':
         break;
