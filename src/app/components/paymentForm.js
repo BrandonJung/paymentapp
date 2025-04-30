@@ -6,33 +6,48 @@ import {
   useStripe,
 } from '@stripe/react-stripe-js';
 import { Button } from 'primereact/button';
+import { _apiCall } from '../utils/helpers/functions';
+import { API_SERVICES } from '../utils/constants';
+import { useState } from 'react';
 
 const PaymentForm = ({ job, organization }) => {
   const stripe = useStripe();
   const elements = useElements();
+
+  const [currJob, setCurrJob] = useState(job);
 
   const handlePay = async () => {
     if (!stripe || !elements) {
       return;
     }
 
-    const res = await stripe.confirmPayment({
-      elements,
-      redirect: 'if_required',
-      //   confirmParams: {
-      //     return_url: 'http://localhost:3000',
-      //   },
-    });
-    console.log('Pay', res);
-    if (res.status === 'succeeded') {
-      // call api to update job
-    } else {
-      alert('Error paying, please try again', res.error);
+    try {
+      const res = await stripe.confirmPayment({
+        elements,
+        redirect: 'if_required',
+        //   confirmParams: {
+        //     return_url: 'http://localhost:3000',
+        //   },
+      });
+      console.log('Pay', res.paymentIntent);
+      if (res.paymentIntent.status === 'succeeded') {
+        const res = await _apiCall(API_SERVICES.job, 'receipt', 'post', {
+          job: currJob,
+        });
+        if (res.success) {
+          setCurrJob(res.job);
+          alert('Payment success');
+        }
+      } else {
+        alert('Error paying, please try again', res.error);
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
   return (
     <ContentContainer>
-      {job?.statusCode > 299 && job?.statusCode < 400 ? (
+      {currJob?.statusCode > 299 && currJob?.statusCode < 400 ? (
         <div
           style={{
             display: 'flex',
@@ -89,7 +104,7 @@ const PaymentForm = ({ job, organization }) => {
                 display: 'flex',
                 flex: 1,
               }}>
-              <InvoiceReceiptContainer job={job} />
+              <InvoiceReceiptContainer currJob={currJob} />
             </div>
           </div>
         </div>

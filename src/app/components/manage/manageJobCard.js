@@ -45,9 +45,9 @@ const ManageJobCard = ({ job, moveJob, colIndex }) => {
 
   const [showDetails, setShowDetails] = useState(false);
 
-  const handleSendStartEmail = async () => {
+  const handleStartJob = async () => {
     try {
-      const res = await _apiCall(API_SERVICES.email, 'startJob', 'post', {
+      const res = await _apiCall(API_SERVICES.job, 'start', 'post', {
         job,
       });
       console.log('Send email to customer res', res);
@@ -59,9 +59,9 @@ const ManageJobCard = ({ job, moveJob, colIndex }) => {
     }
   };
 
-  const handleSendInvoiceEmail = async () => {
+  const handleInvoiceJob = async () => {
     try {
-      const res = await _apiCall(API_SERVICES.email, 'sendInvoice', 'post', {
+      const res = await _apiCall(API_SERVICES.job, 'invoice', 'post', {
         job,
       });
       console.log('Send invoice to customer res', res);
@@ -73,17 +73,47 @@ const ManageJobCard = ({ job, moveJob, colIndex }) => {
     }
   };
 
+  const handleReceiptJob = async () => {
+    try {
+      const res = await _apiCall(API_SERVICES.job, 'receipt', 'post', {
+        job,
+      });
+      console.log('Send receipt to customer res', res);
+      if (res.success) {
+        moveJob(job._id, colIndex, 400);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleArchiveJob = async () => {
+    try {
+      const res = await _apiCall(API_SERVICES.job, 'archive', 'post', {
+        job,
+      });
+      console.log('Archive job res', res);
+      if (res.success) {
+        moveJob(job._id, colIndex, 500);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const handleOnClick = () => {
     switch (statusColumn) {
       case '1':
-        handleSendStartEmail();
+        handleStartJob();
         break;
       case '2':
-        handleSendInvoiceEmail();
+        handleInvoiceJob();
         break;
       case '3':
+        handleReceiptJob();
         break;
       case '4':
+        handleArchiveJob();
         break;
       default:
         break;

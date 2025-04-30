@@ -34,16 +34,19 @@ const ManageJobsPage = () => {
   };
 
   const moveJob = (jobId, colIndex, newStatus) => {
-    if (colIndex === 4) {
-      // Do something to archive
-      return;
-    }
     const jobsClone = { ...jobs };
     const currJobsClone = [...jobsClone[colIndex]];
 
     const currJobIndex = currJobsClone.findIndex((job) => job._id === jobId);
     if (currJobIndex > -1) {
       const currJob = { ...currJobsClone[currJobIndex] };
+
+      if (colIndex === 4) {
+        currJobsClone.splice(currJobIndex, 1);
+        jobsClone[colIndex] = currJobsClone;
+        setJobs(jobsClone);
+        return;
+      }
 
       const nextJobsClone = [...jobsClone[colIndex + 1]];
 
