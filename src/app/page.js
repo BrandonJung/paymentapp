@@ -6,6 +6,8 @@ import LoginModal from './components/loginModal';
 import Header from './components/header';
 import EndButton from './components/endButton';
 import { useRouter } from 'next/navigation';
+import { AppBar, Button, Toolbar, Typography } from '@mui/material';
+import { Adb } from '@mui/icons-material';
 
 const Home = () => {
   const router = useRouter();
@@ -33,7 +35,7 @@ const Home = () => {
 
   return (
     <div>
-      <Header
+      {/* <Header
         items={items}
         end={
           <EndButton
@@ -49,7 +51,49 @@ const Home = () => {
         setUsername={setEmail}
         password={password}
         setPassword={setPassword}
-      />
+      /> */}
+      <AppBar position='static' sx={{ alignItems: 'center' }}>
+        <Toolbar sx={{ width: '100%', justifyContent: 'center' }}>
+          <div
+            style={{
+              maxWidth: 1000,
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <Adb
+                sx={{
+                  display: { xs: 'none', md: 'flex' },
+                  cursor: 'pointer',
+                }}
+                onClick={() => router.push('/')}
+              />
+              <Typography
+                variant='h6'
+                component='div'
+                sx={{ flexGrow: 1, marginLeft: 4, cursor: 'pointer' }}
+                onClick={() => router.push('/flow')}>
+                Polar Flow
+              </Typography>
+              <Typography
+                variant='h6'
+                component='div'
+                sx={{ flexGrow: 1, marginLeft: 4, cursor: 'pointer' }}
+                onClick={() => router.push('/core')}>
+                Polar Core
+              </Typography>
+            </div>
+            <Button color='inherit'>Login</Button>
+          </div>
+        </Toolbar>
+      </AppBar>
     </div>
   );
 };
